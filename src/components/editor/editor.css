@@ -1,0 +1,4 @@
+.editor {
+  @apply flex flex-col w-1/2 h-full bg-green-800 
+  text-center text-white text-lg;
+}

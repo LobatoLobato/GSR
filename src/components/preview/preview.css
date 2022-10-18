@@ -1,0 +1,4 @@
+.preview {
+  @apply flex flex-col w-1/2 h-full bg-gray-800 
+  items-center justify-center text-white text-lg;
+}

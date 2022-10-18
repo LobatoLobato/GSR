@@ -1,0 +1,3 @@
+.sidebar {
+  @apply bg-gray-800 w-1/12 text-center text-lg text-white;
+}
