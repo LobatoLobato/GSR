@@ -23,20 +23,3 @@ function styleTagFormatter(html: string) {
 }
 
 export { htmlFormatter };
-
-/*
-extensions={[html()]}
-        placeholder="Write your html code"
-        value={exampleCode}
-        className="editor"
-        height="100%"
-        theme={
-          props.theme
-            ? props.theme === ("dark" || "light")
-              ? props.theme
-              : { ...themes }[props.theme]
-            : "dark"
-        }
-        onChange={sendCode}
-
-*/
