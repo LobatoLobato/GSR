@@ -7,5 +7,5 @@
       "maxDuration": 10
     }
   },
-  "devCommand": "concurrently npm:start npm:auto-commit"
+  "devCommand": "react-scripts start"
 }

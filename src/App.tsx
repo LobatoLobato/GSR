@@ -8,7 +8,7 @@ function App() {
     <div className="App">
       <div className="mainContent">
         <Preview />
-        <Editor />
+        <Editor onInput={(code) => console.log(code)} />
       </div>
       <SideBar />
     </div>
