@@ -1,0 +1,11 @@
+{
+  "$schema": "https://vcs.vercel.app/",
+  
+  "functions": {
+    "api/*.js": {
+      "memory": 128,
+      "maxDuration": 10
+    }
+  },
+  "devCommand": "concurrently npm:start npm:auto-commit"
+}
