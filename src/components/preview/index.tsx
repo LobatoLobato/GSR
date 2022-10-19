@@ -1,8 +1,9 @@
 import "./preview.css";
-
+import { styleTagScoper } from "../../common/utils";
 interface Props {
   xhtml: string;
 }
+
 export default function Preview(props: Props) {
   return (
     <div className="preview">
@@ -20,8 +21,9 @@ export default function Preview(props: Props) {
 }
 
 function namespacedDiv(xhtml: string): string {
+  const { scope, scopedXhtml } = styleTagScoper(xhtml);
   return `
-  <div xmlns="http://www.w3.org/1999/xhtml" ">
-    ${xhtml}
+  <div xmlns="http://www.w3.org/1999/xhtml" class="${scope}">
+    ${scopedXhtml}
   </div>`;
 }

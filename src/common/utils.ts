@@ -21,5 +21,18 @@ function styleTagFormatter(html: string) {
       .replace(classAttributeRegexp, (attribute) => `  ${attribute}`),
   );
 }
+function styleTagScoper(xhtml: string) {
+  const scope = "scopescopescopescope";
+  const classFinderRegexp = /(?<=>|;|})\s*\.?[a-zA-Z*](.?)+?(?=({|}))/gim;
+  const classes = xhtml.replace(/\n/gim, "").match(classFinderRegexp);
+  let scopedXhtml = xhtml;
+  if (classes) {
+    for (const parsedClass of classes) {
+      const newClass = `.${scope} ${parsedClass}`.replace(/\s+/, " ");
+      scopedXhtml = scopedXhtml.replace(parsedClass, newClass);
+    }
+  }
 
-export { htmlFormatter };
+  return { scopedXhtml, scope };
+}
+export { htmlFormatter, styleTagScoper };
