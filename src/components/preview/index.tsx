@@ -1,5 +1,5 @@
 import "./preview.css";
-import { styleTagScoper } from "../../common/utils";
+import { htmlFormatter, styleTagScoper } from "../../common/utils";
 interface Props {
   xhtml: string;
 }
@@ -24,6 +24,6 @@ function namespacedDiv(xhtml: string): string {
   const { scope, scopedXhtml } = styleTagScoper(xhtml);
   return `
   <div xmlns="http://www.w3.org/1999/xhtml" class="${scope}">
-    ${scopedXhtml}
+    ${htmlFormatter(scopedXhtml)}
   </div>`;
 }

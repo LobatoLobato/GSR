@@ -23,23 +23,25 @@ export default function Editor(props: Props) {
   const sendCode = (code: string) => {
     window.clearTimeout(timeoutId.sendCode);
 
+    setCode(code);
+
     const newTimeoutId = window.setTimeout(() => {
       props.onInput(htmlFormatter(code));
-      setCode(code);
     }, 1000);
+
     setTimeoutId((timeoutId) => ({
       ...timeoutId,
       sendCode: newTimeoutId,
     }));
   };
   const formatEditorCode = (ev: React.KeyboardEvent) => {
-    if (formattingActive) return;
+    if (formattingActive || code === editorCode) return;
     if (!(ev.shiftKey && ev.altKey && /f/i.test(ev.key))) return;
 
     setEditorCode(code);
     setTimeout(() => {
       setEditorCode(htmlFormatter(code));
-    }, 200);
+    }, 400);
     setformattingActive(true);
     console.log("Formatting code...");
   };
@@ -83,14 +85,32 @@ export default function Editor(props: Props) {
 
 const exampleCode = `<style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+  @keyframes AnimationName {
+    0%{
+      background-position:0% 50%
+    }
+    50%{
+      background-position:100% 50%
+    }
+    100%{background-position:0% 50%
+    }
+  }
   .container {
     font-family: 'Poppins', sans-serif;
     width: 100%;
     height: 94vh;
-    background: #324;
     text-align: center;
     font-size: 20px;
     color: white;
+    background: linear-gradient(270deg, #27a081, #a07527, #a02727);
+    background-size: 600% 600%;
+    animation: AnimationName 2s ease infinite;
+  }
+  .container p {
+    background: black;
+  }
+  p {
+    color: green;
   }
 </style>
 <div class="container">
