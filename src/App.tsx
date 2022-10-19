@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import "./App.css";
+import { useState } from "react";
+import "./App.scss";
 import Editor from "./components/editor";
 import Preview from "./components/preview";
 import SideBar from "./components/sidebar";

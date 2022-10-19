@@ -1,4 +1,4 @@
-import "./preview.css";
+import "./preview.scss";
 import { htmlFormatter, styleTagScoper } from "../../common/utils";
 interface Props {
   xhtml: string;

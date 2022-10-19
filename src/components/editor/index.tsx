@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./editor.css";
+import "./editor.scss";
 
 import CodeMirror, { BasicSetupOptions } from "@uiw/react-codemirror";
 import * as themes from "@uiw/codemirror-themes-all";
@@ -68,13 +68,13 @@ export default function Editor(props: Props) {
   }, [props, created, setCreated]);
 
   return (
-    <div className={`editorContainer ${props.theme}`}>
+    <div className="editorContainer">
       <h2 className="select-none"> Editor </h2>
       <CodeMirror
         extensions={[html()]}
         placeholder="Write your html code"
         value={editorCode}
-        className="editor"
+        className={`editor ${props.theme}`}
         height="100%"
         theme={getTheme(props.theme)}
         onChange={sendCode}
@@ -87,19 +87,20 @@ export default function Editor(props: Props) {
 }
 
 const exampleCode = `<style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+  @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
   @keyframes AnimationName {
-    0%{
-      background-position:0% 50%
+    0% {
+      background-position: 0% 50%;
     }
-    50%{
-      background-position:100% 50%
+    50% {
+      background-position: 100% 50%;
     }
-    100%{background-position:0% 50%
+    100% {
+      background-position: 0% 50%;
     }
   }
   .container {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     width: 100%;
     height: 94vh;
     text-align: center;
@@ -110,13 +111,27 @@ const exampleCode = `<style>
     animation: AnimationName 2s ease infinite;
   }
   .container p {
-    background: black;
+    background: #00000020;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
   }
-  p {
-    color: green;
+  a {
+    height: 20px;
+  }
+  a img {
+    height: 100%;
   }
 </style>
+
 <div class="container">
   <p>Hello World</p>
+    <p>
+      More info on:
+      <a href="https://github.com/LobatoLobato/github-styledreadme-creator">
+        <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" />
+      </a>
+    </p>
 </div>
 `;

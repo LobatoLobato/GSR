@@ -1,0 +1,23 @@
+.sidebar {
+  @apply bg-gray-800 w-1/12 text-center text-lg text-white;
+
+  .themeSelector {
+    @apply flex flex-col items-center h-2/5;
+    .dark {
+      @apply bg-[#222] text-white;
+    }
+    .light {
+      @apply bg-white text-[#222];
+    }
+    .menu {
+      @apply h-full overflow-y-auto pr-[3px] rounded-b border-2 border-solid border-green-900
+      scrollbar-thin scrollbar-thumb-green-700 scrollbar-track-gray-700;
+    }
+    .Dropdown-option {
+      @apply hover:bg-gray-500 select-none;
+    }
+    .Dropdown-placeholder {
+      @apply w-full hover:bg-green-500 rounded select-none clickable;
+    }
+  }
+}

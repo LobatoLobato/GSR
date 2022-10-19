@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./sidebar.css";
+import "./sidebar.scss";
 import DropDown from "react-dropdown";
 
 interface Props {
