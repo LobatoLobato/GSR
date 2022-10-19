@@ -18,7 +18,7 @@ function App() {
           }}
         />
       </div>
-      <SideBar />
+      <SideBar onThemeChange={setEditorTheme} />
     </div>
   );
 }

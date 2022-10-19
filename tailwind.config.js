@@ -6,5 +6,5 @@ module.exports = {
       fontFamily: { jetbrains: "JetBrains Mono, monospace" },
     },
   },
-  plugins: [],
+  plugins: [require("tailwind-scrollbar")],
 };

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./editor.css";
 
-import CodeMirror from "@uiw/react-codemirror";
+import CodeMirror, { BasicSetupOptions } from "@uiw/react-codemirror";
 import * as themes from "@uiw/codemirror-themes-all";
 import { html } from "@codemirror/lang-html";
 import { htmlFormatter } from "../../common/utils";
@@ -10,7 +10,9 @@ interface Props {
   onInput(code: string): void;
   theme?: string;
 }
-// const editorOptions: BasicSetupOptions = {};
+const basicSetup: BasicSetupOptions = {
+  foldGutter: true,
+};
 export default function Editor(props: Props) {
   const [created, setCreated] = useState(false);
   const [timeoutId, setTimeoutId] = useState({
@@ -78,6 +80,7 @@ export default function Editor(props: Props) {
         onChange={sendCode}
         onKeyDown={formatEditorCode}
         onKeyUp={releaseShortcuts}
+        basicSetup={basicSetup}
       />
     </div>
   );
