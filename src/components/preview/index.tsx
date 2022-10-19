@@ -7,7 +7,7 @@ interface Props {
 export default function Preview(props: Props) {
   return (
     <div className="preview">
-      <h2> Preview </h2>
+      <h2 className="select-none"> Preview </h2>
       <svg xmlns="http://www.w3.org/2000/svg" className="viewBox">
         <foreignObject
           className="xhtmlContainer"

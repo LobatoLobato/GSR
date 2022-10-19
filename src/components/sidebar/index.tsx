@@ -12,6 +12,7 @@ export default function SideBar(props: Props) {
     </div>
   );
 }
+
 const themes: { [key: string]: string } = {
   dark: "dark",
   light: "light",
@@ -37,16 +38,9 @@ function ThemeSelector(props: { onInput: (selectedOption: string) => void }) {
     { value: "value", label: "label", className: "className" },
   ]);
   const [selectedTheme, setSelectedTheme] = useState("dark");
-  const [phClass, setPhClass] = useState("cursor-pointer");
 
   useEffect(() => {
     const themeArray = Object.entries(themes);
-    document
-      .querySelector(".Dropdown-placeholder")
-      ?.addEventListener("mousedown", () => {
-        setPhClass("cursor-default");
-        setTimeout(() => setPhClass("cursor-pointer"), 50);
-      });
     setThemeOpts(
       themeArray.map((theme) => {
         const name = theme[0];
@@ -59,13 +53,14 @@ function ThemeSelector(props: { onInput: (selectedOption: string) => void }) {
       }),
     );
   }, [setThemeOpts]);
+
   return (
     <div className="themeSelector">
       <DropDown
         options={themeOpts}
         placeholder={selectedTheme}
         menuClassName="menu"
-        placeholderClassName={`${selectedTheme} ${phClass}`}
+        placeholderClassName={selectedTheme}
         className="h-full w-[90%] "
         onChange={(ev) => {
           setSelectedTheme(themes[ev.value]);

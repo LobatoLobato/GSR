@@ -3,5 +3,5 @@
 }
 
 .mainContent {
-  @apply flex  h-full w-11/12 bg-[#232323];
+  @apply flex h-full w-11/12 bg-[#232323];
 }

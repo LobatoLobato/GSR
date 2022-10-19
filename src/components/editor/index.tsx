@@ -69,7 +69,7 @@ export default function Editor(props: Props) {
 
   return (
     <div className={`editorContainer ${props.theme}`}>
-      <h2> Editor </h2>
+      <h2 className="select-none"> Editor </h2>
       <CodeMirror
         extensions={[html()]}
         placeholder="Write your html code"
