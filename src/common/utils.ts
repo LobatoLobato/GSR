@@ -30,21 +30,31 @@ function styleTagFormatter(html: string) {
 
 function styleTagScoper(xhtml: string) {
   const scope = "scopescopescopescope";
-  const styleTagRegexp = /<style>(\n|.)+?<\/style>/gim;
-  const classFinderRegexp = /(?<=>|;|})\s*\.?[a-zA-Z*](.?)+?(?=({|}))/gim;
-  const atRuleFinderRegexp = /(?<=(@.+\s))\w+\s+(?={)/gim;
+  const styleTag = /<style>(\n|.)+?<\/style>/gim; // Matches style tags
+  const atRule = /(?<=(@.+\s))\w+\s+(?={)/gim; // Matches css @rules
+  const cssclass = /(?<=>|;|})\s*\.?[a-zA-Z*](.?)+?(?=({|}))/gim; // Matches css classes
+  const selector = /(?<=\.)[a-z]+/gi; // Matches css selectors
+  const classDeclaration = /(?<=class=").+(?=")/gi; // Matches element class declarations
+  const className = /[a-z]+/gi; // Matches class names inside class declarations
 
-  let scopedXhtml = xhtml.replace(styleTagRegexp, (tag) => {
-    const atRuleNames = tag.match(atRuleFinderRegexp);
-    let scopedTag = tag.replace(classFinderRegexp, (cssclass) =>
-      ` .${scope} ${cssclass}`.replace(/\s+/, " "),
+  const scopedXhtml = xhtml
+    .replace(styleTag, (tag) => {
+      const atRuleNames = tag.match(atRule);
+      let scopedTag = tag.replace(cssclass, (cssclass) =>
+        ` .${scope} ${cssclass.replace(
+          selector,
+          (selector) => `${scope}${selector}`,
+        )}`.replace(/\s+/, " "),
+      );
+      atRuleNames?.forEach((name) => {
+        scopedTag = scopedTag.replace(new RegExp(name, "g"), `${scope}${name}`);
+      });
+
+      return scopedTag;
+    })
+    .replace(classDeclaration, (declaration) =>
+      declaration.replace(className, (name) => `${scope}${name}`),
     );
-    atRuleNames?.forEach((name) => {
-      scopedTag = scopedTag.replace(new RegExp(name, "g"), `${scope}${name}`);
-    });
-
-    return scopedTag;
-  });
 
   return { scopedXhtml, scope };
 }
