@@ -1,5 +1,5 @@
 .editorContainer {
-  @apply flex flex-col w-1/2 h-full
+  @apply flex flex-col w-full lg:w-1/2 lg:h-full h-1/2
   text-center text-white text-lg;
 
   .editor {

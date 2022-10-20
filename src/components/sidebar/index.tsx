@@ -10,7 +10,9 @@ export default function SideBar(props: Props) {
   return (
     <div
       className={`sidebar ${
-        showSidebar ? "w-2/12 pb-2" : "absolute right-0 w-fit h-fit"
+        showSidebar
+          ? "fixed right-0 lg:relative w-2/12 pb-2"
+          : "fixed right-0 w-fit h-fit"
       }`}
     >
       <div
