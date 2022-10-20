@@ -14,7 +14,7 @@
       @apply bg-[#222] text-white;
     }
     .light {
-      @apply bg-white text-[#222];
+      @apply text-[#222] bg-white;
     }
     .menu {
       @apply h-full rounded-b border-2 border-solid border-green-900
