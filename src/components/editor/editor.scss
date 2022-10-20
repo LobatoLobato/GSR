@@ -1,11 +1,15 @@
 .editorContainer {
   @apply flex flex-col w-1/2 h-full
-  bg-green-800 text-center text-white
-  text-lg;
+  text-center text-white text-lg;
 
   .editor {
-    @apply text-start h-full bg-blue-600 text-sm
-    overflow-clip;
+    @apply text-start h-full text-sm w-full 
+    overflow-clip border-4 border-solid border-gray-900;
+  }
+
+  .editor .cm-scroller {
+    @apply scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-black;
+    @apply overflow-auto;
   }
   .editor.light {
     @apply text-black;

@@ -6,9 +6,32 @@ interface Props {
   onThemeChange: (theme: string) => void;
 }
 export default function SideBar(props: Props) {
+  const [showSidebar, setShowSidebar] = useState(false);
   return (
-    <div className="sidebar">
-      <ThemeSelector onInput={props.onThemeChange} />
+    <div
+      className={`sidebar ${
+        showSidebar ? "w-2/12 pb-2" : "absolute right-0 w-fit h-fit"
+      }`}
+    >
+      <div
+        className={`showSidebarBtn ${showSidebar ? "" : "rounded-bl-sm"}`}
+        onClick={() => {
+          setShowSidebar(!showSidebar);
+        }}
+      >
+        <img
+          className="w-6 h-6"
+          src="https://freesvg.org/img/menu-icon.png"
+          alt="showSidebar"
+        />
+      </div>
+      {showSidebar ? (
+        <div className="w-full h-full">
+          <ThemeSelector onInput={props.onThemeChange} />
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 }
@@ -56,6 +79,7 @@ function ThemeSelector(props: { onInput: (selectedOption: string) => void }) {
 
   return (
     <div className="themeSelector">
+      <h3>Theme</h3>
       <DropDown
         options={themeOpts}
         placeholder={selectedTheme}

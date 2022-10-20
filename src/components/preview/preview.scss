@@ -1,13 +1,14 @@
 .preview {
-  @apply flex flex-col w-1/2 h-full bg-gray-800 
+  @apply flex flex-col w-1/2 h-full 
   items-center justify-center text-white text-lg;
 
   .viewBox {
-    @apply w-[98%] h-full rounded-md border-[4px] border-solid
-    border-red-900 overflow-y-auto;
+    @apply w-full h-full border-4 border-solid
+    border-gray-900 bg-white bg-opacity-5;
 
     .xhtmlContainer {
-      @apply overflow-y-auto;
+      @apply scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-black;
+      @apply overflow-auto;
     }
   }
 }

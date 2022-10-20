@@ -1,7 +1,7 @@
 .App {
-  @apply flex h-screen w-full font-jetbrains;
+  @apply flex h-screen w-full font-jetbrains bg-[#232323];
 }
 
 .mainContent {
-  @apply flex h-full w-11/12 bg-[#232323];
+  @apply flex h-full w-full p-1 gap-1;
 }

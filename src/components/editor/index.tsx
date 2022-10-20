@@ -100,6 +100,9 @@ const exampleCode = `<style>
     }
   }
   .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     font-family: "Poppins", sans-serif;
     width: 100%;
     height: 94vh;
@@ -126,12 +129,14 @@ const exampleCode = `<style>
 </style>
 
 <div class="container">
+  <p>Example Code</p>
   <p>Hello World</p>
-    <p>
-      More info on:
-      <a href="https://github.com/LobatoLobato/github-styledreadme-creator">
-        <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" />
-      </a>
-    </p>
+  <p>
+    More info on:
+    <a href="https://github.com/LobatoLobato/github-styledreadme-creator">
+      <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" />
+    </a>
+  </p>
 </div>
+
 `;
