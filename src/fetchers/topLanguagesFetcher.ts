@@ -76,9 +76,6 @@ async function fetchTopLanguages(username: string): Promise<LanguageMap> {
       return result;
     }, {} as LanguageMap);
 
-  console.log("\nUser Top Languages Map:  ");
-  console.log(sortedMap);
-
   return sortedMap;
 }
 

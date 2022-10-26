@@ -1,19 +1,19 @@
 import { octokit } from "./octokit";
 
 export type RepositoryList = {
-  [key: string]: {
-    name: string;
-    nameWithOwner: string;
-    primaryLanguage: {
-      color: string;
-      name: string;
-    };
-    description: string;
-    stargazerCount: number;
-    forkCount: number;
-  };
+  [key: string]: Repository;
 };
-
+export type Repository = {
+  name: string;
+  nameWithOwner: string;
+  primaryLanguage: {
+    color: string;
+    name: string;
+  };
+  description: string;
+  stargazerCount: number;
+  forkCount: number;
+};
 interface RepositoriesQueryResponse {
   user: {
     repositories: {
@@ -56,16 +56,7 @@ async function fetchRepos(username: string): Promise<RepositoryList> {
     username,
   });
   const repos = request.user.repositories.nodes;
-  console.log("\nUser Repositories:");
-  console.log(
-    repos.reduce(
-      (acc, repo) => ({
-        ...acc,
-        [repo.name.toLowerCase()]: repo,
-      }),
-      {},
-    ),
-  );
+
   return repos.reduce(
     (acc, repo) => ({
       ...acc,

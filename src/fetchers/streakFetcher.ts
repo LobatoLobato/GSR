@@ -95,16 +95,6 @@ async function fetchStreak(username: string): Promise<StreakInfo> {
     }
   }
 
-  console.log("\nStreak Stats:");
-
-  console.log("Total contributions: " + contributions.count);
-  console.log(`${contributions.firstDate} - Present`);
-
-  console.log("Current Streak: " + currentStreak.count);
-  console.log(`${currentStreak.startDate} - ${currentStreak.endDate}`);
-
-  console.log("Longest Streak: " + longestStreak.count);
-  console.log(`${longestStreak.startDate} - ${longestStreak.endDate}`);
   return {
     currentStreak,
     longestStreak,
