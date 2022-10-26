@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@codemirror/lang-html": "^6.1.2",
+    "@octokit/core": "^4.1.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
