@@ -1,33 +1,86 @@
-const fetchTopLanguages = async (username: string, size: number) => {
-  const repos = await (
-    await fetch(`https://api.github.com/users/${username}/repos`)
-  ).json();
+import { octokit } from "./octokit";
 
-  let languageMap: { [key: string]: number } = {};
-  for (const repo of repos) {
-    const usedLanguages = Object.entries(await fetchLangs(repo.languages_url));
-    languageMap = usedLanguages.reduce(
-      (acc, [key, value]) => ({ ...acc, [key]: (acc[key] || 0) + value }),
-      { ...languageMap },
-    );
-  }
-  const initialValue: { [key: string]: number } = {};
-  const sortedMap = Object.entries(languageMap)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, size)
-    .reduce(
-      (acc, [key, value]) => ({
-        ...acc,
-        ...{ [key]: value },
-      }),
-      initialValue,
-    );
-
-  return sortedMap;
-};
-async function fetchLangs(langUrl: string): Promise<{ [key: string]: number }> {
-  const response = await fetch(langUrl);
-  return await response.json();
+interface Edge {
+  size: number;
+  node: {
+    color: string;
+    name: string;
+  };
+}
+interface TopLangsQueryResponse {
+  user: {
+    repositories: {
+      nodes: [
+        {
+          name: string;
+          languages: {
+            edges: Edge[];
+          };
+        },
+      ];
+    };
+  };
 }
 
-export default fetchTopLanguages;
+interface LanguageMap {
+  [key: string]: {
+    name: string;
+    color: string;
+    size: number;
+  };
+}
+
+async function fetchTopLanguages(username: string): Promise<LanguageMap> {
+  const request: TopLangsQueryResponse = await octokit.graphql({
+    query: `query($username:String!) {
+      user(login:$username) {
+        # fetch only owner repos & not forks
+        repositories(ownerAffiliations: OWNER, isFork: false, first: 100) {
+          nodes {
+            name
+            languages(first: 10, orderBy: {field: SIZE, direction: DESC}) {
+              edges {
+                size
+                node {
+                  color
+                  name
+                }
+              }
+            }
+          }
+        }
+      }
+    }`,
+    username,
+  });
+  const repoNodes = request.user.repositories.nodes;
+
+  const map = repoNodes
+    .filter((node) => node.languages.edges.length > 0)
+    .reduce((acc, curr) => curr.languages.edges.concat(acc), [] as Edge[])
+    .reduce((acc, curr: Edge) => {
+      return {
+        ...acc,
+        [curr.node.name]: {
+          name: curr.node.name,
+          color: curr.node.color,
+          size: curr.size + (acc[curr.node.name]?.size || 0),
+        },
+      };
+    }, {} as LanguageMap);
+
+  const sortedMap = Object.keys(map)
+    .sort((a, b) => map[b].size - map[a].size)
+    .reduce((result, key) => {
+      result[key] = map[key];
+      return result;
+    }, {} as LanguageMap);
+
+  console.log("\nUser Top Languages Map:  ");
+  console.log(sortedMap);
+
+  return sortedMap;
+}
+
+export { fetchTopLanguages };
+export type { LanguageMap };
