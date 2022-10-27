@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./sidebar.scss";
 import DropDown from "react-dropdown";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -133,10 +133,53 @@ function ThemeSelector(props: { onInput: (selectedOption: string) => void }) {
 }
 
 function HelpPopup(props: { onClosed: () => void }) {
+  const [showStats, setShowStats] = useState(false);
+  const [showStreak, setShowStreak] = useState(false);
+  const [showTopLanguages, setShowTopLanguages] = useState(false);
+  const [showRepositories, setShowRepositories] = useState(false);
+  const hideAll = () => {
+    setShowStats(false);
+    setShowStreak(false);
+    setShowRepositories(false);
+    setShowTopLanguages(false);
+  };
   return (
     <div className="helpPopup animate-fadeIn">
       <div className="navbar">
-        <p>Help</p>
+        <div className="topics">
+          <h2
+            onClick={() => {
+              hideAll();
+              setShowStats(!showStats);
+            }}
+          >
+            Stats
+          </h2>
+          <h2
+            onClick={() => {
+              hideAll();
+              setShowStreak(!showStreak);
+            }}
+          >
+            Streak
+          </h2>
+          <h2
+            onClick={() => {
+              hideAll();
+              setShowTopLanguages(!showTopLanguages);
+            }}
+          >
+            Top Languages
+          </h2>
+          <h2
+            onClick={() => {
+              hideAll();
+              setShowRepositories(!showRepositories);
+            }}
+          >
+            Repositories
+          </h2>
+        </div>
         <button onClick={() => props.onClosed()}>
           <FontAwesomeIcon
             className="icon"
@@ -144,11 +187,17 @@ function HelpPopup(props: { onClosed: () => void }) {
           ></FontAwesomeIcon>
         </button>
       </div>
-      <div className="topics">
-        <h2>Stats</h2>
-        <h2>Streak</h2>
-        <h2>Top Languages</h2>
-        <h2>Repositories</h2>
+      <div className={showStats ? "topic" : "hidden"}>
+        <h2 className="text-xl">STATS</h2>
+      </div>
+      <div className={showStreak ? "topic" : "hidden"}>
+        <h2 className="text-xl">STREAK</h2>
+      </div>
+      <div className={showTopLanguages ? "topic" : "hidden"}>
+        <h2 className="text-xl">TOP LANGUAGES</h2>
+      </div>
+      <div className={showRepositories ? "topic" : "hidden"}>
+        <h2 className="text-xl">REPOSITORIES</h2>
       </div>
     </div>
   );

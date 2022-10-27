@@ -5,17 +5,12 @@ function getAttrValue(openingTag: string, attrName: string): string | null {
   const attrValue = openingTag.match(attrValueRegexp);
   return attrValue ? attrValue.toString() : null;
 }
-// function searchClassAttr(tag: string) {
-//   const classValueRegexp = /(?<=class=")\w+/i;
-//   const classValue = tag.match(classValueRegexp) || "";
-//   return classValue.toString();
-// }
 
 function getBooleanAttr(openingTag: string, attrName: string): boolean {
   return openingTag.match(attrName) ? true : false;
 }
 
-function renderRepo2(tag: string, repoList: RepositoryList) {
+function renderRepo(tag: string, repoList: RepositoryList) {
   const openingTag = tag.match(/<gitrepo\s?(\s|.)*?>/i)!.toString();
   if (!openingTag) return "Syntax error";
 
@@ -23,31 +18,18 @@ function renderRepo2(tag: string, repoList: RepositoryList) {
   if (!repoName) return "Repository tag missing name attribute";
 
   const className = getAttrValue(openingTag, "class");
-  console.log(className);
-  const showOwner = getBooleanAttr(openingTag, "showOwner");
 
   const tagContent = /(?<=<gitrepo(\s|>)(.)*>)(\s|.)*?(?=<\/gitrepo>)/gi
     .exec(tag)
     ?.at(0);
   if (!tagContent) return "Standard Pattern";
-  console.log(repoName);
+
   const repo = repoList[repoName.toLowerCase()];
   if (!repo) return "Repository not found";
 
-  const template = createTemplate(tagContent, repo, {
-    showOwner,
-  });
+  const template = createTemplate(tagContent, repo);
 
   return `<div ${className ? `class="${className}"` : ""}>${template}</div>`;
-}
-
-interface TemplateOptions {
-  nameClass?: string;
-  descriptionClass?: string;
-  languageClass?: string;
-  starCountClass?: string;
-  forkCount?: string;
-  showOwner?: boolean;
 }
 
 const nameTag = /<reponame(\s|.)*?>(\s|.)*?<\/reponame>/gi;
@@ -96,12 +78,7 @@ const forkCountTemplate = (tag: string, repo: Repository) => {
   return `<p ${classAttr}>${repo.forkCount}</p>`;
 };
 
-function createTemplate(
-  tagContent: string,
-  repo: Repository,
-  opts: TemplateOptions,
-): string {
-  const showOwner = opts.showOwner ? true : false;
+function createTemplate(tagContent: string, repo: Repository): string {
   const template = tagContent
     .replace(nameTag, (tag) => nameTemplate(tag, repo))
     .replace(descriptionTag, (tag) => descriptionTemplate(tag, repo))
@@ -112,4 +89,4 @@ function createTemplate(
   return template;
 }
 
-export { renderRepo2 };
+export { renderRepo };

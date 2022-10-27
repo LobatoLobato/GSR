@@ -1,6 +1,8 @@
 import prettier from "prettier";
 import HTMLParser from "prettier/parser-html";
 import CSSParser from "prettier/parser-postcss";
+import { GitHubData } from "../fetchers/gitHubDataFetcher";
+import { renderRepo, renderTopLanguages } from "../renderers";
 
 function htmlFormatter(html: string) {
   const options: prettier.Options = {
@@ -32,9 +34,9 @@ function styleTagScoper(xhtml: string) {
   const scope = "scopescopescopescope";
   const styleTag = /<style>(\n|.)+?<\/style>/gim; // Matches style tags
   const atRule = /(?<=(@.+\s))\w+\s+(?={)/gim; // Matches css @rules
-  const cssclass = /(?<=>|;|})\s*\.?[a-zA-Z*](.?)+?(?=({|}))/gim; // Matches css classes
+  const cssclass = /(?<=>|;|})\s*\.?[\w]+((?!%).?)+?(?=({|}))/gim; // Matches css classes
   const selector = /(?<=\.)[a-z]+/gi; // Matches css selectors
-  const classDeclaration = /(?<=class=").+(?=")/gi; // Matches element class declarations
+  const classDeclaration = /(?<=class=").+?(?=")/gi; // Matches element class declarations
   const className = /[a-z]+/gi; // Matches class names inside class declarations
 
   const scopedXhtml = xhtml
@@ -58,9 +60,25 @@ function styleTagScoper(xhtml: string) {
 
   return { scopedXhtml, scope };
 }
+function githubStatsParser(xhtml: string, githubData: GitHubData) {
+  const gitStats = /<gitstats(\s|.)*?>(\s|.)*?<\/gitstats>/gi;
+  const gitStreak = /<gitstreak(\s|.)*?>(\s|.)*?<\/gitstreak>/gi;
+  const gitTopLangs = /<gittoplangs(\s|.)*?>(\s|.)*?<\/gittoplangs>/gi;
+  const gitRepo = /<gitrepo(\s|.)*?>(\s|.)*?<\/gitrepo>/gi;
+
+  const parsedXhtml = xhtml
+    .replace(gitStats, (tag) => "githubData.stats")
+    .replace(gitStreak, (tag) => "githubData.streak")
+    .replace(gitTopLangs, (tag) => renderTopLanguages(tag, githubData.topLangs))
+    .replace(gitRepo, (tag) => renderRepo(tag, githubData.repos));
+
+  return parsedXhtml;
+}
+
 function indent(code: string) {
   const newLineRegexp = /(?<=\n)(?=.)|^/g;
   return code.replace(newLineRegexp, "  ");
 }
 
-export { htmlFormatter, styleTagScoper };
+export { htmlFormatter, styleTagScoper, githubStatsParser };
+export type { GitHubData };

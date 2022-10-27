@@ -7,11 +7,11 @@ import SideBar from "./components/sidebar";
 function App() {
   const [editorTxt, setEditorTxt] = useState("");
   const [editorTheme, setEditorTheme] = useState("dark");
-
+  const [username, setUsername] = useState("");
   return (
     <div className="App">
       <div className="mainContent">
-        <Preview xhtml={editorTxt} />
+        <Preview xhtml={editorTxt} username={username} />
         <Editor
           theme={editorTheme}
           onInput={(code) => {
@@ -19,7 +19,7 @@ function App() {
           }}
         />
       </div>
-      <SideBar onThemeChange={setEditorTheme} />
+      <SideBar onThemeChange={setEditorTheme} onUsernameChange={setUsername} />
     </div>
   );
 }

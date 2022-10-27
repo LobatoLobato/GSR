@@ -15,10 +15,10 @@ export type GitHubData = {
 };
 
 async function fetchGithubData(options: GitFetchOptions): Promise<GitHubData> {
-  const streakAsync = fetchStreak("marten-seemann");
+  const streakAsync = fetchStreak(options.username);
   const topLangs = await fetchTopLanguages(options.username);
   const repos = await fetchRepos(options.username);
-  const stats = await fetchStats("lobatolobato");
+  const stats = await fetchStats(options.username);
   const streak = await streakAsync;
 
   return {
@@ -63,12 +63,12 @@ class GitHubDataFetcher {
         size: i + 1,
       };
       this._repos[i.toString()] = {
-        description: `repo${i}description`,
-        forkCount: Math.random() * 100,
-        name: `repo${i}Name`,
-        nameWithOwner: `owner/repo${i}Name`,
-        primaryLanguage: { name: `repo${i}LangName`, color: "#FFFFFF" },
-        stargazerCount: Math.random() * 100,
+        description: `description`,
+        forkCount: Math.trunc(Math.random() * 100),
+        name: `repo${i}`,
+        nameWithOwner: `owner/repo${i}`,
+        primaryLanguage: { name: `LangName`, color: "#FFFFFF" },
+        stargazerCount: Math.trunc(Math.random() * 100),
       };
     }
   }
