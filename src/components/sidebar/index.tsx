@@ -3,6 +3,7 @@ import "./sidebar.scss";
 import DropDown from "react-dropdown";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
 interface Props {
   onThemeChange: (theme: string) => void;
   onUsernameChange: (username: string) => void;
@@ -11,38 +12,23 @@ export default function SideBar(props: Props) {
   const [showSidebar, setShowSidebar] = useState(false);
   const [timeoutId, setTimeoutId] = useState(0);
   const [showHelp, setShowHelp] = useState(false);
+
   return (
-    <div
-      className={`sidebar ${
-        showSidebar
-          ? "fixed right-0 lg:relative w-2/12 pb-2 animate-grow"
-          : "fixed right-0  w-fit h-fit animate-shrinkSideBar hover:bg-green-500"
-      }`}
-    >
-      {showHelp ? (
-        <HelpPopup onClosed={() => setShowHelp(false)}></HelpPopup>
-      ) : (
-        ""
-      )}
+    <div className={`sidebar ${showSidebar ? "show" : "hide"}`}>
+      <HelpPopup
+        show={showHelp}
+        onClosed={() => setShowHelp(false)}
+      ></HelpPopup>
+
       <div
-        className={`showSidebarBtn ${
-          showSidebar ? "absolute z-10" : "rounded-bl-sm"
-        }`}
+        className={`showSidebarBtn ${showSidebar ? "show" : "hide"}`}
         onClick={() => {
           setShowSidebar(!showSidebar);
         }}
       >
-        <img
-          className="w-6 h-6"
-          src="https://freesvg.org/img/menu-icon.png"
-          alt="showSidebar"
-        />
+        <FontAwesomeIcon className="icon" icon={faBars}></FontAwesomeIcon>
       </div>
-      <div
-        className={`content ${
-          showSidebar ? "animate-fadeIn flex flex-col" : "hidden"
-        }`}
-      >
+      <div className={`content ${showSidebar ? "show" : "hide"}`}>
         <ThemeSelector onInput={props.onThemeChange} />
         <div className="githubStats">
           <h3>Github Stats</h3>
@@ -132,7 +118,7 @@ function ThemeSelector(props: { onInput: (selectedOption: string) => void }) {
   );
 }
 
-function HelpPopup(props: { onClosed: () => void }) {
+function HelpPopup(props: { onClosed: () => void; show: boolean }) {
   const [showStats, setShowStats] = useState(false);
   const [showStreak, setShowStreak] = useState(false);
   const [showTopLanguages, setShowTopLanguages] = useState(false);
@@ -143,7 +129,7 @@ function HelpPopup(props: { onClosed: () => void }) {
     setShowRepositories(false);
     setShowTopLanguages(false);
   };
-  return (
+  return props.show ? (
     <div className="helpPopup animate-fadeIn">
       <div className="navbar">
         <div className="topics">
@@ -200,6 +186,8 @@ function HelpPopup(props: { onClosed: () => void }) {
         <h2 className="text-xl">REPOSITORIES</h2>
       </div>
     </div>
+  ) : (
+    <></>
   );
 }
 

@@ -8,18 +8,41 @@ function App() {
   const [editorTxt, setEditorTxt] = useState("");
   const [editorTheme, setEditorTheme] = useState("dark");
   const [username, setUsername] = useState("");
+  const [editorClassName, setEditorClassName] = useState("lg:w-1/2");
+  const [previewClassName, setPreviewClassName] = useState("lg:w-1/2");
   return (
     <div className="App">
+      <SideBar onThemeChange={setEditorTheme} onUsernameChange={setUsername} />
       <div className="mainContent">
-        <Preview xhtml={editorTxt} username={username} />
+        <Preview
+          className={previewClassName}
+          xhtml={editorTxt}
+          username={username}
+          onMaximized={() => {
+            setPreviewClassName("maximized");
+            setEditorClassName("minimized");
+          }}
+          onMinimized={() => {
+            setPreviewClassName("restoreMaximized");
+            setEditorClassName("restoreMinimized");
+          }}
+        />
         <Editor
+          className={editorClassName}
           theme={editorTheme}
+          onMaximized={() => {
+            setEditorClassName("maximized");
+            setPreviewClassName("minimized");
+          }}
+          onMinimized={() => {
+            setEditorClassName("restoreMaximized");
+            setPreviewClassName("restoreMinimized");
+          }}
           onInput={(code) => {
             setEditorTxt(code);
           }}
         />
       </div>
-      <SideBar onThemeChange={setEditorTheme} onUsernameChange={setUsername} />
     </div>
   );
 }

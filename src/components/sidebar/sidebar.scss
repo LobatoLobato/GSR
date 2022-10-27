@@ -1,7 +1,7 @@
 .sidebar {
   @apply flex flex-col items-center justify-between gap-1
-   rounded-bl-sm mb-1 px-2 overflow-x-clip
-   bg-white bg-opacity-5 text-white text-center text-lg;
+   rounded-bl-sm mb-1 overflow-x-clip
+   bg-[#2e2e2e] text-white text-center text-lg;
 
   .helpPopup {
     @apply fixed top-0 left-0 w-screen h-screen bg-black 
@@ -30,6 +30,15 @@
   .showSidebarBtn {
     @apply flex items-center justify-center h-8 w-full 
      hover:bg-green-500 clickable select-none;
+    .icon {
+      @apply text-2xl text-gray-300;
+    }
+  }
+  .showSidebarBtn.show {
+    @apply absolute z-10;
+  }
+  .showSidebarBtn.hide {
+    @apply relative rounded-br-sm px-2;
   }
   .content {
     @apply items-center justify-between gap-1
@@ -79,5 +88,27 @@
         }
       }
     }
+  }
+  .content.show {
+    @apply animate-fadeIn flex flex-col;
+  }
+  .content.hide {
+    @apply hidden;
+  }
+}
+.sidebar.show {
+  @apply fixed z-10 left-0 w-2/12 
+  pb-2 animate-grow px-2;
+}
+.sidebar.hide {
+  @apply fixed left-0 z-10 w-fit h-fit 
+  animate-shrinkSideBar hover:bg-green-500;
+}
+@media (min-width: 1024px) {
+  .sidebar.show {
+    @apply relative;
+  }
+  .sidebar.hide {
+    @apply animate-shrinkSideBar-lg;
   }
 }

@@ -6,15 +6,23 @@ import * as themes from "@uiw/codemirror-themes-all";
 import { html } from "@codemirror/lang-html";
 import { htmlFormatter } from "../../common/utils";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faWindowMaximize } from "@fortawesome/free-regular-svg-icons";
+import { faWindowMinimize } from "@fortawesome/free-solid-svg-icons";
+
 interface Props {
   onInput(code: string): void;
+  onMaximized: () => void;
+  onMinimized: () => void;
   theme?: string;
+  className?: string;
 }
 const basicSetup: BasicSetupOptions = {
   foldGutter: true,
 };
 export default function Editor(props: Props) {
   const [created, setCreated] = useState(false);
+  const [maximized, setMaximized] = useState(false);
   const [timeoutId, setTimeoutId] = useState({
     sendCode: 0,
     keyboardEvent: 0,
@@ -68,8 +76,29 @@ export default function Editor(props: Props) {
   }, [props, created, setCreated]);
 
   return (
-    <div className="editorContainer">
-      <h2 className="select-none h-8"> Editor </h2>
+    <div className={`editorContainer ${props.className}`}>
+      <div className=" relative flex h-8 w-full px-1 items-center justify-between">
+        <h2 className="absolute left-1/2 -translate-x-1/2 select-none ">
+          {" "}
+          Editor{" "}
+        </h2>
+        <div
+          className="absolute left-[97%] -translate-x-full clickable"
+          onClick={() => {
+            if (maximized) {
+              props.onMinimized();
+            } else {
+              props.onMaximized();
+            }
+            setMaximized(!maximized);
+          }}
+        >
+          <FontAwesomeIcon
+            className="text-white"
+            icon={maximized ? faWindowMinimize : faWindowMaximize}
+          ></FontAwesomeIcon>
+        </div>
+      </div>
       <CodeMirror
         extensions={[
           html({
