@@ -1,31 +1,43 @@
 .sidebar {
-  @apply text-center text-lg text-white 
-  flex flex-col items-center gap-1 
-  bg-opacity-5 bg-white rounded-bl-md mb-1;
+  @apply flex flex-col items-center justify-between gap-1
+   rounded-bl-sm mb-1 px-2 overflow-x-clip
+   bg-white bg-opacity-5 text-white text-center text-lg;
 
   .showSidebarBtn {
     @apply flex items-center justify-center h-8 w-full 
-     hover:bg-green-500 clickable px-2;
+     hover:bg-green-500 clickable select-none;
   }
+  .content {
+    @apply items-center justify-between gap-1
+    overflow-x-clip h-full;
 
-  .themeSelector {
-    @apply flex flex-col items-center h-2/5 w-full;
-    .dark {
-      @apply bg-[#222] text-white;
-    }
-    .light {
-      @apply text-[#222] bg-white;
-    }
-    .menu {
-      @apply h-full rounded-b border-2 border-solid border-green-900
+    .themeSelector {
+      @apply flex flex-col items-center h-2/5 w-full mt-8;
+      .dark {
+        @apply bg-[#222] text-white;
+      }
+      .light {
+        @apply text-[#222] bg-white;
+      }
+      .menu {
+        @apply h-full rounded-b border-2 border-solid border-green-900
       scrollbar-thin scrollbar-thumb-green-700 scrollbar-track-gray-700;
-      overflow: auto;
+        overflow: auto;
+      }
+      .Dropdown-option {
+        @apply hover:bg-gray-500 select-none;
+      }
+      .Dropdown-placeholder {
+        @apply w-full hover:bg-green-500 rounded select-none clickable;
+      }
     }
-    .Dropdown-option {
-      @apply hover:bg-gray-500 select-none;
-    }
-    .Dropdown-placeholder {
-      @apply w-full hover:bg-green-500 rounded select-none clickable;
+    .githubStats {
+      @apply flex flex-col bg-[#222] justify-center items-center px-2 text-center
+     overflow-clip whitespace-nowrap;
+
+      label {
+        @apply w-full;
+      }
     }
   }
 }

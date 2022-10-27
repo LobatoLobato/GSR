@@ -4,19 +4,23 @@ import DropDown from "react-dropdown";
 
 interface Props {
   onThemeChange: (theme: string) => void;
+  onUsernameChange?: (username: string) => void;
 }
 export default function SideBar(props: Props) {
   const [showSidebar, setShowSidebar] = useState(false);
+  const [timeoutId, setTimeoutId] = useState(0);
   return (
     <div
       className={`sidebar ${
         showSidebar
-          ? "fixed right-0 lg:relative w-2/12 pb-2"
-          : "fixed right-0 w-fit h-fit"
+          ? "fixed right-0 lg:relative w-2/12 pb-2 animate-grow"
+          : "fixed right-0  w-fit h-fit animate-shrinkSideBar hover:bg-green-500"
       }`}
     >
       <div
-        className={`showSidebarBtn ${showSidebar ? "" : "rounded-bl-sm"}`}
+        className={`showSidebarBtn ${
+          showSidebar ? "absolute z-50" : "rounded-bl-sm"
+        }`}
         onClick={() => {
           setShowSidebar(!showSidebar);
         }}
@@ -27,13 +31,50 @@ export default function SideBar(props: Props) {
           alt="showSidebar"
         />
       </div>
-      {showSidebar ? (
-        <div className="w-full h-full">
-          <ThemeSelector onInput={props.onThemeChange} />
+      <div
+        className={`content ${
+          showSidebar ? "animate-fadeIn flex flex-col" : "hidden"
+        }`}
+      >
+        <ThemeSelector onInput={props.onThemeChange} />
+        <div className="githubStats">
+          <h3>Github Stats</h3>
+          <label className="text-sm" htmlFor="username">
+            Username
+          </label>
+          <input
+            id="username"
+            type="text"
+            className="w-11/12 text-black text-sm text-center"
+            onInput={(ev) => {
+              const username = ev.currentTarget.value;
+              window.clearInterval(timeoutId);
+              const id = window.setTimeout(() => console.log(username), 1000);
+              setTimeoutId(id);
+            }}
+          />
+
+          <p className="text-sm">Live Preview</p>
+          <div className="flex flex-col items-start">
+            <div>
+              <input id="stats" type="checkbox" />
+              <label htmlFor="stats">Stats</label>
+            </div>
+            <div>
+              <input id="streak" type="checkbox" />
+              <label htmlFor="streak">Streak</label>
+            </div>
+            <div>
+              <input id="toplangs" type="checkbox" />
+              <label htmlFor="toplangs">Top Languages</label>
+            </div>
+            <div>
+              <input id="repos" type="checkbox" />
+              <label htmlFor="repos">Repositories</label>
+            </div>
+          </div>
         </div>
-      ) : (
-        ""
-      )}
+      </div>
     </div>
   );
 }

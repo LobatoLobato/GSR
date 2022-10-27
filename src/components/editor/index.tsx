@@ -69,7 +69,7 @@ export default function Editor(props: Props) {
 
   return (
     <div className="editorContainer">
-      <h2 className="select-none"> Editor </h2>
+      <h2 className="select-none h-8"> Editor </h2>
       <CodeMirror
         extensions={[
           html({
