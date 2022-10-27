@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import "./sidebar.scss";
 import DropDown from "react-dropdown";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 interface Props {
   onThemeChange: (theme: string) => void;
-  onUsernameChange?: (username: string) => void;
+  onUsernameChange: (username: string) => void;
 }
 export default function SideBar(props: Props) {
   const [showSidebar, setShowSidebar] = useState(false);
   const [timeoutId, setTimeoutId] = useState(0);
+  const [showHelp, setShowHelp] = useState(false);
   return (
     <div
       className={`sidebar ${
@@ -17,9 +19,14 @@ export default function SideBar(props: Props) {
           : "fixed right-0  w-fit h-fit animate-shrinkSideBar hover:bg-green-500"
       }`}
     >
+      {showHelp ? (
+        <HelpPopup onClosed={() => setShowHelp(false)}></HelpPopup>
+      ) : (
+        ""
+      )}
       <div
         className={`showSidebarBtn ${
-          showSidebar ? "absolute z-50" : "rounded-bl-sm"
+          showSidebar ? "absolute z-10" : "rounded-bl-sm"
         }`}
         onClick={() => {
           setShowSidebar(!showSidebar);
@@ -49,30 +56,17 @@ export default function SideBar(props: Props) {
             onInput={(ev) => {
               const username = ev.currentTarget.value;
               window.clearInterval(timeoutId);
-              const id = window.setTimeout(() => console.log(username), 1000);
+              const id = window.setTimeout(
+                () => props.onUsernameChange(username),
+                1000,
+              );
               setTimeoutId(id);
             }}
           />
-
-          <p className="text-sm">Live Preview</p>
-          <div className="flex flex-col items-start">
-            <div>
-              <input id="stats" type="checkbox" />
-              <label htmlFor="stats">Stats</label>
-            </div>
-            <div>
-              <input id="streak" type="checkbox" />
-              <label htmlFor="streak">Streak</label>
-            </div>
-            <div>
-              <input id="toplangs" type="checkbox" />
-              <label htmlFor="toplangs">Top Languages</label>
-            </div>
-            <div>
-              <input id="repos" type="checkbox" />
-              <label htmlFor="repos">Repositories</label>
-            </div>
-          </div>
+          <button className="helpBtn" onClick={() => setShowHelp(true)}>
+            {" "}
+            HELP{" "}
+          </button>
         </div>
       </div>
     </div>
@@ -135,5 +129,35 @@ function ThemeSelector(props: { onInput: (selectedOption: string) => void }) {
         }}
       />
     </div>
+  );
+}
+
+function HelpPopup(props: { onClosed: () => void }) {
+  return (
+    <div className="helpPopup animate-fadeIn">
+      <div className="navbar">
+        <p>Help</p>
+        <button onClick={() => props.onClosed()}>
+          <FontAwesomeIcon
+            className="icon"
+            icon={faCircleXmark}
+          ></FontAwesomeIcon>
+        </button>
+      </div>
+      <div className="topics">
+        <h2>Stats</h2>
+        <h2>Streak</h2>
+        <h2>Top Languages</h2>
+        <h2>Repositories</h2>
+      </div>
+    </div>
+  );
+}
+
+function ToolTip(props: { text: string }) {
+  return (
+    <p className="absolute top-0 z-20 select-none hidden bg-gray-800 px-2 box-border -left-2 w-[300%] group-hover:flex">
+      {props.text}
+    </p>
   );
 }

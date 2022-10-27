@@ -3,6 +3,36 @@
    rounded-bl-sm mb-1 px-2 overflow-x-clip
    bg-white bg-opacity-5 text-white text-center text-lg;
 
+  .helpPopup {
+    @apply fixed top-0 left-0 w-screen h-screen bg-black 
+    bg-opacity-20 backdrop-blur-md z-50 overflow-auto;
+    .navbar {
+      @apply relative flex px-8 text-2xl h-[5%] items-center;
+      p {
+        @apply absolute left-1/2 -translate-x-1/2 select-none;
+      }
+      button {
+        @apply relative left-full;
+      }
+      .icon {
+        @apply text-red-600 hover:text-red-500;
+      }
+    }
+    .topics {
+      @apply flex justify-between overflow-clip p-4 gap-2;
+      h2 {
+        @apply bg-black bg-opacity-50 rounded-full px-4 clickable
+        select-none hover:bg-opacity-30 hover:bg-white;
+      }
+      .topic {
+        @apply flex flex-col px-2 overflow-clip
+        border-2 border-gray-300 border-opacity-5 rounded-lg;
+        p {
+          @apply text-base;
+        }
+      }
+    }
+  }
   .showSidebarBtn {
     @apply flex items-center justify-center h-8 w-full 
      hover:bg-green-500 clickable select-none;
@@ -32,11 +62,27 @@
       }
     }
     .githubStats {
-      @apply flex flex-col bg-[#222] justify-center items-center px-2 text-center
-     overflow-clip whitespace-nowrap;
+      @apply flex flex-col bg-[#222] justify-center items-center p-2 text-center
+     overflow-clip whitespace-nowrap gap-4;
 
       label {
         @apply w-full;
+      }
+
+      .helpBtn {
+        @apply rounded-full px-4 bg-slate-300 text-black opacity-80 
+        hover:opacity-100;
+      }
+      .helpBtn:active {
+        animation: AnimateOpacity 0.2s;
+      }
+      @keyframes AnimateOpacity {
+        0% {
+          opacity: 0.8;
+        }
+        100% {
+          opacity: 1;
+        }
       }
     }
   }
