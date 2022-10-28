@@ -109,6 +109,12 @@ export default function Editor(props: Props) {
               repolanguage: {},
               repostarcount: {},
               repoForkCount: {},
+              gittoplangs: { attrs: { size: null } },
+              lang: { attrs: { position: null } },
+              langName: {},
+              langPercentage: {},
+              gitstreak: {},
+              gitstats: {},
             },
           }),
         ]}
@@ -126,8 +132,7 @@ export default function Editor(props: Props) {
   );
 }
 
-const exampleCode = `
-<style>
+const exampleCode = `<style>
   @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
   @keyframes AnimationName {
     0% {
@@ -203,14 +208,73 @@ const exampleCode = `
     height: 100%;
     padding-bottom: 5px;
   }
+  .topLangs {
+    display: flex;
+  }
+  .langsContainer {
+    display: grid;
+    grid-template-columns: 6fr 6fr 6fr;
+    justify-content: space-between;
+    align-items: start;
+    margin: auto;
+    padding: 16px;
+    background: #00000040;
+    border: 3px solid black;
+    border-radius: 8px;
+    gap: 4px;
+  }
+  .langContainer p{
+    background: transparent;
+  }
+  .langContainer .name {
+    background: #FFFFFF80;
+    border-radius: 4px;
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+  .langContainer .percentage {
+    font-size: 16px;
+  }
 </style>
 
 <div class="container">
   <p>Example Code</p>
   <p>Hello World</p>
   <div>
+    <h2>Top Languages:</h2>
+    <br />
+    <div class="topLangs">
+      <gittoplangs size="6" class="langsContainer">
+        <lang class="langContainer" position="0">
+          <langName class="name"></langName>
+          <langPercentage class="percentage"></langPercentage>
+        </lang>
+        <lang class="langContainer" position="1">
+          <langName class="name"></langName>
+          <langPercentage class="percentage"></langPercentage>
+        </lang>
+        <lang class="langContainer" position="2">
+          <langName class="name"></langName>
+          <langPercentage class="percentage"></langPercentage>
+        </lang>
+        <lang class="langContainer" position="3">
+          <langName class="name"></langName>
+          <langPercentage class="percentage"></langPercentage>
+        </lang>
+        <lang class="langContainer" position="4">
+          <langName class="name"></langName>
+          <langPercentage class="percentage"></langPercentage>
+        </lang>
+        <lang class="langContainer" position="5">
+          <langName class="name"></langName>
+          <langPercentage class="percentage"></langPercentage>
+        </lang>
+      </gittoplangs>
+    </div>
+  </div>
+  <div>
     <h2>Repositories:</h2>
-    <br>
+    <br />
     <div class="repositories">
       <gitrepo name="0" class="repoContainer">
         <reponame showOwner class="reponame"></reponame>
@@ -273,150 +337,4 @@ const exampleCode = `
   </p>
 </div>
 
-
 `;
-
-// const exampleCode2 = `
-/* <style>
-  @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
-  @keyframes AnimationName {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
-  }
-  .container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    font-family: "Poppins", sans-serif;
-    width: 100%;
-    height: 94vh;
-    text-align: center;
-    font-size: 20px;
-    color: white;
-    background: linear-gradient(270deg, #27a081, #a07527, #a02727);
-    background-size: 600% 600%;
-    animation: AnimationName 2s ease infinite;
-  }
-  .container p {
-    background: #00000020;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
-  a {
-    height: 20px;
-  }
-  a img {
-    height: 100%;
-  }
-  .repositories {
-    display: flex;
-  }
-  .repoContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: start;
-    width: fit-content;
-    margin: auto;
-    padding: 16px;
-    background: #00000040;
-    border: 3px solid black;
-    border-radius: 8px;
-    gap: 4px;
-  }
-  .repoContainer p {
-    all: unset;
-  }
-  .repoContainer .reponame {
-    color: yellow;
-  }
-  .repoContainer .counters {
-    display: flex;
-    gap: 4px;
-    align-items: center;
-    height: 20px;
-  }
-  .repoContainer .counters img {
-    width: 20px;
-    height: 20px;
-  }
-  .repoContainer .counters p {
-    height: 100%;
-    padding-bottom: 5px;
-  }
-</style>
-
-<div class="container">
-  <p>Example Code</p>
-  <p>Hello World</p>
-  <div class="repositories">
-    <gitrepo name="avrio" class="repoContainer">
-      <reponame showOwner class="reponame"></reponame>
-      <repodescription></repodescription>
-      <repolanguage></repolanguage>
-      <div class="counters">
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/FA_star.svg/1024px-FA_star.svg.png"
-        />
-        <repostarcount></repostarcount>
-      </div>
-      <div class="counters">
-        <img
-          src="https://user-images.githubusercontent.com/17777237/54873012-40fa5b00-4dd6-11e9-98e0-cc436426c720.png"
-        />
-        <repoforkCount></repoforkCount>
-      </div>
-    </gitrepo>
-    <gitrepo name="github-styledreadme-creator" class="repoContainer">
-      <reponame class="reponame"></reponame>
-      <repodescription></repodescription>
-      <repolanguage></repolanguage>
-      <div class="counters">
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/FA_star.svg/1024px-FA_star.svg.png"
-        />
-        <repostarcount></repostarcount>
-      </div>
-      <div class="counters">
-        <img
-          src="https://user-images.githubusercontent.com/17777237/54873012-40fa5b00-4dd6-11e9-98e0-cc436426c720.png"
-        />
-        <repoforkCount></repoforkCount>
-      </div>
-    </gitrepo>
-    <gitrepo name="c-cpp-compilerrunner" class="repoContainer">
-      <reponame showOwner class="reponame"></reponame>
-      <repodescription></repodescription>
-      <repolanguage></repolanguage>
-      <div class="counters">
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/FA_star.svg/1024px-FA_star.svg.png"
-        />
-        <repostarcount></repostarcount>
-      </div>
-      <div class="counters">
-        <img
-          src="https://user-images.githubusercontent.com/17777237/54873012-40fa5b00-4dd6-11e9-98e0-cc436426c720.png"
-        />
-        <repoforkCount></repoforkCount>
-      </div>
-    </gitrepo>
-  </div>
-  <p>
-    More info on:
-    <a href="https://github.com/LobatoLobato/github-styledreadme-creator">
-      <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" />
-    </a>
-  </p>
-</div> */
-
-// `
