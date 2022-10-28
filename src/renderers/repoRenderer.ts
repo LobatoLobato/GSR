@@ -1,14 +1,5 @@
 import { Repository, RepositoryList } from "../fetchers/repoFetcher";
-
-function getAttrValue(openingTag: string, attrName: string): string | null {
-  const attrValueRegexp = new RegExp(`(?<=${attrName}=").+?(?=")`, "i");
-  const attrValue = openingTag.match(attrValueRegexp);
-  return attrValue ? attrValue.toString() : null;
-}
-
-function getBooleanAttr(openingTag: string, attrName: string): boolean {
-  return openingTag.match(attrName) ? true : false;
-}
+import { getAttrValue, getBooleanAttr } from "./utils";
 
 function renderRepo(tag: string, repoList: RepositoryList) {
   const openingTag = tag.match(/<gitrepo\s?(\s|.)*?>/i)!.toString();
@@ -32,11 +23,12 @@ function renderRepo(tag: string, repoList: RepositoryList) {
   return `<div ${className ? `class="${className}"` : ""}>${template}</div>`;
 }
 
-const nameTag = /<reponame(\s|.)*?>(\s|.)*?<\/reponame>/gi;
-const descriptionTag = /<repodescription(\s|.)*?>(\s|.)*?<\/repodescription>/gi;
-const languageTag = /<repolanguage(\s|.)*?>(\s|.)*?<\/repolanguage>/gi;
-const starCountTag = /<repostarcount(\s|.)*?>(\s|.)*?<\/repostarcount>/gi;
-const forkCountTag = /<repoforkcount(\s|.)*?>(\s|.)*?<\/repoforkcount>/gi;
+const nameTag = /<reponame(\s|.)*?>(\s|.)*?<\/reponame\s*?>/gi;
+const descriptionTag =
+  /<repodescription(\s|.)*?>(\s|.)*?<\/repodescription\s*?>/gi;
+const languageTag = /<repolanguage(\s|.)*?>(\s|.)*?<\/repolanguage\s*?>/gi;
+const starCountTag = /<repostarcount(\s|.)*?>(\s|.)*?<\/repostarcount\s*?>/gi;
+const forkCountTag = /<repoforkcount(\s|.)*?>(\s|.)*?<\/repoforkcount\s*?>/gi;
 
 const nameTemplate = (tag: string, repo: Repository) => {
   const nameClass = getAttrValue(tag, "class");

@@ -8,8 +8,9 @@ function App() {
   const [editorTxt, setEditorTxt] = useState("");
   const [editorTheme, setEditorTheme] = useState("dark");
   const [username, setUsername] = useState("");
-  const [editorClassName, setEditorClassName] = useState("lg:w-1/2");
-  const [previewClassName, setPreviewClassName] = useState("lg:w-1/2");
+  const [editorClassName, setEditorClassName] = useState("lg:w-1/2 w-full");
+  const [previewClassName, setPreviewClassName] = useState("lg:w-1/2 w-full");
+
   return (
     <div className="App">
       <SideBar onThemeChange={setEditorTheme} onUsernameChange={setUsername} />

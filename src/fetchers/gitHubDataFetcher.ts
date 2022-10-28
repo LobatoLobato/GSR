@@ -58,8 +58,10 @@ class GitHubDataFetcher {
   constructor() {
     for (let i = 0; i < 10; i++) {
       this._topLangs[i.toString()] = {
-        name: `lang${i}Name`,
-        color: `#FFFFFF`,
+        name: `lang${i}`,
+        color: `#${Math.trunc(Math.random() * 9)}${Math.trunc(
+          Math.random() * 9,
+        )}${Math.trunc(Math.random() * 9)}`,
         size: i + 1,
       };
       this._repos[i.toString()] = {
@@ -67,7 +69,12 @@ class GitHubDataFetcher {
         forkCount: Math.trunc(Math.random() * 100),
         name: `repo${i}`,
         nameWithOwner: `owner/repo${i}`,
-        primaryLanguage: { name: `LangName`, color: "#FFFFFF" },
+        primaryLanguage: {
+          name: `LangName`,
+          color: `#${Math.trunc(Math.random() * 9)}${Math.trunc(
+            Math.random() * 9,
+          )}${Math.trunc(Math.random() * 9)}`,
+        },
         stargazerCount: Math.trunc(Math.random() * 100),
       };
     }

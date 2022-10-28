@@ -10,25 +10,35 @@ interface Props {
 }
 export default function SideBar(props: Props) {
   const [showSidebar, setShowSidebar] = useState(false);
+  const [sidebarClassName, setSidebarClassName] = useState(
+    "fixed left-0 z-10 w-fit h-fit hover:bg-green-500",
+  );
+  const [showSidebarBtnClassName, setShowSidebarBtnClassName] = useState(
+    "relative rounded-br-sm px-2",
+  );
+  const [contentClassName, setContentClassName] = useState("hidden");
   const [timeoutId, setTimeoutId] = useState(0);
   const [showHelp, setShowHelp] = useState(false);
-
   return (
-    <div className={`sidebar ${showSidebar ? "show" : "hide"}`}>
+    <div className={`sidebar ${sidebarClassName}`}>
       <HelpPopup
         show={showHelp}
         onClosed={() => setShowHelp(false)}
       ></HelpPopup>
 
       <div
-        className={`showSidebarBtn ${showSidebar ? "show" : "hide"}`}
+        className={`showSidebarBtn ${showSidebarBtnClassName}`}
         onClick={() => {
+          const className = !showSidebar ? "show" : "hide";
+          setShowSidebarBtnClassName(className);
+          setSidebarClassName(className);
+          setContentClassName(className);
           setShowSidebar(!showSidebar);
         }}
       >
         <FontAwesomeIcon className="icon" icon={faBars}></FontAwesomeIcon>
       </div>
-      <div className={`content ${showSidebar ? "show" : "hide"}`}>
+      <div className={`content ${contentClassName}`}>
         <ThemeSelector onInput={props.onThemeChange} />
         <div className="githubStats">
           <h3>Github Stats</h3>
