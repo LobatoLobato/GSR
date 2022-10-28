@@ -210,24 +210,35 @@ const exampleCode = `<style>
   }
   .topLangs {
     display: flex;
+    flex-direction: column;
+    padding: 16px;
+    background: #00000040;
+    border: 3px solid black;
+    border-radius: 8px;
+    width: fit-content;
+    margin: auto;
+    gap: 8px;
+  }
+  .topLangs .langbarall {
+    display: flex;
+    overflow: hidden;
+    height: 8px;
+    background: white;
+    width: 100%;
+    border-radius: 4px;
   }
   .langsContainer {
     display: grid;
     grid-template-columns: 6fr 6fr 6fr;
     justify-content: space-between;
     align-items: start;
-    margin: auto;
-    padding: 16px;
-    background: #00000040;
-    border: 3px solid black;
-    border-radius: 8px;
     gap: 4px;
   }
-  .langContainer p{
+  .langContainer p {
     background: transparent;
   }
   .langContainer .name {
-    background: #FFFFFF80;
+    background: #ffffff80;
     border-radius: 4px;
     padding-left: 4px;
     padding-right: 4px;
@@ -235,42 +246,68 @@ const exampleCode = `<style>
   .langContainer .percentage {
     font-size: 16px;
   }
+  .langContainer .langbar {
+    overflow: hidden;
+    height: 8px;
+    background: white;
+    border-radius: 4px;
+  }
 </style>
 
 <div class="container">
   <p>Example Code</p>
   <p>Hello World</p>
   <div>
-    <h2>Top Languages:</h2>
-    <br />
-    <div class="topLangs">
-      <gittoplangs size="6" class="langsContainer">
+    <gittoplangs size="6" class="topLangs">
+      <h2>Most Used Languages:</h2>
+      <div class="langbarall">
+        <langbarall></langbarall>
+      </div>
+      <div class="langsContainer">
         <lang class="langContainer" position="0">
           <langName class="name"></langName>
           <langPercentage class="percentage"></langPercentage>
+          <div class="langbar">
+            <langbar></langbar>
+          </div>
         </lang>
         <lang class="langContainer" position="1">
           <langName class="name"></langName>
           <langPercentage class="percentage"></langPercentage>
+          <div class="langbar">
+            <langbar></langbar>
+          </div>
         </lang>
         <lang class="langContainer" position="2">
           <langName class="name"></langName>
           <langPercentage class="percentage"></langPercentage>
+          <div class="langbar">
+            <langbar></langbar>
+          </div>
         </lang>
         <lang class="langContainer" position="3">
           <langName class="name"></langName>
           <langPercentage class="percentage"></langPercentage>
+          <div class="langbar">
+            <langbar></langbar>
+          </div>
         </lang>
         <lang class="langContainer" position="4">
           <langName class="name"></langName>
           <langPercentage class="percentage"></langPercentage>
+          <div class="langbar">
+            <langbar></langbar>
+          </div>
         </lang>
         <lang class="langContainer" position="5">
           <langName class="name"></langName>
           <langPercentage class="percentage"></langPercentage>
+          <div class="langbar">
+            <langbar></langbar>
+          </div>
         </lang>
-      </gittoplangs>
-    </div>
+      </div>
+    </gittoplangs>
   </div>
   <div>
     <h2>Repositories:</h2>
@@ -336,4 +373,5 @@ const exampleCode = `<style>
     </a>
   </p>
 </div>
+
 `;

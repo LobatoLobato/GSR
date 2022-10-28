@@ -58,11 +58,11 @@ class GitHubDataFetcher {
   constructor() {
     for (let i = 0; i < 10; i++) {
       this._topLangs[i.toString()] = {
-        name: `lang${i}`,
+        name: `Lang${i}`,
         color: `#${Math.trunc(Math.random() * 9)}${Math.trunc(
           Math.random() * 9,
         )}${Math.trunc(Math.random() * 9)}`,
-        size: i + 1,
+        size: 10 - i,
       };
       this._repos[i.toString()] = {
         description: `description`,

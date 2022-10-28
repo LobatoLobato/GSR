@@ -23,7 +23,7 @@ function renderTopLanguages(tag: string, langList: LanguageMap) {
       ?.at(0);
   if (!tagChildren) return "Standard Pattern";
 
-  const list = Object.entries(langList)
+  let list = Object.entries(langList)
     .slice(0, parseInt(listSize))
     .map((curr) => {
       return {
@@ -39,7 +39,6 @@ function renderTopLanguages(tag: string, langList: LanguageMap) {
   for (const lang of list) {
     lang.percentage = ((lang.size * 100) / totalSize).toFixed(2);
   }
-
   const template = createTemplate(tagChildren, list);
 
   return tag
@@ -51,6 +50,8 @@ const langTag = /<lang(\s|.)*?>(\s|.)*?<\/lang\s*?>/gi;
 const nameTag = /<langname(\s|.)*?>(\s|.)*?<\/langname\s*?>/gi;
 const percentageTag =
   /<langpercentage(\s|.)*?>(\s|.)*?<\/langpercentage\s*?>/gi;
+const barTag = /<langbar(?!\w)(\s|.)*?>(\s|.)*?<\/langbar\s*?>/gi;
+const barAllTag = /<langbarall(\s|.)*?>(\s|.)*?<\/langbarall\s*?>/gim;
 
 const nameTemplate = (tag: string, lang: Lang) => {
   const nameClass = getAttrValue(tag, "class");
@@ -67,20 +68,38 @@ const percentageTemplate = (tag: string, lang: Lang) => {
 
   return `<p ${classAttr}>${lang.percentage}%</p>`;
 };
+const barTemplate = (tag: string, lang: Lang) => {
+  const barClass = getAttrValue(tag, "class");
+  const classAttr = barClass ? `class="${barClass}"` : "";
 
+  return `<p ${classAttr} style="height: 100%; width: ${lang.percentage}%; background:${lang.color};"></p>`;
+};
+const barAllTemplate = (tag: string, langList: Lang[]) => {
+  const barClass = getAttrValue(tag, "class");
+  const classAttr = barClass ? `class="${barClass}"` : "";
+  console.log("oi oi oi oi");
+  const bars = langList.reduce((acc, curr) => {
+    const barPortion = `<p ${classAttr} style="height: 100%; width: ${curr.percentage}%; background:${curr.color};"></p>`;
+    return acc + barPortion;
+  }, "");
+  return bars;
+};
 function createTemplate(tagContent: string, langList: Lang[]): string {
-  const template = tagContent.replace(langTag, (tag) => {
-    const langPosition = getAttrValue(tag, "position");
-    if (!langPosition) return "Language position not defined";
-    const lang = langList[parseInt(langPosition)];
-    if (!lang) return "Language position exceeds language list's size";
+  const template = tagContent
+    .replace(langTag, (tag) => {
+      const langPosition = getAttrValue(tag, "position");
+      if (!langPosition) return "Language position not defined";
+      const lang = langList[parseInt(langPosition)];
+      if (!lang) return "Language position exceeds language list's size";
 
-    return tag
-      .replace(/lang(?!\w)/gi, "div") // Replaces <lang> with <div>
-      .replace(/position="\w+"/gi, "") // Removes position attribute
-      .replace(nameTag, (tag) => nameTemplate(tag, lang)) // Replaces <langname> tags with the corresponding template
-      .replace(percentageTag, (tag) => percentageTemplate(tag, lang)); // Replaces <langpercentage> tags with the corresponding template
-  });
+      return tag
+        .replace(/lang(?!\w)/gi, "div") // Replaces <lang> with <div>
+        .replace(/position="\w+"/gi, "") // Removes position attribute
+        .replace(nameTag, (tag) => nameTemplate(tag, lang)) // Replaces <langname> tags with the corresponding template
+        .replace(percentageTag, (tag) => percentageTemplate(tag, lang)) // Replaces <langpercentage> tags with the corresponding template
+        .replace(barTag, (tag) => barTemplate(tag, lang)); // Replaces <langbar> tags with the corresponding template
+    })
+    .replace(barAllTag, (tag) => barAllTemplate(tag, langList)); // Replaces <langbarall> tags with the corresponding template
 
   return template;
 }
