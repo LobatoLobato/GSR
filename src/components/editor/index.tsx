@@ -151,7 +151,7 @@ const exampleCode = `<style>
     justify-content: space-between;
     font-family: "Poppins", sans-serif;
     width: 100%;
-    height: 94vh;
+    height: 93.6vh;
     text-align: center;
     font-size: 20px;
     color: white;
@@ -336,5 +336,4 @@ const exampleCode = `<style>
     </a>
   </p>
 </div>
-
 `;

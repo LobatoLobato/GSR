@@ -28,7 +28,7 @@
     }
   }
   .showSidebarBtn {
-    @apply flex items-center justify-center h-8 w-full 
+    @apply flex items-center justify-center h-8 w-full text-center 
      hover:bg-green-500 clickable select-none;
     .icon {
       @apply text-2xl text-gray-300;
@@ -66,15 +66,23 @@
     }
     .githubStats {
       @apply flex flex-col bg-[#222] justify-center items-center p-2 text-center
-     overflow-clip whitespace-nowrap gap-4;
+     overflow-clip whitespace-nowrap gap-3;
 
+      .usernameInput {
+        @apply flex flex-col justify-center items-center text-center
+        overflow-clip gap-2;
+      }
       label {
         @apply w-full;
       }
-
+      .repoList {
+        @apply h-40 overflow-auto text-xs bg-white bg-opacity-5 whitespace-normal w-full;
+        @apply scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-black;
+        @apply overflow-y-auto overflow-x-clip;
+      }
       .helpBtn {
         @apply rounded-full px-4 bg-slate-300 text-black opacity-80 
-        hover:opacity-100;
+        hover:opacity-100 select-none;
       }
       .helpBtn:active {
         animation: AnimateOpacity 0.2s;
@@ -97,7 +105,7 @@
   }
 }
 .sidebar.show {
-  @apply fixed z-10 left-0 w-2/12 
+  @apply fixed z-10 left-0 md:w-2/12 w-full h-full
   pb-2 animate-grow px-2;
 }
 .sidebar.hide {

@@ -7,12 +7,12 @@ interface GitFetchOptions {
   username: string;
 }
 
-export type GitHubData = {
+export interface GitHubData {
   stats: GithubStats;
   streak: StreakInfo;
   topLangs: LanguageMap;
   repos: RepositoryList;
-};
+}
 
 async function fetchGithubData(options: GitFetchOptions): Promise<GitHubData> {
   const streakAsync = fetchStreak(options.username);

@@ -20,6 +20,7 @@ interface Props {
   onMaximized: () => void;
   onMinimized: () => void;
   className?: string;
+  onFetch?: (GitHubData: GitHubData) => void;
 }
 
 export default function Preview(props: Props) {
@@ -29,9 +30,12 @@ export default function Preview(props: Props) {
   const [maximized, setMaximized] = useState(false);
   useEffect(() => {
     if (props.username) {
-      fetchGithubData({ username: props.username }).then((data) =>
-        setGithubData(data),
-      );
+      fetchGithubData({ username: props.username }).then((data) => {
+        setGithubData(data);
+        if (props.onFetch) {
+          props.onFetch(data);
+        }
+      });
     }
   }, [props.username]);
 

@@ -8,7 +8,7 @@
 
     .xhtmlContainer {
       @apply scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-black;
-      @apply overflow-auto;
+      @apply overflow-y-auto overflow-x-clip;
     }
   }
 }

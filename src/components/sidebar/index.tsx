@@ -2,11 +2,18 @@ import { useEffect, useState } from "react";
 import "./sidebar.scss";
 import DropDown from "react-dropdown";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
+import {
+  faCircleXmark,
+  faSquareCaretDown,
+  faSquareCaretUp,
+} from "@fortawesome/free-regular-svg-icons";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { RepositoryList } from "../../fetchers/repoFetcher";
+
 interface Props {
   onThemeChange: (theme: string) => void;
   onUsernameChange: (username: string) => void;
+  repoList?: RepositoryList;
 }
 export default function SideBar(props: Props) {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -25,7 +32,6 @@ export default function SideBar(props: Props) {
         show={showHelp}
         onClosed={() => setShowHelp(false)}
       ></HelpPopup>
-
       <div
         className={`showSidebarBtn ${showSidebarBtnClassName}`}
         onClick={() => {
@@ -42,23 +48,26 @@ export default function SideBar(props: Props) {
         <ThemeSelector onInput={props.onThemeChange} />
         <div className="githubStats">
           <h3>Github Stats</h3>
-          <label className="text-sm" htmlFor="username">
-            Username
-          </label>
-          <input
-            id="username"
-            type="text"
-            className="w-11/12 text-black text-sm text-center"
-            onInput={(ev) => {
-              const username = ev.currentTarget.value;
-              window.clearInterval(timeoutId);
-              const id = window.setTimeout(
-                () => props.onUsernameChange(username),
-                1000,
-              );
-              setTimeoutId(id);
-            }}
-          />
+          <div className="usernameInput">
+            <label className="text-sm" htmlFor="username">
+              Username
+            </label>
+            <input
+              id="username"
+              type="text"
+              className="w-11/12 text-black text-sm text-center"
+              onInput={(ev) => {
+                const username = ev.currentTarget.value;
+                window.clearInterval(timeoutId);
+                const id = window.setTimeout(
+                  () => props.onUsernameChange(username),
+                  1000,
+                );
+                setTimeoutId(id);
+              }}
+            />
+          </div>
+          <RepoList list={props.repoList}></RepoList>
           <button className="helpBtn" onClick={() => setShowHelp(true)}>
             {" "}
             HELP{" "}
@@ -127,7 +136,71 @@ function ThemeSelector(props: { onInput: (selectedOption: string) => void }) {
     </div>
   );
 }
-
+function RepoList(props: { list: RepositoryList | undefined }) {
+  const [showList, setShowList] = useState(false);
+  return (
+    <div className="flex flex-col gap-2 w-full">
+      <div className="flex justify-between px-1 items-center text-center">
+        <p className="text-sm">Repository List</p>
+        <FontAwesomeIcon
+          onClick={() => setShowList(!showList)}
+          className="text-red-600 clickable select-none"
+          icon={showList ? faSquareCaretUp : faSquareCaretDown}
+        ></FontAwesomeIcon>
+      </div>
+      {showList ? (
+        <ul className="repoList">
+          {props.list
+            ? Object.entries(props.list).map((curr, index) => {
+                const repo = curr[1];
+                const color = repo.primaryLanguage
+                  ? repo.primaryLanguage.color
+                  : "#FFFFFF";
+                const background =
+                  index % 2 === 0 ? "bg-[#383838]" : "bg-[transparent]";
+                const languageName = repo.primaryLanguage
+                  ? repo.primaryLanguage.name
+                  : "undefined";
+                return (
+                  <Repo
+                    className={`py-[0.125rem] hover:bg-[#444] ${background}`}
+                    key={repo.name}
+                    background={background}
+                    color={color}
+                    name={repo.name}
+                    languageName={languageName}
+                  ></Repo>
+                );
+              })
+            : ""}
+        </ul>
+      ) : (
+        ""
+      )}
+    </div>
+  );
+}
+function Repo(props: {
+  color: string;
+  background: string;
+  name: string;
+  languageName: string;
+  key: string;
+  className: string;
+}) {
+  const [showLanguage, setShowLanguage] = useState(false);
+  return (
+    <li
+      className={`${props.className} ${showLanguage ? "bg-[#555444]" : ""}`}
+      style={{ color: props.color }}
+      key={props.name}
+      onClick={() => setShowLanguage(!showLanguage)}
+    >
+      {props.name}
+      {/* {showLanguage ? props.languageName : props.name} */}
+    </li>
+  );
+}
 function HelpPopup(props: { onClosed: () => void; show: boolean }) {
   const [showStats, setShowStats] = useState(false);
   const [showStreak, setShowStreak] = useState(false);
