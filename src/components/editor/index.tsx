@@ -4,11 +4,21 @@ import "./editor.scss";
 import CodeMirror, { BasicSetupOptions } from "@uiw/react-codemirror";
 import * as themes from "@uiw/codemirror-themes-all";
 import { html } from "@codemirror/lang-html";
-import { htmlFormatter } from "../../common/utils";
+import { css } from "@codemirror/lang-css";
+import {
+  cssFormatter,
+  CSSVariablesStr,
+  htmlFormatter,
+} from "../../common/utils";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCss3, faHtml5 } from "@fortawesome/free-brands-svg-icons";
 import { faWindowMaximize } from "@fortawesome/free-regular-svg-icons";
-import { faWindowMinimize } from "@fortawesome/free-solid-svg-icons";
+import {
+  faWindowMinimize,
+  faCaretUp,
+  faCaretDown,
+} from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
   onInput(code: string): void;
@@ -21,36 +31,51 @@ const basicSetup: BasicSetupOptions = {
   foldGutter: true,
 };
 export default function Editor(props: Props) {
-  const [created, setCreated] = useState(false);
   const [maximized, setMaximized] = useState(false);
-  const [timeoutId, setTimeoutId] = useState({
-    sendCode: 0,
-    keyboardEvent: 0,
-  });
+  const [timeoutId, setTimeoutId] = useState(0);
+  const [showHTMLEditor, setShowHTMLEditor] = useState(true);
+  const [showCSSEditor, setshowCSSEditor] = useState(false);
+
   const [code, setCode] = useState(exampleCode);
-  const [editorCode, setEditorCode] = useState(exampleCode);
+  const [HTMLEditorCode, setHTMLEditorCode] = useState(exampleCode);
+  const [CSSEditorCode, setCSSEditorCode] = useState("");
+  const [cssVariablesEditorCode, setCSSVariableEditorCode] = useState("");
+
+  const [prevCSSVariables, setPrevCSSVariables] = useState("");
   const [formattingActive, setformattingActive] = useState(false);
-  const sendCode = (code: string) => {
-    window.clearTimeout(timeoutId.sendCode);
+
+  const sendCode = (HTMLCode: string, CSSCode: string) => {
+    window.clearTimeout(timeoutId);
 
     setCode(code);
 
+    if (CSSVariablesStr !== prevCSSVariables) {
+      const template = `<style>:root{${CSSVariablesStr}}</style>\n`;
+      if (CSSVariablesStr) {
+        setCSSVariableEditorCode(htmlFormatter(template));
+        setPrevCSSVariables(CSSVariablesStr);
+      } else {
+        setCSSVariableEditorCode("");
+        setPrevCSSVariables("");
+      }
+    }
+
     const newTimeoutId = window.setTimeout(() => {
-      props.onInput(htmlFormatter(code));
+      const cssCode = `<style> ${CSSCode} </style>\n`;
+      const cssVariablesCode = `<style>:root{${CSSVariablesStr}}</style>\n`;
+      props.onInput(htmlFormatter(cssVariablesCode + cssCode + HTMLCode));
     }, 1000);
 
-    setTimeoutId((timeoutId) => ({
-      ...timeoutId,
-      sendCode: newTimeoutId,
-    }));
+    setTimeoutId(newTimeoutId);
   };
+
   const formatEditorCode = (ev: React.KeyboardEvent) => {
-    if (formattingActive || code === editorCode) return;
+    if (formattingActive || code === HTMLEditorCode) return;
     if (!(ev.shiftKey && ev.altKey && /f/i.test(ev.key))) return;
 
-    setEditorCode(code);
+    setHTMLEditorCode(code);
     setTimeout(() => {
-      setEditorCode(htmlFormatter(code));
+      setHTMLEditorCode(htmlFormatter(code));
     }, 400);
     setformattingActive(true);
     console.log("Formatting code...");
@@ -65,73 +90,172 @@ export default function Editor(props: Props) {
     }
     if (releasedShortcut) console.log("Released shortcuts");
   };
-  const getTheme = (theme: string | undefined) => {
-    if (!theme) return "dark";
-    return theme === "dark" || theme === "light" ? theme : { ...themes }[theme];
-  };
-  useEffect(() => {
-    if (created) return;
-    props.onInput(exampleCode);
-    setCreated(true);
-  }, [props, created, setCreated]);
+
+  // useEffect(() => {
+  //   props.onInput(exampleCode);
+  // }, []);
 
   return (
     <div className={`editorContainer ${props.className}`}>
-      <div className=" relative flex h-8 w-full px-1 items-center justify-between">
-        <h2 className="absolute left-1/2 -translate-x-1/2 select-none ">
-          {" "}
-          Editor{" "}
-        </h2>
-        <div
-          className="absolute left-[97%] -translate-x-full clickable"
+      <div className="navbar">
+        <FontAwesomeIcon
+          className={`icon html-icon ${showHTMLEditor ? "selected" : ""}`}
+          icon={faHtml5}
           onClick={() => {
-            if (maximized) {
-              props.onMinimized();
-            } else {
-              props.onMaximized();
-            }
+            setShowHTMLEditor(true);
+            setshowCSSEditor(false);
+          }}
+        ></FontAwesomeIcon>
+        <FontAwesomeIcon
+          className={`icon css-icon ${showCSSEditor ? "selected" : ""}`}
+          icon={faCss3}
+          onClick={() => {
+            setshowCSSEditor(true);
+            setShowHTMLEditor(false);
+          }}
+        ></FontAwesomeIcon>
+        <h2 className="title"> Editor </h2>
+        <FontAwesomeIcon
+          className="window-resize-icon"
+          icon={maximized ? faWindowMinimize : faWindowMaximize}
+          onClick={() => {
+            maximized ? props.onMinimized() : props.onMaximized();
             setMaximized(!maximized);
           }}
-        >
-          <FontAwesomeIcon
-            className="text-white"
-            icon={maximized ? faWindowMinimize : faWindowMaximize}
-          ></FontAwesomeIcon>
-        </div>
+        ></FontAwesomeIcon>
       </div>
-      <CodeMirror
-        extensions={[
-          html({
-            extraTags: {
-              gitrepo: { attrs: { name: null } },
-              reponame: { attrs: { showOwner: null } },
-              repodescription: {},
-              repolanguage: {},
-              repostarcount: {},
-              repoForkCount: {},
-              gittoplangs: { attrs: { size: null } },
-              lang: { attrs: { position: null } },
-              langName: {},
-              langPercentage: {},
-              gitstreak: {},
-              gitstats: {},
-            },
-          }),
-        ]}
-        placeholder="Write your html code"
-        value={editorCode}
-        className={`editor ${props.theme}`}
-        height="100%"
-        theme={getTheme(props.theme)}
-        onChange={sendCode}
+      <HTMLEditor
+        className={showHTMLEditor ? "" : "hidden"}
+        theme={props.theme}
+        code={HTMLEditorCode}
+        onChange={(value) => {
+          setHTMLEditorCode(value);
+          sendCode(value, CSSEditorCode);
+        }}
         onKeyDown={formatEditorCode}
         onKeyUp={releaseShortcuts}
+      ></HTMLEditor>
+      <CSSEditor
+        className={showCSSEditor ? "" : "hidden"}
+        theme={props.theme}
+        code={CSSEditorCode}
+        onChange={(value) => {
+          setCSSEditorCode(value);
+          sendCode(HTMLEditorCode, value);
+        }}
+        onKeyDown={formatEditorCode}
+        onKeyUp={releaseShortcuts}
+      ></CSSEditor>
+      <CSSVariablesEditor
+        code={cssFormatter(`:root{${CSSVariablesStr}}\n`)}
+        theme={props.theme}
+      ></CSSVariablesEditor>
+    </div>
+  );
+}
+interface HTMLEditorProps {
+  onChange: (value: string) => void;
+  onKeyDown: (event: React.KeyboardEvent) => void;
+  onKeyUp: (event: React.KeyboardEvent) => void;
+  className?: string;
+  code: string;
+  theme?: string;
+}
+function HTMLEditor(props: HTMLEditorProps) {
+  return (
+    <CodeMirror
+      placeholder="Write your html code"
+      value={props.code}
+      className={`editor ${props.theme} ${props.className}`}
+      height="100%"
+      theme={getTheme(props.theme)}
+      onChange={props.onChange}
+      onKeyDown={props.onKeyDown}
+      onKeyUp={props.onKeyUp}
+      basicSetup={basicSetup}
+      extensions={[
+        html({
+          extraTags: {
+            gitrepo: { attrs: { name: null } },
+            reponame: { attrs: { showOwner: null } },
+            repodescription: {},
+            repolanguage: {},
+            repostarcount: {},
+            repoForkCount: {},
+            gittoplangs: { attrs: { size: null } },
+            lang: { attrs: { position: null } },
+            langName: {},
+            langPercentage: {},
+            gitstreak: {},
+            gitstats: {},
+          },
+        }),
+      ]}
+    />
+  );
+}
+interface CSSEditorProps {
+  onChange: (value: string) => void;
+  onKeyDown: (event: React.KeyboardEvent) => void;
+  onKeyUp: (event: React.KeyboardEvent) => void;
+  className?: string;
+  code: string;
+  theme?: string;
+}
+function CSSEditor(props: CSSEditorProps) {
+  return (
+    <CodeMirror
+      placeholder="Write your css code"
+      value={props.code}
+      className={`css-editor ${props.theme} ${props.className}`}
+      height="100%"
+      theme={getTheme(props.theme)}
+      onChange={props.onChange}
+      onKeyDown={props.onKeyDown}
+      onKeyUp={props.onKeyUp}
+      basicSetup={basicSetup}
+      extensions={[css()]}
+    />
+  );
+}
+function CSSVariablesEditor(props: {
+  code: string;
+  theme: string | undefined;
+}) {
+  const [collapsed, setCollapsed] = useState(true);
+  return (
+    <div className="variables-editor-container">
+      <div className="titlebar">
+        <h3 className="title">CSS Variables</h3>
+        <FontAwesomeIcon
+          className="collapse-icon"
+          icon={collapsed ? faCaretUp : faCaretDown}
+          onClick={() => setCollapsed(!collapsed)}
+        ></FontAwesomeIcon>
+      </div>
+      <CodeMirror
+        extensions={[css()]}
+        placeholder="Your css variables go here"
+        value={props.code}
+        className={`variablesEditor ${props.theme} ${
+          collapsed ? "minimize" : "maximize"
+        }`}
+        height="100%"
+        theme={getTheme(props.theme)}
+        readOnly={true}
+        // onChange={sendCode}
+        // onKeyDown={formatEditorCode}
+        // onKeyUp={releaseShortcuts}
         basicSetup={basicSetup}
       />
     </div>
   );
 }
 
+function getTheme(theme: string | undefined) {
+  if (!theme) return "dark";
+  return theme === "dark" || theme === "light" ? theme : { ...themes }[theme];
+}
 const exampleCode = `<style>
   @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
   @keyframes AnimationName {

@@ -12,16 +12,19 @@ function htmlFormatter(html: string) {
   return prettier.format(styleTagFormatter(html), options);
 }
 
-function styleTagFormatter(html: string) {
-  const styleTagRegexp = /<style>(\n|.)+?<\/style>/gim;
-
+function cssFormatter(css: string) {
   const options: prettier.Options = {
     parser: "css",
     plugins: [CSSParser],
   };
+  return prettier.format(css, options);
+}
+function styleTagFormatter(html: string) {
+  const styleTagRegexp = /<style>(\n|.)+?<\/style>/gim;
+
   const formatContent = (tag: string) => {
     const tagContent = tag.replace(/<\/?style>/gim, "");
-    return prettier.format(tagContent, options);
+    return cssFormatter(tagContent);
   };
 
   return html.replace(
@@ -60,17 +63,35 @@ function styleTagScoper(xhtml: string) {
 
   return { scopedXhtml, scope };
 }
+interface CSSVariable {
+  [key: string]: {
+    name: string;
+    value: string;
+  };
+}
+export let CSSVariables: { [key: string]: string } = {};
+export let CSSVariablesStr: string = "";
 function githubStatsParser(xhtml: string, githubData: GitHubData) {
   const gitStats = /<gitstats(\s|.)*?>(\s|.)*?<\/gitstats>/gi;
   const gitStreak = /<gitstreak(\s|.)*?>(\s|.)*?<\/gitstreak>/gi;
   const gitTopLangs = /<gittoplangs(\s|.)*?>(\s|.)*?<\/gittoplangs>/gi;
   const gitRepo = /<gitrepo(\s|.)*?>(\s|.)*?<\/gitrepo>/gi;
 
+  CSSVariables = {};
+  console.log(CSSVariables);
   const parsedXhtml = xhtml
     .replace(gitStats, (tag) => "githubData.stats")
     .replace(gitStreak, (tag) => "githubData.streak")
     .replace(gitTopLangs, (tag) => renderTopLanguages(tag, githubData.topLangs))
-    .replace(gitRepo, (tag) => renderRepo(tag, githubData.repos));
+    .replace(gitRepo, (tag) => {
+      return renderRepo(tag, githubData.repos);
+    });
+  console.log(CSSVariables);
+
+  CSSVariablesStr = Object.entries(CSSVariables).reduce((acc, [key, value]) => {
+    return acc + `${key}: ${value};\n`;
+  }, "");
+  console.log(CSSVariablesStr);
 
   return parsedXhtml;
 }
@@ -80,5 +101,5 @@ function indent(code: string) {
   return code.replace(newLineRegexp, "  ");
 }
 
-export { htmlFormatter, styleTagScoper, githubStatsParser };
+export { htmlFormatter, cssFormatter, styleTagScoper, githubStatsParser };
 export type { GitHubData };

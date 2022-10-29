@@ -77,7 +77,7 @@ const barTemplate = (tag: string, lang: Lang) => {
 const barAllTemplate = (tag: string, langList: Lang[]) => {
   const barClass = getAttrValue(tag, "class");
   const classAttr = barClass ? `class="${barClass}"` : "";
-  console.log("oi oi oi oi");
+
   const bars = langList.reduce((acc, curr) => {
     const barPortion = `<p ${classAttr} style="height: 100%; width: ${curr.percentage}%; background:${curr.color};"></p>`;
     return acc + barPortion;

@@ -41,7 +41,7 @@ export default function Preview(props: Props) {
 
   return (
     <div className={`preview ${props.className}`}>
-      <div className=" relative flex h-8 w-full px-1 items-center justify-between">
+      <div className=" relative flex min-h-[28px] h-7 w-full px-1 items-center justify-between">
         <h2 className="absolute left-1/2 -translate-x-1/2 select-none ">
           {" "}
           Preview{" "}

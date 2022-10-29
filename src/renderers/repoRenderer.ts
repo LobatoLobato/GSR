@@ -1,3 +1,4 @@
+import { CSSVariables } from "../common/utils";
 import { Repository, RepositoryList } from "../fetchers/repoFetcher";
 import { getAttrValue, getBooleanAttr } from "./utils";
 
@@ -51,6 +52,12 @@ const languageTemplate = (tag: string, repo: Repository) => {
   const languageClass = getAttrValue(tag, "class");
   const classAttr = languageClass ? `class="${languageClass}"` : "";
   const primaryLanguage = repo.primaryLanguage;
+  const colorVar = {
+    name: `--gsr-${repo.name}-langcolor`,
+    value: repo.primaryLanguage ? repo.primaryLanguage.color : "#fff",
+  };
+
+  CSSVariables[colorVar.name] = colorVar.value;
   const color = primaryLanguage
     ? `style="color:${repo.primaryLanguage.color};"`
     : "";

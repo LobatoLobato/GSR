@@ -27,8 +27,10 @@
     ]
   },
   "dependencies": {
+    "@codemirror/lang-css": "^6.0.1",
     "@codemirror/lang-html": "^6.1.2",
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
+    "@fortawesome/free-brands-svg-icons": "^6.2.0",
     "@fortawesome/free-regular-svg-icons": "^6.2.0",
     "@fortawesome/free-solid-svg-icons": "^6.2.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
