@@ -54,7 +54,7 @@
     @apply text-black;
   }
   .variables-editor-container {
-    @apply relative flex flex-col;
+    @apply relative flex flex-col max-h-[33%];
 
     .titlebar {
       @apply flex justify-between bg-gray-800 px-3 w-full box-border 
@@ -68,7 +68,7 @@
     }
 
     .variablesEditor {
-      @apply text-start text-sm w-full
+      @apply text-start text-sm w-full 
       overflow-clip border-4 border-solid border-gray-900;
 
       .cm-scroller {

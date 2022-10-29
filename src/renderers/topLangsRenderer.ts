@@ -1,3 +1,4 @@
+import { CSSVariables } from "../common/utils";
 import { LanguageMap } from "../fetchers/topLanguagesFetcher";
 import { getAttrValue } from "./utils";
 
@@ -50,56 +51,39 @@ const langTag = /<lang(\s|.)*?>(\s|.)*?<\/lang\s*?>/gi;
 const nameTag = /<langname(\s|.)*?>(\s|.)*?<\/langname\s*?>/gi;
 const percentageTag =
   /<langpercentage(\s|.)*?>(\s|.)*?<\/langpercentage\s*?>/gi;
-const barTag = /<langbar(?!\w)(\s|.)*?>(\s|.)*?<\/langbar\s*?>/gi;
-const barAllTag = /<langbarall(\s|.)*?>(\s|.)*?<\/langbarall\s*?>/gim;
 
 const nameTemplate = (tag: string, lang: Lang) => {
   const nameClass = getAttrValue(tag, "class");
+  const nameStyle = getAttrValue(tag, "style");
   const classAttr = nameClass ? `class="${nameClass}"` : "";
-
-  const styleAttr = `style="color:${lang.color}"`;
-
-  const name = lang.name;
-  return `<p ${classAttr} ${styleAttr}>${name}</p>`;
+  const styleAttr = nameStyle ? `style="${nameStyle}"` : "";
+  return `<p ${classAttr} ${styleAttr}>${lang.name}</p>`;
 };
 const percentageTemplate = (tag: string, lang: Lang) => {
   const percentageClass = getAttrValue(tag, "class");
+  const percentageStyle = getAttrValue(tag, "style");
   const classAttr = percentageClass ? `class="${percentageClass}"` : "";
-
-  return `<p ${classAttr}>${lang.percentage}%</p>`;
+  const styleAttr = percentageStyle ? `style="${percentageStyle}"` : "";
+  return `<p ${classAttr} ${styleAttr}>${lang.percentage}</p>`;
 };
-const barTemplate = (tag: string, lang: Lang) => {
-  const barClass = getAttrValue(tag, "class");
-  const classAttr = barClass ? `class="${barClass}"` : "";
 
-  return `<p ${classAttr} style="height: 100%; width: ${lang.percentage}%; background:${lang.color};"></p>`;
-};
-const barAllTemplate = (tag: string, langList: Lang[]) => {
-  const barClass = getAttrValue(tag, "class");
-  const classAttr = barClass ? `class="${barClass}"` : "";
-
-  const bars = langList.reduce((acc, curr) => {
-    const barPortion = `<p ${classAttr} style="height: 100%; width: ${curr.percentage}%; background:${curr.color};"></p>`;
-    return acc + barPortion;
-  }, "");
-  return bars;
-};
 function createTemplate(tagContent: string, langList: Lang[]): string {
-  const template = tagContent
-    .replace(langTag, (tag) => {
-      const langPosition = getAttrValue(tag, "position");
-      if (!langPosition) return "Language position not defined";
-      const lang = langList[parseInt(langPosition)];
-      if (!lang) return "Language position exceeds language list's size";
+  const template = tagContent.replace(langTag, (tag) => {
+    const langPosition = getAttrValue(tag, "position");
+    if (!langPosition) return "Language position not defined";
+    const lang = langList[parseInt(langPosition)];
+    if (!lang) return "Language position exceeds language list's size";
 
-      return tag
-        .replace(/lang(?!\w)/gi, "div") // Replaces <lang> with <div>
-        .replace(/position="\w+"/gi, "") // Removes position attribute
-        .replace(nameTag, (tag) => nameTemplate(tag, lang)) // Replaces <langname> tags with the corresponding template
-        .replace(percentageTag, (tag) => percentageTemplate(tag, lang)) // Replaces <langpercentage> tags with the corresponding template
-        .replace(barTag, (tag) => barTemplate(tag, lang)); // Replaces <langbar> tags with the corresponding template
-    })
-    .replace(barAllTag, (tag) => barAllTemplate(tag, langList)); // Replaces <langbarall> tags with the corresponding template
+    const varName = `--gsr-toplang${langPosition}`;
+    CSSVariables[`${varName}-color`] = lang.color;
+    CSSVariables[`${varName}-percentage`] = `${lang.percentage}%`;
+
+    return tag
+      .replace(/lang(?!\w)/gi, "div") // Replaces <lang> with <div>
+      .replace(/position="\w+"/gi, "") // Removes position attribute
+      .replace(nameTag, (tag) => nameTemplate(tag, lang)) // Replaces <langname> tags with the corresponding template
+      .replace(percentageTag, (tag) => percentageTemplate(tag, lang)); // Replaces <langpercentage> tags with the corresponding template
+  });
 
   return template;
 }

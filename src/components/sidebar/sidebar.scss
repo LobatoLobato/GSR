@@ -105,18 +105,36 @@
   }
 }
 .sidebar.show {
-  @apply fixed z-10 left-0 md:w-2/12 w-full h-full
-  pb-2 animate-grow px-2;
+  @apply fixed z-10 left-0 lg:w-2/12 w-full h-full
+  pb-2 px-2;
+  animation: show-sidebar 1s ease;
 }
 .sidebar.hide {
-  @apply fixed left-0 z-10 w-fit h-fit 
-  animate-shrinkSideBar hover:bg-green-500;
+  @apply relative lg:fixed left-0 z-10 w-full lg:w-fit h-fit 
+ hover:bg-green-500;
+  animation: hide-sidebar 1s ease;
 }
 @media (min-width: 1024px) {
   .sidebar.show {
-    @apply relative;
+    @apply relative animate-grow;
   }
   .sidebar.hide {
     @apply animate-shrinkSideBar-lg;
+  }
+}
+@keyframes show-sidebar {
+  0% {
+    height: 32px;
+  }
+  100% {
+    height: 100%;
+  }
+}
+@keyframes hide-sidebar {
+  0% {
+    height: 100%;
+  }
+  100% {
+    height: 32px;
   }
 }

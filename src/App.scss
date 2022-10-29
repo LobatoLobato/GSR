@@ -1,9 +1,9 @@
 .App {
-  @apply flex h-screen bg-[#232323]  w-screen font-jetbrains overflow-clip;
+  @apply flex flex-col lg:flex-row h-screen bg-[#232323]  w-screen font-jetbrains overflow-clip;
 }
 
 .mainContent {
-  @apply flex flex-col-reverse lg:flex-row h-full w-full p-1 gap-1;
+  @apply flex flex-col-reverse lg:flex-row h-full lg:h-full w-full p-1 gap-1;
 
   .maximized {
     @apply w-full h-full animate-maximize-h;

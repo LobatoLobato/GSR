@@ -18,7 +18,7 @@ interface Props {
 export default function SideBar(props: Props) {
   const [showSidebar, setShowSidebar] = useState(false);
   const [sidebarClassName, setSidebarClassName] = useState(
-    "fixed left-0 z-10 w-fit h-fit hover:bg-green-500",
+    "fixed left-0 z-10 w-full lg:w-fit h-fit hover:bg-green-500",
   );
   const [showSidebarBtnClassName, setShowSidebarBtnClassName] = useState(
     "relative rounded-br-sm px-2",
