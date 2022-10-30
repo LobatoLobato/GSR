@@ -4,6 +4,8 @@ import {
   genericTemplate,
   getAttrValue,
   getTagChildren,
+  tagAttrRegExp,
+  tagNameRegExp,
   tagRegExp,
 } from "./utils";
 
@@ -47,8 +49,8 @@ export function renderTopLanguages(tag: string, langList: LanguageMap) {
   const template = createTemplate(tagChildren, list);
 
   return tag
-    .replace(/gittoplangs(?!\w)/gi, "div") // Replaces <gittoplangs> with <div>
-    .replace(/size="\w+"/gi, "") // Removes size attribute
+    .replace(tagAttrRegExp("gittoplangs", "size"), "") // Removes size attribute
+    .replace(tagNameRegExp("gittoplangs"), "div") // Replaces <gittoplangs> with <div>
     .replace(tagChildren, template); // Replaces <gittoplangs>'s children with the template
 }
 
@@ -69,8 +71,8 @@ function createTemplate(tagContent: string, langList: Lang[]): string {
     CSSVariables[`${varName}-percentage`] = `${lang.percentage}%`;
 
     return tag
-      .replace(/lang(?!\w)/gi, "div") // Replaces <lang> with <div>
-      .replace(/position="\w+"/gi, "") // Removes position attribute
+      .replace(tagAttrRegExp("lang", "position"), "") // Removes position attribute
+      .replace(tagNameRegExp("lang"), "div") // Replaces <lang> with <div>
       .replace(nameTag, (tag) => genericTemplate(tag, lang.name)) // Replaces <langname> tags with the corresponding template
       .replace(percentageTag, (tag) => genericTemplate(tag, lang.percentage)); // Replaces <langpercentage> tags with the corresponding template
   });

@@ -1,5 +1,10 @@
 import { StreakInfo } from "../fetchers";
-import { genericTemplate, getTagChildren, tagRegExp } from "./utils";
+import {
+  genericTemplate,
+  getTagChildren,
+  tagNameRegExp,
+  tagRegExp,
+} from "./utils";
 
 export function renderStreaks(tag: string, streaks: StreakInfo) {
   const openingTag = tag.match(/<gitstreak\s?(\s|.)*?>/i)!.toString();
@@ -11,7 +16,7 @@ export function renderStreaks(tag: string, streaks: StreakInfo) {
   const template = createTemplate(tagChildren, streaks);
 
   return tag
-    .replace(/gitstreak(?!\w)/gi, "div") // Replaces <gitstreak> with <div>
+    .replace(tagNameRegExp("gitstreak"), "div") // Replaces <gitstreak> with <div>
     .replace(tagChildren, template); // Replaces <gitstreak>'s children with the template
 }
 

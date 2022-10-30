@@ -11,6 +11,12 @@ function getTagChildren(tag: string, tagName: string) {
 function tagRegExp(tagName: string) {
   return new RegExp(`<${tagName}(\\s|.)*?>(\\s|.)*?</${tagName}\\s*?>`, "gi");
 }
+function tagNameRegExp(tagName: string) {
+  return new RegExp(`(?<=<|/)${tagName}(?!\\w)`, "gi");
+}
+function tagAttrRegExp(tagName: string, attrName: string) {
+  return new RegExp(`(?<=<${tagName}[\\s\\w="-]*?)${attrName}="\\w+"`, "gim");
+}
 function getAttrValue(openingTag: string, attrName: string): string | null {
   const attrValueRegexp = new RegExp(`(?<=${attrName}=").+?(?=")`, "i");
   const attrValue = openingTag.match(attrValueRegexp);
@@ -36,4 +42,6 @@ export {
   getBooleanAttr,
   genericTemplate,
   tagRegExp,
+  tagNameRegExp,
+  tagAttrRegExp,
 };

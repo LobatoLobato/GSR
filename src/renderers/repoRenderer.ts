@@ -5,6 +5,8 @@ import {
   getAttrValue,
   getBooleanAttr,
   getTagChildren,
+  tagAttrRegExp,
+  tagNameRegExp,
   tagRegExp,
 } from "./utils";
 
@@ -37,8 +39,8 @@ export function renderRepo(tag: string, repoList: RepositoryList) {
   const template = createTemplate(tagChildren, repo);
 
   return tag
-    .replace(/gitrepo(?!\w)/gi, "div") // Replaces <gitrepo> with <div>
-    .replace(/name="\w+"/gi, "") // Removes name attribute
+    .replace(tagAttrRegExp("gitrepo", "name"), "") // Removes name attribute
+    .replace(tagNameRegExp("gitrepo"), "div") // Replaces <gitrepo> with <div>
     .replace(tagChildren, template); // Replaces <gittoplangs>'s children with the template
 }
 

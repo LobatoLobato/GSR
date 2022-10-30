@@ -1,5 +1,10 @@
 import { GithubStats } from "../fetchers";
-import { genericTemplate, getTagChildren, tagRegExp } from "./utils";
+import {
+  genericTemplate,
+  getTagChildren,
+  tagNameRegExp,
+  tagRegExp,
+} from "./utils";
 
 export function renderStats(tag: string, stats: GithubStats) {
   const openingTag = tag.match(/<gitstats\s?(\s|.)*?>/i)!.toString();
@@ -11,7 +16,7 @@ export function renderStats(tag: string, stats: GithubStats) {
   const template = createTemplate(tagChildren, stats);
 
   return tag
-    .replace(/gitstats(?!\w)/gi, "div") // Replaces <gitstats> with <div>
+    .replace(tagNameRegExp("gitstats"), "div") // Replaces <gitstats> with <div>
     .replace(tagChildren, template); // Replaces <gitstats>'s children with the template
 }
 const prsTag = tagRegExp("statpullrequests");

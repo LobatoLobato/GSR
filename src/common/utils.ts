@@ -45,7 +45,7 @@ function styleTagScoper(xhtml: string) {
   const cssclass = /(?<=>|;|})\s*\.?[\w]+((?!%).?)+?(?=({|}))/gim; // Matches css classes
   const selector = /(?<=\.)[a-z]+/gi; // Matches css selectors
   const classDeclaration = /(?<=class=").+?(?=")/gi; // Matches element class declarations
-  const className = /[a-z]+/gi; // Matches class names inside class declarations
+  const className = /[\w-]+/gi; // Matches class names inside class declarations
 
   const scopedXhtml = xhtml
     .replace(styleTag, (tag) => {
