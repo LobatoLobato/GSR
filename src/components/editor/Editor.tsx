@@ -5,6 +5,7 @@ import CodeMirror, { BasicSetupOptions } from "@uiw/react-codemirror";
 import * as themes from "@uiw/codemirror-themes-all";
 import { html } from "@codemirror/lang-html";
 import { css } from "@codemirror/lang-css";
+
 import {
   cssFormatter,
   CSSVariablesStr,
@@ -30,7 +31,7 @@ interface Props {
 const basicSetup: BasicSetupOptions = {
   foldGutter: true,
 };
-export default function Editor(props: Props) {
+export function Editor(props: Props) {
   const [maximized, setMaximized] = useState(false);
   const [timeoutId, setTimeoutId] = useState(0);
   const [showHTMLEditor, setShowHTMLEditor] = useState(true);
@@ -175,18 +176,34 @@ function HTMLEditor(props: HTMLEditorProps) {
       extensions={[
         html({
           extraTags: {
+            gitstats: {},
+            statpullrequests: {},
+            statcommits: {},
+            statcontributedto: {},
+            statstarsearned: {},
+            statissues: {},
+
+            gitstreak: {},
+            streakcontributionscount: {},
+            streakcontributionsfirstdate: {},
+            streakcurrentcount: {},
+            streakcurrentenddate: {},
+            streakcurrentstartdate: {},
+            streaklongestcount: {},
+            streaklongestenddate: {},
+            streaklongeststartdate: {},
+
+            gittoplangs: { attrs: { size: null } },
+            lang: { attrs: { position: null } },
+            langName: {},
+            langPercentage: {},
+
             gitrepo: { attrs: { name: null } },
             reponame: { attrs: { showOwner: null } },
             repodescription: {},
             repolanguage: {},
             repostarcount: {},
             repoForkCount: {},
-            gittoplangs: { attrs: { size: null } },
-            lang: { attrs: { position: null } },
-            langName: {},
-            langPercentage: {},
-            gitstreak: {},
-            gitstats: {},
           },
         }),
       ]}
@@ -254,8 +271,7 @@ function getTheme(theme: string | undefined) {
   if (!theme) return "dark";
   return theme === "dark" || theme === "light" ? theme : { ...themes }[theme];
 }
-const cssExampleCode = `
-@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+const cssExampleCode = `@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 @keyframes AnimationName {
   0% {
     background-position: 0% 50%;
@@ -273,7 +289,7 @@ const cssExampleCode = `
   justify-content: space-between;
   font-family: "Poppins", sans-serif;
   width: 100%;
-  height: 93.6vh;
+  height: 100%;
   text-align: center;
   font-size: 20px;
   color: white;
@@ -293,6 +309,56 @@ a {
 }
 a img {
   height: 100%;
+}
+.stats {
+  width: fit-content;
+  margin: auto;
+  padding: 10px;
+  background: #00000040;
+  border: 3px solid black;
+  border-radius: 8px;
+  gap: 4px;
+}
+.stats p {
+  all: unset;
+}
+.stats div {
+  display: flex;
+  gap: 4px;
+}
+.streaks {
+  display: grid;
+  grid-template-columns: 2fr 2fr 2fr;
+  width: fit-content;
+  margin: auto;
+  justify-content: space-between;
+  padding: 16px;
+  background: #00000040;
+  border: 3px solid black;
+  border-radius: 8px;
+  gap: 4px;
+}
+.streaks p {
+  all:unset;
+}
+.streaks div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.streaks span {
+  display: flex;
+  gap: 4px;
+}
+.streaks .subtitle {
+  font-size: 18px;
+  color: orange;
+}
+.streaks .count {
+  color: yellow;
+}
+.streaks .date {
+  font-size: 16px;
 }
 .repositories {
   display: flex;
@@ -407,128 +473,184 @@ width: var(--gsr-toplang5-percentage);
 
 `;
 const htmlExampleCode = `<div class="container">
-<p>Example Code</p>
-<p>Hello World</p>
-<div>
-  <gittoplangs size="6" class="topLangs">
-    <h2>Most Used Languages:</h2>
-    <div class="langbarall">
-      <div class="langbarportion0"></div>
-      <div class="langbarportion1"></div>
-      <div class="langbarportion2"></div>
-      <div class="langbarportion3"></div>
-      <div class="langbarportion4"></div>
-      <div class="langbarportion5"></div>
+  <p>Example Code</p>
+  <p>Hello World</p>
+  <gitstreak class="streaks">
+    <div>
+      <p class="subtitle">Total Contributions:</p>
+      <streakcontributionscount class="count"></streakcontributionscount>
+      <span>
+        <streakcontributionsfirstdate
+          class="date"
+        ></streakcontributionsfirstdate>
+        <p class="date">-</p>
+        <p class="date">Present</p>
+      </span>
     </div>
-    <div class="langsContainer">
-      <lang class="langContainer" position="0">
-        <langName class="name"></langName>
-        <langPercentage class="percentage"></langPercentage>
-        <div class="langbar">
-          <div class="langbarportion0"></div>
-        </div>
-      </lang>
-      <lang class="langContainer" position="1">
-        <langName class="name"></langName>
-        <langPercentage class="percentage"></langPercentage>
-        <div class="langbar">
-          <div class="langbarportion1"></div>
-        </div>
-      </lang>
-      <lang class="langContainer" position="2">
-        <langName class="name"></langName>
-        <langPercentage class="percentage"></langPercentage>
-        <div class="langbar">
-          <div class="langbarportion2"></div>
-        </div>
-      </lang>
-      <lang class="langContainer" position="3">
-        <langName class="name"></langName>
-        <langPercentage class="percentage"></langPercentage>
-        <div class="langbar">
-          <div class="langbarportion3"></div>
-        </div>
-      </lang>
-      <lang class="langContainer" position="4">
-        <langName class="name"></langName>
-        <langPercentage class="percentage"></langPercentage>
-        <div class="langbar">
-          <div class="langbarportion4"></div>
-        </div>
-      </lang>
-      <lang class="langContainer" position="5">
-        <langName class="name"></langName>
-        <langPercentage class="percentage"></langPercentage>
-        <div class="langbar">
-          <div class="langbarportion5"></div>
-        </div>
-      </lang>
+    <div>
+      <p class="subtitle">Longest Streak:</p>
+      <streaklongestcount class="count"></streaklongestcount>
+      <span>
+        <streaklongeststartdate class="date"></streaklongeststartdate>
+        <p class="date">-</p>
+        <streaklongestenddate class="date"></streaklongestenddate>
+      </span>
     </div>
-  </gittoplangs>
-</div>
-<div>
-  <h2>Repositories:</h2>
-  <br />
-  <div class="repositories">
-    <gitrepo name="0" class="repoContainer">
-      <reponame showOwner class="reponame"></reponame>
-      <repodescription></repodescription>
-      <repolanguage></repolanguage>
-      <div class="counters">
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/FA_star.svg/1024px-FA_star.svg.png"
-        />
-        <repostarcount></repostarcount>
+    <div>
+      <p class="subtitle">Current Streak:</p>
+      <streakcurrentcount class="count"></streakcurrentcount>
+      <span>
+        <streakcurrentstartdate class="date"></streakcurrentstartdate>
+        <p class="date">-</p>
+        <streakcurrentenddate class="date"></streakcurrentenddate>
+      </span>
+    </div>
+  </gitstreak>
+  <div>
+    <gitstats class="stats">
+      Stats:
+      <div>
+        <p>Stars:</p>
+        <statstarsearned></statstarsearned>
       </div>
-      <div class="counters">
-        <img
-          src="https://user-images.githubusercontent.com/17777237/54873012-40fa5b00-4dd6-11e9-98e0-cc436426c720.png"
-        />
-        <repoforkCount></repoforkCount>
+      <div>
+        <p>Commits:</p>
+        <statcommits></statcommits>
       </div>
-    </gitrepo>
-    <gitrepo name="1" class="repoContainer">
-      <reponame class="reponame"></reponame>
-      <repodescription></repodescription>
-      <repolanguage></repolanguage>
-      <div class="counters">
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/FA_star.svg/1024px-FA_star.svg.png"
-        />
-        <repostarcount></repostarcount>
+      <div>
+        <p>Issues:</p>
+        <statissues></statissues>
       </div>
-      <div class="counters">
-        <img
-          src="https://user-images.githubusercontent.com/17777237/54873012-40fa5b00-4dd6-11e9-98e0-cc436426c720.png"
-        />
-        <repoforkCount></repoforkCount>
+      <div>
+        <p>PRs:</p>
+        <statpullrequests></statpullrequests>
       </div>
-    </gitrepo>
-    <gitrepo name="2" class="repoContainer">
-      <reponame showOwner class="reponame"></reponame>
-      <repodescription></repodescription>
-      <repolanguage></repolanguage>
-      <div class="counters">
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/FA_star.svg/1024px-FA_star.svg.png"
-        />
-        <repostarcount></repostarcount>
+      <div>
+        <p>Contributed to:</p>
+        <statcontributedto></statcontributedto>
       </div>
-      <div class="counters">
-        <img
-          src="https://user-images.githubusercontent.com/17777237/54873012-40fa5b00-4dd6-11e9-98e0-cc436426c720.png"
-        />
-        <repoforkCount></repoforkCount>
-      </div>
-    </gitrepo>
+    </gitstats>
   </div>
-</div>
-<p>
-  More info on:
-  <a href="https://github.com/LobatoLobato/github-styledreadme-creator">
-    <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" />
-  </a>
-</p>
+  <div>
+    <gittoplangs size="6" class="topLangs">
+      <h2>Most Used Languages:</h2>
+      <div class="langbarall">
+        <div class="langbarportion0"></div>
+        <div class="langbarportion1"></div>
+        <div class="langbarportion2"></div>
+        <div class="langbarportion3"></div>
+        <div class="langbarportion4"></div>
+        <div class="langbarportion5"></div>
+      </div>
+      <div class="langsContainer">
+        <lang class="langContainer" position="0">
+          <langName class="name"></langName>
+          <langPercentage class="percentage"></langPercentage>
+          <div class="langbar">
+            <div class="langbarportion0"></div>
+          </div>
+        </lang>
+        <lang class="langContainer" position="1">
+          <langName class="name"></langName>
+          <langPercentage class="percentage"></langPercentage>
+          <div class="langbar">
+            <div class="langbarportion1"></div>
+          </div>
+        </lang>
+        <lang class="langContainer" position="2">
+          <langName class="name"></langName>
+          <langPercentage class="percentage"></langPercentage>
+          <div class="langbar">
+            <div class="langbarportion2"></div>
+          </div>
+        </lang>
+        <lang class="langContainer" position="3">
+          <langName class="name"></langName>
+          <langPercentage class="percentage"></langPercentage>
+          <div class="langbar">
+            <div class="langbarportion3"></div>
+          </div>
+        </lang>
+        <lang class="langContainer" position="4">
+          <langName class="name"></langName>
+          <langPercentage class="percentage"></langPercentage>
+          <div class="langbar">
+            <div class="langbarportion4"></div>
+          </div>
+        </lang>
+        <lang class="langContainer" position="5">
+          <langName class="name"></langName>
+          <langPercentage class="percentage"></langPercentage>
+          <div class="langbar">
+            <div class="langbarportion5"></div>
+          </div>
+        </lang>
+      </div>
+    </gittoplangs>
+  </div>
+  <div>
+    <h2>Repositories:</h2>
+    <br />
+    <div class="repositories">
+      <gitrepo name="0" class="repoContainer">
+        <reponame showOwner class="reponame"></reponame>
+        <repodescription></repodescription>
+        <repolanguage></repolanguage>
+        <div class="counters">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/FA_star.svg/1024px-FA_star.svg.png"
+          />
+          <repostarcount></repostarcount>
+        </div>
+        <div class="counters">
+          <img
+            src="https://user-images.githubusercontent.com/17777237/54873012-40fa5b00-4dd6-11e9-98e0-cc436426c720.png"
+          />
+          <repoforkCount></repoforkCount>
+        </div>
+      </gitrepo>
+      <gitrepo name="1" class="repoContainer">
+        <reponame class="reponame"></reponame>
+        <repodescription></repodescription>
+        <repolanguage></repolanguage>
+        <div class="counters">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/FA_star.svg/1024px-FA_star.svg.png"
+          />
+          <repostarcount></repostarcount>
+        </div>
+        <div class="counters">
+          <img
+            src="https://user-images.githubusercontent.com/17777237/54873012-40fa5b00-4dd6-11e9-98e0-cc436426c720.png"
+          />
+          <repoforkCount></repoforkCount>
+        </div>
+      </gitrepo>
+      <gitrepo name="2" class="repoContainer">
+        <reponame showOwner class="reponame"></reponame>
+        <repodescription></repodescription>
+        <repolanguage></repolanguage>
+        <div class="counters">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/FA_star.svg/1024px-FA_star.svg.png"
+          />
+          <repostarcount></repostarcount>
+        </div>
+        <div class="counters">
+          <img
+            src="https://user-images.githubusercontent.com/17777237/54873012-40fa5b00-4dd6-11e9-98e0-cc436426c720.png"
+          />
+          <repoforkCount></repoforkCount>
+        </div>
+      </gitrepo>
+    </div>
+  </div>
+  <p>
+    More info on:
+    <a href="https://github.com/LobatoLobato/github-styledreadme-creator">
+      <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" />
+    </a>
+  </p>
 </div>
 
 `;

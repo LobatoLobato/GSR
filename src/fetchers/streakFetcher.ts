@@ -28,7 +28,7 @@ async function fetchStreak(username: string): Promise<StreakInfo> {
   const currentStreak = {
     count: 0,
     ended: false,
-    startDate: currentDate.toISOString(),
+    startDate: formatDate(currentDate.toISOString()),
     endDate: formatDate(currentDate.toISOString()),
   };
   const contributions = {

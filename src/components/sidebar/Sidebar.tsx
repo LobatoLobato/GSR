@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import "./sidebar.scss";
+
 import DropDown from "react-dropdown";
+
+import { RepositoryList } from "../../fetchers";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleXmark,
@@ -8,14 +12,13 @@ import {
   faSquareCaretUp,
 } from "@fortawesome/free-regular-svg-icons";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
-import { RepositoryList } from "../../fetchers/repoFetcher";
 
 interface Props {
   onThemeChange: (theme: string) => void;
   onUsernameChange: (username: string) => void;
   repoList?: RepositoryList;
 }
-export default function SideBar(props: Props) {
+export function SideBar(props: Props) {
   const [showSidebar, setShowSidebar] = useState(false);
   const [sidebarClassName, setSidebarClassName] = useState(
     "fixed left-0 z-10 w-full lg:w-fit h-fit hover:bg-green-500",

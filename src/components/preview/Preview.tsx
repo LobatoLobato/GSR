@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
 import "./preview.scss";
+
 import {
   githubStatsParser,
   htmlFormatter,
   styleTagScoper,
 } from "../../common/utils";
-import {
-  fetchGithubData,
-  GitHubData,
-  GitHubDataFetcher,
-} from "../../fetchers/gitHubDataFetcher";
+import { fetchGithubData, GitHubData, GitHubDataFetcher } from "../../fetchers";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWindowMaximize } from "@fortawesome/free-regular-svg-icons";
 import { faWindowMinimize } from "@fortawesome/free-solid-svg-icons";
@@ -23,21 +21,23 @@ interface Props {
   onFetch?: (GitHubData: GitHubData) => void;
 }
 
-export default function Preview(props: Props) {
+export function Preview(props: Props) {
   const [githubData, setGithubData] = useState<GitHubData>(
     new GitHubDataFetcher().data,
   );
   const [maximized, setMaximized] = useState(false);
+  const username = props.username;
+  const onFetch = props.onFetch;
   useEffect(() => {
-    if (props.username) {
-      fetchGithubData({ username: props.username }).then((data) => {
+    if (username) {
+      fetchGithubData({ username: username }).then((data) => {
         setGithubData(data);
-        if (props.onFetch) {
-          props.onFetch(data);
+        if (onFetch) {
+          onFetch(data);
         }
       });
     }
-  }, [props]);
+  }, [username, onFetch]);
 
   return (
     <div className={`preview ${props.className}`}>

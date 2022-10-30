@@ -1,8 +1,13 @@
 import prettier from "prettier";
 import HTMLParser from "prettier/parser-html";
 import CSSParser from "prettier/parser-postcss";
-import { GitHubData } from "../fetchers/gitHubDataFetcher";
-import { renderRepo, renderTopLanguages } from "../renderers";
+import { GitHubData } from "../fetchers";
+import {
+  renderRepo,
+  renderTopLanguages,
+  renderStats,
+  renderStreaks,
+} from "../renderers";
 
 function htmlFormatter(html: string) {
   const options: prettier.Options = {
@@ -75,13 +80,12 @@ function githubStatsParser(xhtml: string, githubData: GitHubData) {
   CSSVariables = {};
 
   const parsedXhtml = xhtml
-    .replace(gitStats, (tag) => "githubData.stats")
-    .replace(gitStreak, (tag) => "githubData.streak")
+    .replace(gitStats, (tag) => renderStats(tag, githubData.stats))
+    .replace(gitStreak, (tag) => renderStreaks(tag, githubData.streak))
     .replace(gitTopLangs, (tag) => renderTopLanguages(tag, githubData.topLangs))
     .replace(gitRepo, (tag) => {
       return renderRepo(tag, githubData.repos);
     });
-
 
   CSSVariablesStr = Object.entries(CSSVariables).reduce((acc, [key, value]) => {
     return acc + `${key}: ${value};\n`;

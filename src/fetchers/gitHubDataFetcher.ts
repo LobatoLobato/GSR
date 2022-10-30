@@ -31,11 +31,11 @@ async function fetchGithubData(options: GitFetchOptions): Promise<GitHubData> {
 
 class GitHubDataFetcher {
   private _stats: GithubStats = {
-    commits: 0,
-    contributedTo: 0,
+    commits: 3,
+    contributedTo: 3,
     issues: 0,
     PRs: 0,
-    starsEarned: 0,
+    starsEarned: 90,
   };
   private _streak: StreakInfo = {
     contributions: {

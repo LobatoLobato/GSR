@@ -1,9 +1,8 @@
 import { useState } from "react";
 import "./App.scss";
-import Editor from "./components/editor";
-import Preview from "./components/preview";
-import SideBar from "./components/sidebar";
-import { GitHubData } from "./fetchers/gitHubDataFetcher";
+
+import { Editor, Preview, SideBar } from "./components";
+import { GitHubData } from "./fetchers";
 
 function App() {
   const [editorTxt, setEditorTxt] = useState("");

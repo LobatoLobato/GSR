@@ -6,7 +6,7 @@ export type RepositoryList = {
 export type Repository = {
   name: string;
   nameWithOwner: string;
-  primaryLanguage: {
+  primaryLanguage?: {
     color: string;
     name: string;
   };
