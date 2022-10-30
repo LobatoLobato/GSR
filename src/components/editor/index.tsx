@@ -87,9 +87,8 @@ export default function Editor(props: Props) {
   };
 
   useEffect(() => {
-    props.onInput(
-      htmlFormatter(`<style>${cssExampleCode}</style> ${htmlExampleCode}`),
-    );
+    sendCode(htmlExampleCode, cssExampleCode);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -146,6 +145,9 @@ export default function Editor(props: Props) {
       <CSSVariablesEditor
         code={cssFormatter(`:root{${CSSVariablesStr}}`)}
         theme={props.theme}
+        onChange={() => {
+          sendCode(HTMLCode, CSSCode);
+        }}
       ></CSSVariablesEditor>
     </div>
   );
@@ -216,6 +218,7 @@ function CSSEditor(props: CSSEditorProps) {
   );
 }
 function CSSVariablesEditor(props: {
+  onChange: (value: string) => void;
   code: string;
   theme: string | undefined;
 }) {
@@ -241,6 +244,7 @@ function CSSVariablesEditor(props: {
         theme={getTheme(props.theme)}
         readOnly={true}
         basicSetup={basicSetup}
+        onChange={props.onChange}
       />
     </div>
   );

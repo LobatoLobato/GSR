@@ -274,10 +274,10 @@ function HelpPopup(props: { onClosed: () => void; show: boolean }) {
   );
 }
 
-function ToolTip(props: { text: string }) {
-  return (
-    <p className="absolute top-0 z-20 select-none hidden bg-gray-800 px-2 box-border -left-2 w-[300%] group-hover:flex">
-      {props.text}
-    </p>
-  );
-}
+// function ToolTip(props: { text: string }) {
+//   return (
+//     <p className="absolute top-0 z-20 select-none hidden bg-gray-800 px-2 box-border -left-2 w-[300%] group-hover:flex">
+//       {props.text}
+//     </p>
+//   );
+// }

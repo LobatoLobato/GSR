@@ -37,7 +37,7 @@ export default function Preview(props: Props) {
         }
       });
     }
-  }, [props.username]);
+  }, [props]);
 
   return (
     <div className={`preview ${props.className}`}>

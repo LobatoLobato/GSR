@@ -63,12 +63,7 @@ function styleTagScoper(xhtml: string) {
 
   return { scopedXhtml, scope };
 }
-interface CSSVariable {
-  [key: string]: {
-    name: string;
-    value: string;
-  };
-}
+
 export let CSSVariables: { [key: string]: string } = {};
 export let CSSVariablesStr: string = "";
 function githubStatsParser(xhtml: string, githubData: GitHubData) {
@@ -78,7 +73,7 @@ function githubStatsParser(xhtml: string, githubData: GitHubData) {
   const gitRepo = /<gitrepo(\s|.)*?>(\s|.)*?<\/gitrepo>/gi;
 
   CSSVariables = {};
-  console.log(CSSVariables);
+
   const parsedXhtml = xhtml
     .replace(gitStats, (tag) => "githubData.stats")
     .replace(gitStreak, (tag) => "githubData.streak")
@@ -86,12 +81,11 @@ function githubStatsParser(xhtml: string, githubData: GitHubData) {
     .replace(gitRepo, (tag) => {
       return renderRepo(tag, githubData.repos);
     });
-  console.log(CSSVariables);
+
 
   CSSVariablesStr = Object.entries(CSSVariables).reduce((acc, [key, value]) => {
     return acc + `${key}: ${value};\n`;
   }, "");
-  console.log(CSSVariablesStr);
 
   return parsedXhtml;
 }

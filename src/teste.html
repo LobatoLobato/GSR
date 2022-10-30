@@ -1,0 +1,255 @@
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800");
+  @keyframes rotate {
+    0% {
+      transform: rotate(1deg);
+    }
+    100% {
+      transform: rotate(-1deg);
+    }
+  }
+  @keyframes gradientBackground {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  @keyframes gradientBackgroundFadeIn {
+    0% {
+      background-size: 10000% 10000%;
+    }
+    100% {
+      background-size: 100% 100%;
+    }
+  }
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    66% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  @keyframes gradient {
+    0% {
+    }
+    50% {
+      background-size: 130% 130%;
+    }
+    100% {
+      background-size: 100% 100%;
+    }
+  }
+  .selector {
+    background-color: ;
+  }
+  @keyframes currstreak {
+    0% {
+      font-size: 3px;
+      opacity: 0.2;
+    }
+    80% {
+      font-size: 34px;
+      opacity: 1;
+    }
+    100% {
+      font-size: 28px;
+      opacity: 1;
+    }
+  }
+  @keyframes fadein {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  a {
+    text-decoration: none;
+  }
+  .containerContainer {
+    background-color: white;
+  }
+  .bg {
+    background-color: #292929;
+  }
+  .container {
+    display: flex;
+    flex-direction: column;
+    font-family: "JetBrains Mono", monospace;
+    gap: 24px;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      180deg,
+      #490e9d13 20%,
+      #cc2c4d52 50%,
+      #6c2c4d82
+    );
+    background-size: 100% 100%;
+    animation: gradientBackgroundFadeIn 5s ease,
+      gradient 10s ease-in-out infinite !important;
+    background-position: 0% 0%;
+    border-radius: 4px;
+    color: white;
+    text-align: center;
+    box-sizing: border-box;
+  }
+  .skillsContainer {
+    display: flex;
+    flex-direction: column;
+    background-color: transparent;
+    border: 1px solid white;
+    border-radius: 4px;
+    padding-left: 24px;
+    padding-right: 24px;
+    padding: 24px;
+    font-size: 16px;
+    box-sizing: border-box;
+    animation: 1s ease 0s normal forwards 1 fadeIn !important;
+  }
+  .skillsContainer h2 {
+    margin: 12px;
+    color: #ea1f6a;
+    text-shadow: 0 1px 0 #ea3f7a;
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 1;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: rotate ease-in-out 1s infinite alternate !important;
+  }
+  .skillsContainer h3 {
+    font-weight: 400;
+    margin: 0;
+  }
+  .skillsContainer .category {
+    animation: 2s ease 0s normal forwards 1 fadeIn !important;
+  }
+  .skillsContainer .category img {
+    width: 50px;
+    height: 50px;
+  }
+  .skillsContainer .category p {
+    display: flex;
+    gap: 12px;
+    animation: 2.5s ease 0s normal forwards 1 fadeIn !important;
+    align-items: center;
+    justify-content: center;
+  }
+  .statsContainer {
+    display: flex;
+    gap: 12px;
+  }
+  .statsContainer svg {
+    width: 100%;
+  }
+  .repoContainer svg {
+    width: fit-content;
+    height: 120px;
+  }
+</style>
+<div class="bg">
+  <div class="container">
+    <div class="skillsContainer">
+      <h2>About</h2>
+    </div>
+    <div class="skillsContainer">
+      <h2>Repos</h2>
+      <div class="repoContainer">
+        <gitrepo name="avrio" showOwner>
+          <gitreponame />
+          <gitrepodescription />
+          <gitrepolanguage />
+          <gitrepostarcount />
+          <gitrepoForkCount />
+        </gitrepo>
+      </div>
+    </div>
+    <div class="skillsContainer">
+      <h2>Skills</h2>
+      <div class="category">
+        <h3>Languages</h3>
+        <p>
+          <img
+            src="https://raw.githubusercontent.com/devicons/devicon/master/icons/c/c-original.svg"
+          />
+          ,
+          <img
+            src="https://raw.githubusercontent.com/devicons/devicon/master/icons/cplusplus/cplusplus-original.svg"
+          />
+          <img
+            src="https://raw.githubusercontent.com/devicons/devicon/master/icons/csharp/csharp-original.svg"
+          />
+          <img
+            src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg"
+          />
+          <img
+            src="https://raw.githubusercontent.com/devicons/devicon/master/icons/java/java-original.svg"
+          />
+          <img
+            src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original-wordmark.svg"
+          />
+          <img
+            src="https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original-wordmark.svg"
+          />
+          <img
+            src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg"
+          />
+          <img
+            src="https://raw.githubusercontent.com/devicons/devicon/master/icons/typescript/typescript-original.svg"
+          />
+        </p>
+      </div>
+      <div class="category">
+        <h3>Frameworks</h3>
+        <p>
+          <img src="https://cdn.worldvectorlogo.com/logos/arduino-1.svg" />
+          <img
+            src="https://raw.githubusercontent.com/devicons/devicon/master/icons/vuejs/vuejs-original-wordmark.svg"
+          />
+          <img
+            src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original-wordmark.svg"
+          />
+          <img src="https://reactnative.dev/img/header_logo.svg" />
+          <img
+            src="https://raw.githubusercontent.com/devicons/devicon/master/icons/electron/electron-original.svg"
+          />
+          <img
+            src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original-wordmark.svg"
+          />
+          <img
+            src="https://raw.githubusercontent.com/devicons/devicon/master/icons/sass/sass-original.svg"
+          />
+          <img
+            src="https://www.vectorlogo.zone/logos/tailwindcss/tailwindcss-icon.svg"
+          />
+        </p>
+      </div>
+      <div class="category">
+        <h3>Tools</h3>
+        <p>
+          <img src="https://www.vectorlogo.zone/logos/figma/figma-icon.svg" />
+          <img
+            src="https://www.vectorlogo.zone/logos/git-scm/git-scm-icon.svg"
+          />
+        </p>
+      </div>
+      <p>${topLangs}</p>
+    </div>
+    <div class="skillsContainer">
+      <h2>Stats</h2>
+      <p>${githubStats}</p>
+    </div>
+  </div>
+</div>
