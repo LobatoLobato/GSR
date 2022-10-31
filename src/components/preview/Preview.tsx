@@ -78,11 +78,32 @@ export function Preview(props: Props) {
 }
 
 function createNSDiv(xhtml: string, githubData: GitHubData): string {
-  const parsedXhtml = githubStatsParser(xhtml, githubData);
+  let preFormattedCode = "";
+  try {
+    preFormattedCode = htmlFormatter(xhtml);
+  } catch (e) {
+    const error = e as Error;
+    return `
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>
+        .error-view {
+          width: 100%;
+          height: 94vh;
+          overflow: hidden;
+          background: transparent;
+          resize: none;
+          outline: none;
+          caret-color: transparent;
+          padding: 4px;
+        }
+      </style>
+      <textarea class="error-view" readonly>${error.message}</textarea>
+    </div>`;
+  }
+  const parsedXhtml = githubStatsParser(preFormattedCode, githubData);
   const { scope, scopedXhtml } = styleTagScoper(parsedXhtml);
-
   return `
-  <div xmlns="http://www.w3.org/1999/xhtml" class="${scope}">
-    ${htmlFormatter(scopedXhtml)}
-  </div>`;
+    <div xmlns="http://www.w3.org/1999/xhtml" class="${scope}">
+      ${htmlFormatter(scopedXhtml)}
+    </div>`;
 }

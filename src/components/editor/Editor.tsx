@@ -49,7 +49,7 @@ export function Editor(props: Props) {
     const newTimeoutId = window.setTimeout(() => {
       const concatenatedCode = `<style>:root{${CSSVariablesStr}}</style>\n
       <style>${CSSCode}</style>\n${HTMLCode}`;
-      props.onInput(htmlFormatter(concatenatedCode));
+      props.onInput(concatenatedCode);
     }, 1000);
     setTimeoutId(newTimeoutId);
   };
@@ -60,7 +60,9 @@ export function Editor(props: Props) {
 
     setHTMLEditorCode(HTMLCode);
     setTimeout(() => {
-      setHTMLEditorCode(htmlFormatter(HTMLCode));
+      try {
+        setHTMLEditorCode(htmlFormatter(HTMLCode));
+      } catch (e) {}
     }, 400);
     setformattingActive(true);
     console.log("Formatting code...");

@@ -33,7 +33,7 @@ function genericTemplate<T>(tag: string, content: T) {
   const classAttr = classValue ? `class="${classValue}"` : "";
   const styleAttr = styleValue ? `style="${styleValue}"` : "";
 
-  return `<p ${classAttr} ${styleAttr}>${content}</p>`;
+  return `<div ${classAttr} ${styleAttr}>${content}</div>`;
 }
 
 export {

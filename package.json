@@ -54,6 +54,7 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
+    "@vercel/node": "^2.5.26",
     "autoprefixer": "^10.4.12",
     "postcss": "^8.4.18",
     "tailwind-scrollbar": "^2.1.0-preview.0",

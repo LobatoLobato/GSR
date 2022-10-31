@@ -1,4 +1,11 @@
 {
   "$schema": "https://vcs.vercel.app/",
+  
+  "functions": {
+    "api/*.ts": {
+      "memory": 128,
+      "maxDuration": 10
+    }
+  },
   "devCommand": "react-scripts start"
 }
