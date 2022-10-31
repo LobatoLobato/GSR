@@ -1,5 +1,5 @@
 .preview {
-  @apply flex flex-col lg:h-full h-1/2
+  @apply flex flex-col lg:h-full h-1/2 caret-transparent
   items-center justify-center text-white text-lg;
 
   .viewBox {
