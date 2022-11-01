@@ -6,7 +6,7 @@ import { GitHubData } from "./fetchers";
 
 function App() {
   const [editorTxt, setEditorTxt] = useState("");
-  const [editorTheme, setEditorTheme] = useState("dark");
+  const [editorTheme, setEditorTheme] = useState("vs-dark");
   const [username, setUsername] = useState("");
   const [githubData, setGithubData] = useState<GitHubData>();
   const [editorClassName, setEditorClassName] = useState("lg:w-1/2 w-full");

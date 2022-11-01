@@ -16,6 +16,14 @@ function htmlFormatter(html: string) {
   };
   return prettier.format(styleTagFormatter(html), options);
 }
+function htmlFormatWithCursor(html: string, cursorOffset: number) {
+  const options: prettier.CursorOptions = {
+    parser: "html",
+    plugins: [HTMLParser],
+    cursorOffset,
+  };
+  return prettier.formatWithCursor(styleTagFormatter(html), options);
+}
 
 function cssFormatter(css: string) {
   const options: prettier.Options = {
@@ -23,6 +31,14 @@ function cssFormatter(css: string) {
     plugins: [CSSParser],
   };
   return prettier.format(css, options);
+}
+function cssFormatWithCursor(css: string, cursorOffset: number) {
+  const options: prettier.CursorOptions = {
+    parser: "css",
+    plugins: [CSSParser],
+    cursorOffset,
+  };
+  return prettier.formatWithCursor(css, options);
 }
 function styleTagFormatter(html: string) {
   const styleTagRegexp = /<style>(\n|.)+?<\/style>/gim;
@@ -99,5 +115,12 @@ function indent(code: string) {
   return code.replace(newLineRegexp, "  ");
 }
 
-export { htmlFormatter, cssFormatter, styleTagScoper, githubStatsParser };
+export {
+  htmlFormatter,
+  htmlFormatWithCursor,
+  cssFormatter,
+  cssFormatWithCursor,
+  styleTagScoper,
+  githubStatsParser,
+};
 export type { GitHubData };

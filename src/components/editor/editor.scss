@@ -28,11 +28,29 @@
       @apply absolute left-[97%] -translate-x-full clickable text-white;
     }
   }
-
+  .main-editor-navbar {
+    @apply h-8 w-full border-gray-900 border-4 border-b-gray-800;
+    .icon {
+      @apply h-full box-border bg-white bg-opacity-5 py-[2px]
+      hover:bg-opacity-20 clickable w-1/2;
+    }
+    .icon.selected {
+      @apply bg-opacity-10;
+    }
+    .html-icon {
+      @apply text-orange-500;
+    }
+    .css-icon {
+      @apply text-blue-400;
+    }
+  }
   .editor {
     @apply text-start h-full text-sm w-full 
-    overflow-clip border-4 border-solid border-gray-900;
+    overflow-clip border-4 border-t-0 border-solid border-gray-900;
 
+    .line-numbers {
+      @apply pl-1;
+    }
     .cm-scroller {
       @apply scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-black;
       @apply overflow-auto;
@@ -44,7 +62,9 @@
   .css-editor {
     @apply text-start h-full text-sm w-full 
     overflow-clip border-4 border-solid border-gray-900;
-
+    .line-numbers {
+      @apply pl-1;
+    }
     .cm-scroller {
       @apply scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-black;
       @apply overflow-auto;
@@ -68,7 +88,7 @@
     }
 
     .variablesEditor {
-      @apply text-start text-sm w-full 
+      @apply text-start text-sm w-full
       overflow-clip border-4 border-solid border-gray-900;
 
       .cm-scroller {
@@ -80,7 +100,7 @@
       @apply text-black;
     }
     .maximize {
-      @apply h-fit;
+      @apply h-96;
       // animation: maximizeAnimation 0.2s;
     }
     .minimize {

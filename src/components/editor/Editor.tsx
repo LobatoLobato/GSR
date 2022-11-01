@@ -1,10 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./editor.scss";
-
-import CodeMirror, { BasicSetupOptions } from "@uiw/react-codemirror";
-import * as themes from "@uiw/codemirror-themes-all";
-import { html } from "@codemirror/lang-html";
-import { css } from "@codemirror/lang-css";
 
 import {
   cssFormatter,
@@ -21,6 +16,29 @@ import {
   faCaretDown,
 } from "@fortawesome/free-solid-svg-icons";
 
+import MonacoEditor, { loader } from "@monaco-editor/react";
+import { themes as MonacoThemes } from "../../assets/themes";
+import {
+  RegisterCustomAttributes,
+  RegisterCustomTags,
+  RegisterTagAutoClose,
+} from "./editor-config";
+
+loader.init().then((monaco) => {
+  for (const key in MonacoThemes) {
+    monaco.editor.defineTheme(key, MonacoThemes[key]);
+  }
+  RegisterTagAutoClose(monaco);
+  RegisterCustomAttributes(monaco);
+  RegisterCustomTags(monaco);
+  // new monaco.Token().
+  // monaco.editor.registerCommand()
+  // monaco.languages.html.htmlDefaults.options.format?.indentInnerHtml
+  // monaco.languages.registerDocumentFormattingEditProvider("html", {
+  //   provideDocumentFormattingEdits
+  // })
+});
+
 interface Props {
   onInput(code: string): void;
   onMaximized: () => void;
@@ -28,21 +46,16 @@ interface Props {
   theme?: string;
   className?: string;
 }
-const basicSetup: BasicSetupOptions = {
-  foldGutter: true,
-};
+
 export function Editor(props: Props) {
   const [maximized, setMaximized] = useState(false);
-  const [timeoutId, setTimeoutId] = useState(0);
   const [showHTMLEditor, setShowHTMLEditor] = useState(true);
   const [showCSSEditor, setshowCSSEditor] = useState(false);
 
+  const [timeoutId, setTimeoutId] = useState(0);
+
   const [HTMLCode, setHTMLCode] = useState(htmlExampleCode);
   const [CSSCode, setCSSCode] = useState(cssExampleCode);
-  const [HTMLEditorCode, setHTMLEditorCode] = useState(htmlExampleCode);
-  const [CSSEditorCode, setCSSEditorCode] = useState(cssExampleCode);
-
-  const [formattingActive, setformattingActive] = useState(false);
 
   const sendCode = (HTMLCode: string, CSSCode: string) => {
     window.clearTimeout(timeoutId);
@@ -54,41 +67,6 @@ export function Editor(props: Props) {
     setTimeoutId(newTimeoutId);
   };
 
-  const formatHTMLEditorCode = (ev: React.KeyboardEvent) => {
-    if (formattingActive || HTMLCode === HTMLEditorCode) return;
-    if (!(ev.shiftKey && ev.altKey && /f/i.test(ev.key))) return;
-
-    setHTMLEditorCode(HTMLCode);
-    setTimeout(() => {
-      try {
-        setHTMLEditorCode(htmlFormatter(HTMLCode));
-      } catch (e) {}
-    }, 400);
-    setformattingActive(true);
-    console.log("Formatting code...");
-  };
-  const formatCSSEditorCode = (ev: React.KeyboardEvent) => {
-    if (formattingActive || CSSCode === CSSEditorCode) return;
-    if (!(ev.shiftKey && ev.altKey && /f/i.test(ev.key))) return;
-
-    setCSSEditorCode(CSSCode);
-    setTimeout(() => {
-      setCSSEditorCode(cssFormatter(CSSCode));
-    }, 400);
-    setformattingActive(true);
-    console.log("Formatting code...");
-  };
-  const releaseShortcuts = (ev: React.KeyboardEvent) => {
-    const formatShortcutPressed = ev.shiftKey || ev.altKey || /f/i.test(ev.key);
-    let releasedShortcut = false;
-    if (formatShortcutPressed && formattingActive) {
-      setformattingActive(false);
-      console.log("Format shortcut released");
-      releasedShortcut = true;
-    }
-    if (releasedShortcut) console.log("Released shortcuts");
-  };
-
   useEffect(() => {
     sendCode(htmlExampleCode, cssExampleCode);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -97,6 +75,17 @@ export function Editor(props: Props) {
   return (
     <div className={`editorContainer ${props.className}`}>
       <div className="navbar">
+        <h2 className="title"> Editor </h2>
+        <FontAwesomeIcon
+          className="window-resize-icon"
+          icon={maximized ? faWindowMinimize : faWindowMaximize}
+          onClick={() => {
+            maximized ? props.onMinimized() : props.onMaximized();
+            setMaximized(!maximized);
+          }}
+        ></FontAwesomeIcon>
+      </div>
+      <div className="main-editor-navbar">
         <FontAwesomeIcon
           className={`icon html-icon ${showHTMLEditor ? "selected" : ""}`}
           icon={faHtml5}
@@ -113,37 +102,24 @@ export function Editor(props: Props) {
             setShowHTMLEditor(false);
           }}
         ></FontAwesomeIcon>
-        <h2 className="title"> Editor </h2>
-        <FontAwesomeIcon
-          className="window-resize-icon"
-          icon={maximized ? faWindowMinimize : faWindowMaximize}
-          onClick={() => {
-            maximized ? props.onMinimized() : props.onMaximized();
-            setMaximized(!maximized);
-          }}
-        ></FontAwesomeIcon>
       </div>
       <HTMLEditor
         className={showHTMLEditor ? "" : "hidden"}
         theme={props.theme}
-        code={HTMLEditorCode}
-        onChange={(value) => {
-          setHTMLCode(value);
-          sendCode(value, CSSCode);
+        code={htmlExampleCode}
+        onChange={(HTMLCode) => {
+          setHTMLCode(HTMLCode);
+          sendCode(HTMLCode, CSSCode);
         }}
-        onKeyDown={formatHTMLEditorCode}
-        onKeyUp={releaseShortcuts}
       ></HTMLEditor>
       <CSSEditor
         className={showCSSEditor ? "" : "hidden"}
         theme={props.theme}
-        code={CSSEditorCode}
-        onChange={(value) => {
-          setCSSCode(value);
-          sendCode(HTMLCode, value);
+        code={cssExampleCode}
+        onChange={(CSSCode) => {
+          setCSSCode(CSSCode);
+          sendCode(HTMLCode, CSSCode);
         }}
-        onKeyDown={formatCSSEditorCode}
-        onKeyUp={releaseShortcuts}
       ></CSSEditor>
       <CSSVariablesEditor
         code={cssFormatter(`:root{${CSSVariablesStr}}`)}
@@ -155,93 +131,78 @@ export function Editor(props: Props) {
     </div>
   );
 }
-interface HTMLEditorProps {
+
+interface EditorProps {
   onChange: (value: string) => void;
-  onKeyDown: (event: React.KeyboardEvent) => void;
-  onKeyUp: (event: React.KeyboardEvent) => void;
   className?: string;
   code: string;
   theme?: string;
 }
-function HTMLEditor(props: HTMLEditorProps) {
+function HTMLEditor(props: EditorProps) {
   return (
-    <CodeMirror
-      placeholder="Write your html code"
-      value={props.code}
-      className={`editor ${props.theme} ${props.className}`}
-      height="100%"
-      theme={getTheme(props.theme)}
-      onChange={props.onChange}
-      onKeyDown={props.onKeyDown}
-      onKeyUp={props.onKeyUp}
-      basicSetup={basicSetup}
-      extensions={[
-        html({
-          extraTags: {
-            gitstats: {},
-            statpullrequests: {},
-            statcommits: {},
-            statcontributedto: {},
-            statstarsearned: {},
-            statissues: {},
+    <div className={`editor ${props.theme} ${props.className}`}>
+      <MonacoEditor
+        height="100%"
+        defaultLanguage="html"
+        defaultValue={props.code}
+        options={{
+          lineNumbersMinChars: 3,
+        }}
+        theme={props.theme}
+        onChange={(value) => props.onChange(value || "")}
+        onMount={(editor, monaco) => {
+          editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, (a) =>
+            console.log("oi"),
+          );
 
-            gitstreak: {},
-            streakcontributionscount: {},
-            streakcontributionsfirstdate: {},
-            streakcurrentcount: {},
-            streakcurrentenddate: {},
-            streakcurrentstartdate: {},
-            streaklongestcount: {},
-            streaklongestenddate: {},
-            streaklongeststartdate: {},
-
-            gittoplangs: { attrs: { size: null } },
-            lang: { attrs: { position: null } },
-            langName: {},
-            langPercentage: {},
-
-            gitrepo: { attrs: { name: null } },
-            reponame: { attrs: { showOwner: null } },
-            repodescription: {},
-            repolanguage: {},
-            repostarcount: {},
-            repoForkCount: {},
-          },
-        }),
-      ]}
-    />
+          editor.addAction({
+            id: "html-format",
+            label: "Formatting...",
+            keybindings: [
+              monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KeyF,
+            ],
+            run: () => {
+              try {
+                editor.setValue(htmlFormatter(editor.getValue()));
+              } catch (e) {}
+            },
+          });
+        }}
+      ></MonacoEditor>
+    </div>
   );
 }
-interface CSSEditorProps {
-  onChange: (value: string) => void;
-  onKeyDown: (event: React.KeyboardEvent) => void;
-  onKeyUp: (event: React.KeyboardEvent) => void;
-  className?: string;
-  code: string;
-  theme?: string;
-}
-function CSSEditor(props: CSSEditorProps) {
+function CSSEditor(props: EditorProps) {
   return (
-    <CodeMirror
-      placeholder="Write your css code"
-      value={props.code}
-      className={`css-editor ${props.theme} ${props.className}`}
-      height="100%"
-      theme={getTheme(props.theme)}
-      onChange={props.onChange}
-      onKeyDown={props.onKeyDown}
-      onKeyUp={props.onKeyUp}
-      basicSetup={basicSetup}
-      extensions={[css()]}
-    />
+    <div className={`editor ${props.theme} ${props.className}`}>
+      <MonacoEditor
+        height="100%"
+        defaultLanguage="css"
+        defaultValue={props.code}
+        options={{ lineNumbersMinChars: 3 }}
+        theme={props.theme}
+        onChange={(value) => props.onChange(value || "")}
+        onMount={(editor, monaco) => {
+          editor.addAction({
+            id: "css-format",
+            label: "Formatting...",
+            keybindings: [
+              monaco.KeyMod.Shift | monaco.KeyMod.Alt | monaco.KeyCode.KeyF,
+            ],
+            run: () => {
+              try {
+                editor.setValue(cssFormatter(editor.getValue()));
+              } catch (e) {}
+            },
+          });
+        }}
+      ></MonacoEditor>
+    </div>
   );
 }
-function CSSVariablesEditor(props: {
-  onChange: (value: string) => void;
-  code: string;
-  theme: string | undefined;
-}) {
+function CSSVariablesEditor(props: EditorProps) {
   const [collapsed, setCollapsed] = useState(true);
+
   return (
     <div className="variables-editor-container">
       <div className="titlebar">
@@ -252,27 +213,29 @@ function CSSVariablesEditor(props: {
           onClick={() => setCollapsed(!collapsed)}
         ></FontAwesomeIcon>
       </div>
-      <CodeMirror
-        extensions={[css()]}
-        placeholder="Your css variables go here"
-        value={props.code}
+      <div
         className={`variablesEditor ${props.theme} ${
           collapsed ? "minimize" : "maximize"
         }`}
-        height="100%"
-        theme={getTheme(props.theme)}
-        readOnly={true}
-        basicSetup={basicSetup}
-        onChange={props.onChange}
-      />
+      >
+        <MonacoEditor
+          height="100%"
+          defaultLanguage="css"
+          value={props.code}
+          options={{
+            lineNumbersMinChars: 3,
+            readOnly: true,
+            formatOnType: true,
+            formatOnPaste: true,
+          }}
+          theme={props.theme}
+          onChange={(value) => props.onChange(value || "")}
+        ></MonacoEditor>
+      </div>
     </div>
   );
 }
 
-function getTheme(theme: string | undefined) {
-  if (!theme) return "dark";
-  return theme === "dark" || theme === "light" ? theme : { ...themes }[theme];
-}
 const cssExampleCode = `@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 @keyframes AnimationName {
   0% {

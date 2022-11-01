@@ -5,6 +5,7 @@ import DropDown from "react-dropdown";
 
 import { RepositoryList } from "../../fetchers";
 
+import { list as MonacoThemeList } from "../../assets/themes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleXmark,
@@ -110,9 +111,9 @@ function ThemeSelector(props: { onInput: (selectedOption: string) => void }) {
   useEffect(() => {
     const themeArray = Object.entries(themes);
     setThemeOpts(
-      themeArray.map((theme) => {
-        const name = theme[0];
-        const style = theme[1];
+      MonacoThemeList.map((theme) => {
+        const name = theme;
+        const style = "dark";
         return {
           value: name,
           label: name,
