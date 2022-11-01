@@ -105,21 +105,66 @@
   }
 }
 .sidebar.show {
-  @apply fixed z-10 left-0 lg:w-2/12 w-full h-full
+  @apply fixed z-10 left-0 lg:min-w-[16.6666667%] lg:max-w-[16.6666667%] lg:w-2/12 
+  w-full h-full
   pb-2 px-2;
   animation: show-sidebar 1s ease;
 }
 .sidebar.hide {
-  @apply relative lg:fixed left-0 z-10 w-full lg:w-fit h-fit 
+  @apply relative lg:fixed left-0 z-10 w-full lg:w-fit lg:min-w-fit lg:max-w-fit h-fit 
  hover:bg-green-500;
   animation: hide-sidebar 1s ease;
 }
 @media (min-width: 1024px) {
   .sidebar.show {
-    @apply relative animate-grow;
+    @apply relative;
+    animation: show-sidebar-lg 1s ease;
   }
   .sidebar.hide {
-    @apply animate-shrinkSideBar-lg;
+    // @apply animate-shrinkSideBar-lg;
+    animation: hide-sidebar-lg 1s ease;
+  }
+}
+@keyframes show-sidebar-lg {
+  0% {
+    padding-left: 0px;
+    padding-right: 0px;
+    max-width: 0px;
+    min-width: 0px;
+    width: 0px;
+  }
+}
+@keyframes hide-sidebar-lg {
+  0% {
+    // padding-left: 0px;
+    // padding-right: 0px;
+    max-width: 16.666667%;
+    min-width: 16.666667%;
+    width: 16.666667%;
+    position: relative;
+  }
+  100% {
+    max-width: 0px;
+    min-width: 0px;
+    width: 0px;
+  }
+  60% {
+    position: relative;
+    max-width: 0px;
+    min-width: 0px;
+    width: 0;
+  }
+  70% {
+    position: absolute;
+    max-width: 0px;
+    min-width: 0px;
+    width: 0;
+  }
+  100% {
+    max-width: 40px;
+    min-width: 40px;
+    width: 40px;
+    position: absolute;
   }
 }
 @keyframes show-sidebar {

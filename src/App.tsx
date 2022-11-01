@@ -19,7 +19,15 @@ function App() {
         onUsernameChange={setUsername}
         repoList={githubData?.repos}
       />
-      <div className="mainContent">
+      <div
+        className={`mainContent ${
+          previewClassName === "maximized"
+            ? "maximized"
+            : editorClassName === "maximized"
+            ? "maximized"
+            : ""
+        }`}
+      >
         <Preview
           className={previewClassName}
           navbarClassName={editorClassName === "maximized" ? "hidden" : ""}
