@@ -1,7 +1,15 @@
 .preview {
   @apply flex flex-col lg:h-full h-1/2 caret-transparent
   items-center justify-center text-white text-lg;
-
+  .navbar {
+    @apply relative flex min-h-[28px] h-7 w-full px-1 items-center justify-between;
+    .title {
+      @apply absolute left-1/2 -translate-x-1/2 select-none;
+    }
+    .window-resize-icon {
+      @apply absolute left-[97%] -translate-x-full clickable text-white;
+    }
+  }
   .viewBox {
     @apply w-full h-full border-4 border-solid
     border-gray-900 bg-white bg-opacity-5;

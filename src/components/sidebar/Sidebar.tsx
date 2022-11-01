@@ -82,45 +82,31 @@ export function SideBar(props: Props) {
   );
 }
 
-const themes: { [key: string]: string } = {
-  dark: "dark",
-  light: "light",
-  abcdef: "dark",
-  androidstudio: "dark",
-  atomone: "dark",
-  bbedit: "light",
-  bespin: "dark",
-  darcula: "dark",
-  dracula: "dark",
-  duotoneDark: "dark",
-  duotoneLight: "light",
-  eclipse: "light",
-  githubDark: "dark",
-  githubLight: "light",
-  okaidia: "dark",
-  sublime: "dark",
-  xcodeDark: "dark",
-  xcodeLight: "light",
-};
+const themeList = [
+  {
+    value: "vs-dark",
+    label: "vs-dark",
+    className: "dark",
+  },
+  {
+    value: "vs-light",
+    label: "vs-light",
+    className: "light",
+  },
+  ...MonacoThemeList.map((theme) => ({
+    value: theme.key,
+    label: theme.key,
+    className: theme.type,
+  })),
+];
 function ThemeSelector(props: { onInput: (selectedOption: string) => void }) {
   const [themeOpts, setThemeOpts] = useState([
     { value: "value", label: "label", className: "className" },
   ]);
-  const [selectedTheme, setSelectedTheme] = useState("dark");
+  const [selectedTheme, setSelectedTheme] = useState("vs-dark");
 
   useEffect(() => {
-    const themeArray = Object.entries(themes);
-    setThemeOpts(
-      MonacoThemeList.map((theme) => {
-        const name = theme;
-        const style = "dark";
-        return {
-          value: name,
-          label: name,
-          className: style,
-        };
-      }),
-    );
+    setThemeOpts(themeList);
   }, [setThemeOpts]);
 
   return (
@@ -129,11 +115,13 @@ function ThemeSelector(props: { onInput: (selectedOption: string) => void }) {
       <DropDown
         options={themeOpts}
         placeholder={selectedTheme}
-        menuClassName="menu"
-        placeholderClassName={selectedTheme}
-        className="h-full w-[90%] "
+        menuClassName={`menu `}
+        placeholderClassName={
+          themeList.find((a) => a.label === selectedTheme)?.className
+        }
+        className="h-full w-[90%]"
         onChange={(ev) => {
-          setSelectedTheme(themes[ev.value]);
+          setSelectedTheme(ev.value);
           props.onInput(ev.value);
         }}
       />

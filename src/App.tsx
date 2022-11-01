@@ -22,6 +22,7 @@ function App() {
       <div className="mainContent">
         <Preview
           className={previewClassName}
+          navbarClassName={editorClassName === "maximized" ? "hidden" : ""}
           xhtml={editorTxt}
           username={username}
           onMaximized={() => {
@@ -36,6 +37,7 @@ function App() {
         />
         <Editor
           className={editorClassName}
+          navbarClassName={previewClassName === "maximized" ? "hidden" : ""}
           theme={editorTheme}
           onMaximized={() => {
             setEditorClassName("maximized");

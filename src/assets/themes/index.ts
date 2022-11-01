@@ -4,10 +4,13 @@ import GitHubLight from "./GitHubLight.json";
 import Monokai from "./Monokai.json";
 
 const themes: { [key: string]: any } = {
-  Dracula,
-  GitHubDark,
-  GitHubLight,
-  Monokai,
+  Dracula: { ...Dracula, type: "dark" },
+  GitHubDark: { ...GitHubDark, type: "dark" },
+  GitHubLight: { ...GitHubLight, type: "light" },
+  Monokai: { ...Monokai, type: "dark" },
 };
-const list = [...Object.keys(themes), "vs-dark", "vs-light"];
+const list = Object.entries(themes).map(([key, value]) => ({
+  key,
+  type: value.type,
+}));
 export { themes, list };

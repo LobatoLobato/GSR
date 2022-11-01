@@ -43,6 +43,7 @@ interface Props {
   onInput(code: string): void;
   onMaximized: () => void;
   onMinimized: () => void;
+  navbarClassName: string;
   theme?: string;
   className?: string;
 }
@@ -75,9 +76,9 @@ export function Editor(props: Props) {
   return (
     <div className={`editorContainer ${props.className}`}>
       <div className="navbar">
-        <h2 className="title"> Editor </h2>
+        <h2 className={`title ${props.navbarClassName}`}> Editor </h2>
         <FontAwesomeIcon
-          className="window-resize-icon"
+          className={`window-resize-icon ${props.navbarClassName}`}
           icon={maximized ? faWindowMinimize : faWindowMaximize}
           onClick={() => {
             maximized ? props.onMinimized() : props.onMaximized();

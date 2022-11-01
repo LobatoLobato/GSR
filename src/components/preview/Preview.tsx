@@ -17,6 +17,7 @@ interface Props {
   username: string;
   onMaximized: () => void;
   onMinimized: () => void;
+  navbarClassName: string;
   className?: string;
   onFetch?: (GitHubData: GitHubData) => void;
 }
@@ -41,27 +42,16 @@ export function Preview(props: Props) {
 
   return (
     <div className={`preview ${props.className}`}>
-      <div className=" relative flex min-h-[28px] h-7 w-full px-1 items-center justify-between">
-        <h2 className="absolute left-1/2 -translate-x-1/2 select-none ">
-          {" "}
-          Preview{" "}
-        </h2>
-        <div
-          className="absolute left-[97%] -translate-x-full clickable"
+      <div className="navbar">
+        <h2 className={`title ${props.navbarClassName}`}> Preview </h2>
+        <FontAwesomeIcon
+          className={`window-resize-icon ${props.navbarClassName}`}
+          icon={maximized ? faWindowMinimize : faWindowMaximize}
           onClick={() => {
-            if (maximized) {
-              props.onMinimized();
-            } else {
-              props.onMaximized();
-            }
+            maximized ? props.onMinimized() : props.onMaximized();
             setMaximized(!maximized);
           }}
-        >
-          <FontAwesomeIcon
-            className="text-white"
-            icon={maximized ? faWindowMinimize : faWindowMaximize}
-          ></FontAwesomeIcon>
-        </div>
+        ></FontAwesomeIcon>
       </div>
       <svg xmlns="http://www.w3.org/2000/svg" className="viewBox">
         <foreignObject
