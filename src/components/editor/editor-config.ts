@@ -1,13 +1,10 @@
 import { Monaco } from "@monaco-editor/react";
-import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
+import { editor, languages, Position } from "monaco-editor";
 
 export function RegisterTagAutoClose(monaco: Monaco) {
   monaco.languages.registerCompletionItemProvider("html", {
     triggerCharacters: [">"],
-    provideCompletionItems: (
-      model: monaco.editor.ITextModel,
-      position: monaco.Position,
-    ) => {
+    provideCompletionItems: (model: editor.ITextModel, position: Position) => {
       const codePre: string = model.getValueInRange({
         startLineNumber: position.lineNumber,
         startColumn: 1,
@@ -46,10 +43,7 @@ export function RegisterTagAutoClose(monaco: Monaco) {
 export function RegisterCustomTags(monaco: Monaco) {
   monaco.languages.registerCompletionItemProvider("html", {
     triggerCharacters: ["<"],
-    provideCompletionItems: (
-      model: monaco.editor.ITextModel,
-      position: monaco.Position,
-    ) => {
+    provideCompletionItems: (model: editor.ITextModel, position: Position) => {
       const customTags = [
         "gitstats",
         "statpullrequests",
@@ -77,7 +71,7 @@ export function RegisterCustomTags(monaco: Monaco) {
         "repostarcount",
         "repoforkcount",
       ];
-      let suggestions: monaco.languages.CompletionItem[] = [];
+      let suggestions: languages.CompletionItem[] = [];
       for (const value of customTags) {
         suggestions.push({
           label: value,
@@ -101,12 +95,9 @@ export function RegisterCustomTags(monaco: Monaco) {
 }
 export function RegisterCustomAttributes(monaco: Monaco) {
   monaco.languages.registerCompletionItemProvider("html", {
-    provideCompletionItems: (
-      model: monaco.editor.ITextModel,
-      position: monaco.Position,
-    ) => {
+    provideCompletionItems: (model: editor.ITextModel, position: Position) => {
       const customTags = ["size", "position", "name", "showOwner"];
-      let suggestions: monaco.languages.CompletionItem[] = [];
+      let suggestions: languages.CompletionItem[] = [];
       for (const value of customTags) {
         suggestions.push({
           label: value,

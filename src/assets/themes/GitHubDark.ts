@@ -1,4 +1,4 @@
-import { editor } from "monaco-editor/esm/vs/editor/editor.api";
+import { editor } from "monaco-editor";
 const GitHubDark: editor.IStandaloneThemeData = {
   base: "vs-dark",
   inherit: true,
