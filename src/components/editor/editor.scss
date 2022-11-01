@@ -5,8 +5,8 @@
   .navbar {
     @apply relative flex min-h-[28px] h-7 w-full px-1 items-center justify-start;
     .icon {
-      @apply h-full w-8 box-border bg-white bg-opacity-5
-      border-2 border-b-0 border-gray-500 py-[2px]
+      @apply h-full w-8 py-[2px] box-border bg-white bg-opacity-5
+      border-2 border-b-0 border-gray-500 
       hover:bg-opacity-10 clickable;
     }
     .icon.selected {
@@ -31,7 +31,7 @@
   .main-editor-navbar {
     @apply h-8 w-full border-gray-900 border-4 border-b-gray-800;
     .icon {
-      @apply h-full box-border bg-white bg-opacity-5 py-[2px]
+      @apply h-full py-[2px] box-border bg-white bg-opacity-5 
       hover:bg-opacity-20 clickable w-1/2;
     }
     .icon.selected {
@@ -74,7 +74,7 @@
     @apply text-black;
   }
   .variables-editor-container {
-    @apply relative flex flex-col max-h-[33%];
+    @apply relative flex max-h-[33%] flex-col;
 
     .titlebar {
       @apply flex justify-between bg-gray-800 px-3 w-full box-border 

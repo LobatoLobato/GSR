@@ -15,7 +15,7 @@
     border-gray-900 bg-white bg-opacity-5;
 
     .xhtmlContainer {
-      @apply scrollbar scrollbar-track-[#ffffff02] scrollbar-thumb-[#ffffff20];
+      @apply scrollbar-track-[#ffffff02] scrollbar-thumb-[#ffffff20] scrollbar;
       @apply overflow-hidden;
     }
     .xhtmlContainer:hover {
