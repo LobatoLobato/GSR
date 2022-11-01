@@ -1,9 +1,13 @@
 import { Monaco } from "@monaco-editor/react";
+import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 
 export function RegisterTagAutoClose(monaco: Monaco) {
   monaco.languages.registerCompletionItemProvider("html", {
     triggerCharacters: [">"],
-    provideCompletionItems: (model, position) => {
+    provideCompletionItems: (
+      model: monaco.editor.ITextModel,
+      position: monaco.Position,
+    ) => {
       const codePre: string = model.getValueInRange({
         startLineNumber: position.lineNumber,
         startColumn: 1,
@@ -17,7 +21,7 @@ export function RegisterTagAutoClose(monaco: Monaco) {
         return;
       }
 
-      const word: any = model.getWordUntilPosition(position);
+      const word = model.getWordUntilPosition(position);
 
       return {
         suggestions: [
@@ -42,7 +46,10 @@ export function RegisterTagAutoClose(monaco: Monaco) {
 export function RegisterCustomTags(monaco: Monaco) {
   monaco.languages.registerCompletionItemProvider("html", {
     triggerCharacters: ["<"],
-    provideCompletionItems: (model, position) => {
+    provideCompletionItems: (
+      model: monaco.editor.ITextModel,
+      position: monaco.Position,
+    ) => {
       const customTags = [
         "gitstats",
         "statpullrequests",
@@ -70,7 +77,7 @@ export function RegisterCustomTags(monaco: Monaco) {
         "repostarcount",
         "repoforkcount",
       ];
-      let suggestions: any[] = [];
+      let suggestions: monaco.languages.CompletionItem[] = [];
       for (const value of customTags) {
         suggestions.push({
           label: value,
@@ -78,6 +85,12 @@ export function RegisterCustomTags(monaco: Monaco) {
           insertText: value,
           insertTextRules:
             monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          range: {
+            startLineNumber: position.lineNumber,
+            endLineNumber: position.lineNumber,
+            startColumn: 0,
+            endColumn: position.column,
+          },
         });
       }
       return {
@@ -88,9 +101,12 @@ export function RegisterCustomTags(monaco: Monaco) {
 }
 export function RegisterCustomAttributes(monaco: Monaco) {
   monaco.languages.registerCompletionItemProvider("html", {
-    provideCompletionItems: (model, position) => {
+    provideCompletionItems: (
+      model: monaco.editor.ITextModel,
+      position: monaco.Position,
+    ) => {
       const customTags = ["size", "position", "name", "showOwner"];
-      let suggestions: any[] = [];
+      let suggestions: monaco.languages.CompletionItem[] = [];
       for (const value of customTags) {
         suggestions.push({
           label: value,
@@ -98,6 +114,12 @@ export function RegisterCustomAttributes(monaco: Monaco) {
           insertText: `${value}=""`,
           insertTextRules:
             monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          range: {
+            startLineNumber: position.lineNumber,
+            endLineNumber: position.lineNumber,
+            startColumn: 0,
+            endColumn: position.column,
+          },
         });
       }
       return {

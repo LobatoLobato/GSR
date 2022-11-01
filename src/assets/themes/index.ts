@@ -1,9 +1,14 @@
-import Dracula from "./Dracula.json";
-import GitHubDark from "./GitHubDark.json";
-import GitHubLight from "./GitHubLight.json";
-import Monokai from "./Monokai.json";
+import Dracula from "./Dracula";
+import GitHubDark from "./GitHubDark";
+import GitHubLight from "./GitHubLight";
+import Monokai from "./Monokai";
+import { editor } from "monaco-editor/esm/vs/editor/editor.api";
 
-const themes: { [key: string]: any } = {
+interface ThemeMap extends editor.IStandaloneThemeData {
+  base: editor.BuiltinTheme;
+  type: string;
+}
+const themes: { [key: string]: ThemeMap } = {
   Dracula: { ...Dracula, type: "dark" },
   GitHubDark: { ...GitHubDark, type: "dark" },
   GitHubLight: { ...GitHubLight, type: "light" },
