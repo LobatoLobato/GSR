@@ -152,6 +152,15 @@ function HTMLEditor(props: EditorProps) {
         theme={props.theme}
         onChange={(value) => props.onChange(value || "")}
         onMount={(editor, monaco) => {
+          // editor.addAction({
+          //   id: "push-html-code",
+          //   label: "Push",
+          //   keybindings: [
+          //     monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS
+          //   ],
+          //   run: () => {
+          //   }
+          // })
           editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, (a) =>
             console.log("oi"),
           );

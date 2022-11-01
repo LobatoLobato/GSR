@@ -15,8 +15,11 @@
     border-gray-900 bg-white bg-opacity-5;
 
     .xhtmlContainer {
-      @apply scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-black;
-      @apply overflow-y-auto overflow-x-clip;
+      @apply scrollbar scrollbar-track-[#ffffff02] scrollbar-thumb-[#ffffff20];
+      @apply overflow-hidden;
+    }
+    .xhtmlContainer:hover {
+      overflow-y: overlay;
     }
   }
 }
