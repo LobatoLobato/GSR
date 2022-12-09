@@ -37,28 +37,28 @@ async function connectToDatabase(uri: string) {
 }
 
 export default async function foo(req: ApiRequest, res: VercelResponse) {
-  const { token, height } = req.query;
-
-  const db = await connectToDatabase(process.env.MONGODB_URI as string);
-
-  const collection = db.collection<{
-    _id: ObjectId;
-    code: string;
-    githubUsername: string;
-  }>("users");
-
-  res.setHeader("Content-Type", "image/svg+xml");
-
-  const cacheSeconds = CONSTANTS.FOUR_HOURS;
-
-  res.setHeader(
-    "Cache-Control",
-    `max-age=${
-      cacheSeconds / 2
-    },s-maxage=${cacheSeconds}, stale-while-revalidate=${CONSTANTS.ONE_DAY}`,
-  );
-
   try {
+    const { token, height } = req.query;
+
+    const db = await connectToDatabase(process.env.MONGODB_URI as string);
+
+    const collection = db.collection<{
+      _id: ObjectId;
+      code: string;
+      githubUsername: string;
+    }>("users");
+
+    res.setHeader("Content-Type", "image/svg+xml");
+
+    const cacheSeconds = CONSTANTS.FOUR_HOURS;
+
+    res.setHeader(
+      "Cache-Control",
+      `max-age=${
+        cacheSeconds / 2
+      },s-maxage=${cacheSeconds}, stale-while-revalidate=${CONSTANTS.ONE_DAY}`,
+    );
+
     const item = await collection.findOne(new ObjectId(token));
     if (!item) throw new Error();
     const { githubUsername, code } = item;
@@ -67,9 +67,7 @@ export default async function foo(req: ApiRequest, res: VercelResponse) {
     const githubData = await fetchGithubData({ username: githubUsername });
 
     const a = createNSDiv(code, githubData);
-    // a.replace(/\n/gm, "");
     console.log(a.replace(/\n/gm, "").replace(/\s+/gim, " "));
-    // console.log(code);
 
     return res.status(201).send(`
     <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="${height}">
@@ -83,6 +81,7 @@ export default async function foo(req: ApiRequest, res: VercelResponse) {
     `);
   } catch (err) {
     res.setHeader("Cache-Control", `no-cache, no-store, must-revalidate`); // Don't cache error responses.
+    console.log(err);
     return res.send({});
   }
 }

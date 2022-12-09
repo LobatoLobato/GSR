@@ -306,6 +306,7 @@ function LoginButton() {
   async function onSuccess(response: { code: string }) {
     const { username, dbToken } = await authenticateUser(response.code);
     setUsername(username);
+
     localStorage.setItem("AuthenticatedUserName", username);
     localStorage.setItem("AuthenticatedUserDBToken", dbToken);
   }
@@ -342,7 +343,7 @@ function LoginButton() {
             // onRequest?: () => void;
             // popupHeight?: number;
             // popupWidth?: number;
-            // redirectUri?: string;
+            // redirectUri="./"
             // scope?: string;
             // disabled?: boolean;
           />
