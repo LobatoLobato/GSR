@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./preview.scss";
 
 import {
@@ -23,12 +23,20 @@ interface Props {
 }
 
 export function Preview(props: Props) {
+  const svg = useRef<SVGSVGElement>(null);
   const [githubData, setGithubData] = useState<GitHubData>(
     new GitHubDataFetcher().data,
   );
   const [maximized, setMaximized] = useState(false);
   const username = props.username;
   const onFetch = props.onFetch;
+  // useEffect(() => {
+  //   console.log(
+  //     svg.current?.querySelector("foreignObject")?.querySelector("div")
+  //       ?.clientHeight,
+  //   );
+  // });
+
   useEffect(() => {
     if (username) {
       fetchGithubData({ username: username }).then((data) => {
@@ -53,7 +61,7 @@ export function Preview(props: Props) {
           }}
         ></FontAwesomeIcon>
       </div>
-      <svg xmlns="http://www.w3.org/2000/svg" className="viewBox">
+      <svg xmlns="http://www.w3.org/2000/svg" className="viewBox" ref={svg}>
         <foreignObject
           className="xhtmlContainer"
           width="100%"

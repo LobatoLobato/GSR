@@ -18,6 +18,7 @@ function App() {
         onThemeChange={setEditorTheme}
         onUsernameChange={setUsername}
         repoList={githubData?.repos}
+        code={editorTxt}
       />
       <div
         className={`mainContent ${

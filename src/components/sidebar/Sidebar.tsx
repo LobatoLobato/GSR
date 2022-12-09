@@ -13,10 +13,14 @@ import {
   faSquareCaretUp,
 } from "@fortawesome/free-regular-svg-icons";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
+import { authenticateUser, uploadCode } from "../../service/api";
+import LoginGithub from "react-login-github";
 
 interface Props {
   onThemeChange: (theme: string) => void;
   onUsernameChange: (username: string) => void;
+  code?: string;
   repoList?: RepositoryList;
 }
 export function SideBar(props: Props) {
@@ -30,6 +34,12 @@ export function SideBar(props: Props) {
   const [contentClassName, setContentClassName] = useState("hidden");
   const [timeoutId, setTimeoutId] = useState(0);
   const [showHelp, setShowHelp] = useState(false);
+  const [token, setToken] = useState("");
+  const [requestBody, setRequestBody] = useState({
+    username: "",
+    code: "",
+    githubUsername: "",
+  });
   return (
     <div className={`sidebar ${sidebarClassName}`}>
       <HelpPopup
@@ -49,6 +59,7 @@ export function SideBar(props: Props) {
         <FontAwesomeIcon className="icon" icon={faBars}></FontAwesomeIcon>
       </div>
       <div className={`content ${contentClassName}`}>
+        <LoginButton></LoginButton>
         <ThemeSelector onInput={props.onThemeChange} />
         <div className="githubStats">
           <h3>Github Stats</h3>
@@ -63,15 +74,39 @@ export function SideBar(props: Props) {
               onInput={(ev) => {
                 const username = ev.currentTarget.value;
                 window.clearInterval(timeoutId);
-                const id = window.setTimeout(
-                  () => props.onUsernameChange(username),
-                  1000,
-                );
+                const id = window.setTimeout(() => {
+                  setRequestBody({
+                    ...requestBody,
+                    githubUsername: username,
+                  });
+                  props.onUsernameChange(username);
+                }, 1000);
                 setTimeoutId(id);
               }}
             />
           </div>
           <RepoList list={props.repoList}></RepoList>
+          <button
+            className="helpBtn"
+            onClick={() => {
+              if (!props.code) return;
+              const newRequestBody = {
+                ...requestBody,
+                code: props.code.replace(/\n/gm, ""),
+              };
+              setToken("Uploading...");
+              uploadCode(newRequestBody).then((response) => {
+                setToken(response.data.registeredId);
+              });
+              setRequestBody(newRequestBody);
+            }}
+          >
+            Upload Code
+          </button>
+          <div className="w-full mx-2 pb-1 bg-white bg-opacity-5 overflow-x-auto scrollbar-thin scrollbar-thumb-[#ffffff30] scrollbar-track-transparent">
+            <h4 className="text-sm">Token</h4>
+            <p className="text-xs">{token}</p>
+          </div>
           <button className="helpBtn" onClick={() => setShowHelp(true)}>
             {" "}
             HELP{" "}
@@ -266,6 +301,58 @@ function HelpPopup(props: { onClosed: () => void; show: boolean }) {
   );
 }
 
+function LoginButton() {
+  const [username, setUsername] = useState("");
+  async function onSuccess(response: { code: string }) {
+    const { username, dbToken } = await authenticateUser(response.code);
+    setUsername(username);
+    localStorage.setItem("AuthenticatedUserName", username);
+    localStorage.setItem("AuthenticatedUserDBToken", dbToken);
+  }
+  function onFailure(response: Error) {
+    console.log(response);
+  }
+  function logout() {
+    setUsername("");
+    localStorage.removeItem("AuthenticatedUserName");
+    localStorage.removeItem("AuthenticatedUserDBToken");
+  }
+  useEffect(() => {
+    if (localStorage.length > 0) {
+      const username = localStorage.getItem("AuthenticatedUserName");
+      setUsername(username || "");
+    }
+  }, []);
+  return (
+    <div className="flex flex-col items-center justify-center gap-2">
+      <h2 className="title">
+        {username ? `Logged in as ${username}` : "Not logged in"}
+      </h2>
+      {username ? (
+        <button className="login-github" onClick={logout}>
+          Logout
+        </button>
+      ) : (
+        <div className="login-github">
+          <LoginGithub
+            buttonText="Login with GitHub"
+            clientId={process.env.REACT_APP_OAUTH_CLIENT}
+            onSuccess={onSuccess}
+            onFailure={onFailure}
+            // onRequest?: () => void;
+            // popupHeight?: number;
+            // popupWidth?: number;
+            // redirectUri?: string;
+            // scope?: string;
+            // disabled?: boolean;
+          />
+
+          <FontAwesomeIcon icon={faGithub} />
+        </div>
+      )}
+    </div>
+  );
+}
 // function ToolTip(props: { text: string }) {
 //   return (
 //     <p className="absolute top-0 z-20 select-none hidden bg-gray-800 px-2 box-border -left-2 w-[300%] group-hover:flex">

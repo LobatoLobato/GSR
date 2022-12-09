@@ -17,6 +17,7 @@
     .xhtmlContainer {
       @apply scrollbar-track-[#ffffff02] scrollbar-thumb-[#ffffff20] scrollbar;
       @apply overflow-hidden;
+      line-height: normal;
     }
     .xhtmlContainer:hover {
       overflow-y: overlay;

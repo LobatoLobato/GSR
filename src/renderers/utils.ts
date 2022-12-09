@@ -35,7 +35,11 @@ function genericTemplate<T>(tag: string, content: T) {
 
   return `<div ${classAttr} ${styleAttr}>${content}</div>`;
 }
-
+function removeNewLines(html: string): string {
+  const newLines = /\n/gm;
+  const whiteSpaces = /\s+/gm;
+  return html.replace(newLines, " ").replace(whiteSpaces, " ");
+}
 export {
   getTagChildren,
   getAttrValue,
@@ -44,4 +48,5 @@ export {
   tagRegExp,
   tagNameRegExp,
   tagAttrRegExp,
+  removeNewLines,
 };

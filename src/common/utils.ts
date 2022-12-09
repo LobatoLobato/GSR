@@ -47,18 +47,66 @@ function styleTagFormatter(html: string) {
     const tagContent = tag.replace(/<\/?style>/gim, "");
     return cssFormatter(tagContent);
   };
-
-  return html.replace(
-    styleTagRegexp,
-    (tag) => "<style>\n" + indent(formatContent(tag)) + "</style>",
-  );
+  const reset = `
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}`;
+  return `
+    <style>
+    ${reset}
+    </style>
+    ${html.replace(
+      styleTagRegexp,
+      (tag) => "<style>\n" + indent(formatContent(tag)) + "</style>",
+    )}
+  `;
 }
 
 function styleTagScoper(xhtml: string) {
   const scope = "scopescopescopescope";
   const styleTag = /<style>(\n|.)+?<\/style>/gim; // Matches style tags
   const atRule = /(?<=(@.+\s))\w+\s+(?={)/gim; // Matches css @rules
-  const cssclass = /(?<=>|;|})\s*\.?[\w]+((?!%).?)+?(?=({|}))/gim; // Matches css classes
+  const cssclass = /(?<=>|})\s*\.?[\w]+((?!%)(.|\n)?)+?(?=({|}))/gim; // Matches css classes
   const selector = /(?<=\.)[a-z]+/gi; // Matches css selectors
   const classDeclaration = /(?<=class=").+?(?=")/gi; // Matches element class declarations
   const className = /[\w-]+/gi; // Matches class names inside class declarations
@@ -75,7 +123,6 @@ function styleTagScoper(xhtml: string) {
       atRuleNames?.forEach((name) => {
         scopedTag = scopedTag.replace(new RegExp(name, "g"), `${scope}${name}`);
       });
-
       return scopedTag;
     })
     .replace(classDeclaration, (declaration) =>
@@ -115,6 +162,23 @@ function indent(code: string) {
   return code.replace(newLineRegexp, "  ");
 }
 
+function stringToHex(str: string) {
+  const array = str.match(/./gi);
+  if (!array) return null;
+  const hexStr = array.reduce(
+    (acc, curr) => acc + curr.charCodeAt(0).toString(16),
+    "",
+  );
+  return hexStr;
+}
+
+const CONSTANTS = {
+  THIRTY_MINUTES: 1800,
+  TWO_HOURS: 7200,
+  FOUR_HOURS: 14400,
+  ONE_DAY: 86400,
+};
+
 export {
   htmlFormatter,
   htmlFormatWithCursor,
@@ -122,5 +186,7 @@ export {
   cssFormatWithCursor,
   styleTagScoper,
   githubStatsParser,
+  stringToHex,
+  CONSTANTS,
 };
 export type { GitHubData };

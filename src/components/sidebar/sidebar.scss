@@ -42,10 +42,21 @@
   }
   .content {
     @apply items-center justify-between gap-1
-    overflow-x-clip h-full;
+    overflow-x-clip h-full mt-8;
 
+    .title {
+      @apply bg-white bg-opacity-5 text-sm py-1 px-1 rounded-md
+      border-2 border-black;
+    }
+    .login-github {
+      @apply flex gap-2 items-center justify-center px-2 py-1
+      rounded-sm text-sm bg-white bg-opacity-10
+      border-2 border-black text-black
+      hover:bg-white hover:bg-opacity-20 hover:text-black
+      hover:rounded-md;
+    }
     .themeSelector {
-      @apply flex flex-col items-center h-2/5 max-h-fit w-full mt-8;
+      @apply flex flex-col items-center h-2/5 max-h-fit w-full;
       .dark {
         @apply bg-[#222] text-white;
       }

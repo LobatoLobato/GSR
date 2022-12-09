@@ -5,16 +5,18 @@ import {
   getAttrValue,
   getBooleanAttr,
   getTagChildren,
+  removeNewLines,
   tagAttrRegExp,
   tagNameRegExp,
   tagRegExp,
 } from "./utils";
 
 export function renderRepo(tag: string, repoList: RepositoryList) {
-  const openingTag = tag.match(/<gitrepo\s?(\s|.)*?>/i)!.toString();
+  tag = removeNewLines(tag);
+  const openingTag = tag.match(/<gitrepo\s?(\s|.)*?>/i);
   if (!openingTag) return "Syntax error";
 
-  const repoName = getAttrValue(openingTag, "name");
+  const repoName = getAttrValue(openingTag.toString(), "name");
   if (!repoName) return "Repository tag missing name attribute";
 
   const tagChildren = getTagChildren(tag, "gitrepo");

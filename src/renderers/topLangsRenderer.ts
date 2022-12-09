@@ -3,6 +3,7 @@ import { LanguageMap } from "../fetchers";
 import {
   genericTemplate,
   getAttrValue,
+  getBooleanAttr,
   getTagChildren,
   tagAttrRegExp,
   tagNameRegExp,
@@ -74,7 +75,13 @@ function createTemplate(tagContent: string, langList: Lang[]): string {
       .replace(tagAttrRegExp("lang", "position"), "") // Removes position attribute
       .replace(tagNameRegExp("lang"), "div") // Replaces <lang> with <div>
       .replace(nameTag, (tag) => genericTemplate(tag, lang.name)) // Replaces <langname> tags with the corresponding template
-      .replace(percentageTag, (tag) => genericTemplate(tag, lang.percentage)); // Replaces <langpercentage> tags with the corresponding template
+      .replace(percentageTag, (tag) => {
+        const showPercent = getBooleanAttr(tag, "showPercent");
+        const percentage = showPercent
+          ? `${lang.percentage}%`
+          : lang.percentage;
+        return genericTemplate(tag, percentage);
+      }); // Replaces <langpercentage> tags with the corresponding template
   });
 
   return template;

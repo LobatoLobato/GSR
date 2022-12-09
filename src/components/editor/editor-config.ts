@@ -72,6 +72,7 @@ export function RegisterCustomTags(monaco: Monaco) {
         "repoforkcount",
       ];
       let suggestions: languages.CompletionItem[] = [];
+      const word = model.getWordUntilPosition(position);
       for (const value of customTags) {
         suggestions.push({
           label: value,
@@ -82,8 +83,8 @@ export function RegisterCustomTags(monaco: Monaco) {
           range: {
             startLineNumber: position.lineNumber,
             endLineNumber: position.lineNumber,
-            startColumn: 0,
-            endColumn: position.column,
+            startColumn: word.startColumn,
+            endColumn: word.endColumn,
           },
         });
       }
@@ -96,7 +97,13 @@ export function RegisterCustomTags(monaco: Monaco) {
 export function RegisterCustomAttributes(monaco: Monaco) {
   monaco.languages.registerCompletionItemProvider("html", {
     provideCompletionItems: (model: editor.ITextModel, position: Position) => {
-      const customTags = ["size", "position", "name", "showOwner"];
+      const customTags = [
+        "size",
+        "position",
+        "name",
+        "showOwner",
+        "percentSymbol",
+      ];
       let suggestions: languages.CompletionItem[] = [];
       for (const value of customTags) {
         suggestions.push({
