@@ -82,7 +82,11 @@ export default async function foo(req: ApiRequest, res: VercelResponse) {
   } catch (err) {
     res.setHeader("Cache-Control", `no-cache, no-store, must-revalidate`); // Don't cache error responses.
     console.log(err);
-    return res.send({});
+    return res.send(`
+    <svg>
+      ${err.message}
+    </svg>
+    `);
   }
 }
 
