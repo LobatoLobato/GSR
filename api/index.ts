@@ -2,6 +2,7 @@ import { VercelRequest, VercelResponse } from "@vercel/node";
 import { MongoClient, Db, ObjectId } from "mongodb";
 import {
   CONSTANTS,
+  cssResetInjector,
   GitHubData,
   githubStatsParser,
   imageParser,
@@ -103,6 +104,6 @@ async function createNSDiv(
   const final = await imageParser(scopedXhtml);
   return `
     <div xmlns="http://www.w3.org/1999/xhtml" class="${scope}">
-      ${final}
+      ${cssResetInjector(final)}
     </div>`;
 }

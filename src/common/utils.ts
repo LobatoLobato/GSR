@@ -48,59 +48,11 @@ function styleTagFormatter(html: string) {
     const tagContent = tag.replace(/<\/?style>/gim, "");
     return cssFormatter(tagContent);
   };
-  const reset = `
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
-}
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
-footer, header, hgroup, menu, nav, section {
-	display: block;
-}
-body {
-	line-height: 1;
-}
-ol, ul {
-	list-style: none;
-}
-blockquote, q {
-	quotes: none;
-}
-blockquote:before, blockquote:after,
-q:before, q:after {
-	content: '';
-	content: none;
-}
-table {
-	border-collapse: collapse;
-	border-spacing: 0;
-}`;
-  return `
-    <style>
-    ${reset}
-    </style>
-    ${html.replace(
-      styleTagRegexp,
-      (tag) => "<style>\n" + indent(formatContent(tag)) + "</style>",
-    )}
-  `;
+
+  return html.replace(
+    styleTagRegexp,
+    (tag) => "<style>\n" + indent(formatContent(tag)) + "</style>",
+  );
 }
 
 function styleTagScoper(xhtml: string, imgtosvg?: boolean) {
@@ -162,11 +114,62 @@ function githubStatsParser(xhtml: string, githubData: GitHubData) {
 
   return parsedXhtml;
 }
-async function imageParser(xhtml: string) {
+function cssResetInjector(html: string): string {
+  const reset = `<style>
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+</style>
+`;
+  return reset + html;
+}
+
+function scriptEscaper() {}
+async function imageParser(xhtml: string): Promise<string> {
   const imgTags = xhtml.match(/<img(\s|\n|.)*?\/>/gim);
   const sourceattrs = xhtml.match(/(?<=(<img(\s|.)*?src=")).+?(?=")/gim);
   const imgs: Promise<string>[] = [];
-  if (!imgTags || !sourceattrs) return;
+  if (!imgTags || !sourceattrs) return xhtml;
 
   for (const source of sourceattrs ?? []) {
     imgs.push(fetchImage(source));
@@ -211,5 +214,6 @@ export {
   stringToHex,
   CONSTANTS,
   imageParser,
+  cssResetInjector,
 };
 export type { GitHubData };

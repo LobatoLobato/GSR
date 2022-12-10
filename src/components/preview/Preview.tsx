@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import "./preview.scss";
 
 import {
+  cssResetInjector,
   githubStatsParser,
   htmlFormatter,
   imageParser,
@@ -101,9 +102,8 @@ function createNSDiv(xhtml: string, githubData: GitHubData): string {
   }
   const parsedXhtml = githubStatsParser(preFormattedCode, githubData);
   const { scope, scopedXhtml } = styleTagScoper(parsedXhtml);
-  imageParser(htmlFormatter(scopedXhtml));
   return `
     <div xmlns="http://www.w3.org/1999/xhtml" class="${scope}">
-      ${htmlFormatter(scopedXhtml)}
+      ${cssResetInjector(htmlFormatter(scopedXhtml))}
     </div>`;
 }
