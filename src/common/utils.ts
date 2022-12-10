@@ -103,7 +103,7 @@ table {
   `;
 }
 
-function styleTagScoper(xhtml: string) {
+function styleTagScoper(xhtml: string, imgtosvg?: boolean) {
   const scope = "scopescopescopescope";
   const styleTag = /<style>(\n|.)+?<\/style>/gim; // Matches style tags
   const atRule = /(?<=(@.+\s))\w+\s+(?={)/gim; // Matches css @rules
@@ -124,7 +124,7 @@ function styleTagScoper(xhtml: string) {
         )}`.replace(/\s+/, " "),
       );
       // Replaces img selectors with svg selectors
-      scopedTag = scopedTag.replace(imgSelector, "svg");
+      if (imgtosvg) scopedTag = scopedTag.replace(imgSelector, "svg");
       // Adds scopes to the @rules
       atRuleNames?.forEach((name) => {
         scopedTag = scopedTag.replace(new RegExp(name, "g"), `${scope}${name}`);
@@ -193,31 +193,6 @@ function stringToHex(str: string) {
   );
   return hexStr;
 }
-
-// async function fetchImage(url) {
-//   try {
-//     const response = await axios.get(url, {
-//       responseType: "arraybuffer",
-//     });
-//     const data = String.fromCharCode(...new Uint8Array(response.data));
-
-//     const width = data.match(/((?<=width=")\d+)/gim);
-//     const height = data.match(/((?<=height=")\d+)/gim);
-
-//     let treatedSVG = data;
-//     if (width && height && !/viewBox="[\d\s\.]+"/gi.test(data)) {
-//       const svgNS = 'xmlns="http://www.w3.org/2000/svg"';
-//       treatedSVG = treatedSVG.replace(
-//         svgNS,
-//         `${svgNS} viewBox="0 0 ${width.toString()} ${height.toString()}"`,
-//       );
-//     }
-//     return treatedSVG;
-//   } catch (err) {
-//     console.log(err);
-//     return err;
-//   }
-// }
 
 const CONSTANTS = {
   THIRTY_MINUTES: 1800,

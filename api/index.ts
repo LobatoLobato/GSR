@@ -4,7 +4,6 @@ import {
   CONSTANTS,
   GitHubData,
   githubStatsParser,
-  htmlFormatter,
   imageParser,
   styleTagScoper,
 } from "../src/common/utils";
@@ -96,18 +95,11 @@ async function createNSDiv(
   xhtml: string,
   githubData: GitHubData,
 ): Promise<string> {
-  console.time("Format code");
-  // let preFormattedCode = htmlFormatter(xhtml);
-  console.timeEnd("Format code");
-  console.time("Parse github stats");
   const parsedXhtml = githubStatsParser(
     xhtml.replace(/\s+/gim, " "),
     githubData,
   );
-  console.timeEnd("Parse github stats");
-  console.time("scoper");
-  const { scope, scopedXhtml } = styleTagScoper(parsedXhtml);
-  console.timeEnd("scoper");
+  const { scope, scopedXhtml } = styleTagScoper(parsedXhtml, true);
   const final = await imageParser(scopedXhtml);
   return `
     <div xmlns="http://www.w3.org/1999/xhtml" class="${scope}">
