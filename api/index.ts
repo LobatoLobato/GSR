@@ -86,7 +86,7 @@ export default async function render(req: ApiRequest, res: VercelResponse) {
     console.log(err);
     return res.send(`
     <svg>
-      ${err.message}
+      ${err}
     </svg>
     `);
   }
