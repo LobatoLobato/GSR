@@ -23,10 +23,7 @@ let cachedDb: Db | null = null;
 async function connectToDatabase(uri: string) {
   if (cachedDb) return cachedDb;
 
-  console.time("DBCONNECT");
   const client = await new MongoClient(uri).connect();
-  console.timeEnd("DBCONNECT");
-
   const dbName = url.parse(uri).pathname?.substring(1);
   const db = client.db(dbName);
 
@@ -38,7 +35,7 @@ async function connectToDatabase(uri: string) {
 export default async function render(req: ApiRequest, res: VercelResponse) {
   try {
     const { token, height } = req.query;
-    console.log();
+    console.log("");
     console.time("DB");
     const db = await connectToDatabase(process.env.MONGODB_URI as string);
     console.timeEnd("DB");
@@ -80,7 +77,7 @@ export default async function render(req: ApiRequest, res: VercelResponse) {
           width="100%"
           height="100%"
         >
-        ${nsDiv.replace(/\n/gm, "")}
+        ${nsDiv}
         </foreignObject>
     </svg>
     `);

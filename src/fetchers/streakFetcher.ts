@@ -47,8 +47,6 @@ async function fetchStreak(username: string): Promise<StreakInfo> {
     endDate: "Null",
   };
   const calendars: Promise<ContributionCalendar>[] = [];
-  console.time("ContributionCalendar");
-
   for (const year of years) {
     calendars.push(getContributionCalendar(username, year));
   }
@@ -98,7 +96,6 @@ async function fetchStreak(username: string): Promise<StreakInfo> {
       currentStreak.ended = true; //Ends current streak
     }
   }
-  console.timeEnd("ContributionCalendar");
 
   return {
     currentStreak,
