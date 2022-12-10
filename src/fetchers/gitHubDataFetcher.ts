@@ -15,12 +15,12 @@ export interface GitHubData {
 }
 
 async function fetchGithubData(options: GitFetchOptions): Promise<GitHubData> {
-  const streakAsync = fetchStreak(options.username);
-  const topLangs = await fetchTopLanguages(options.username);
-  const repos = await fetchRepos(options.username);
-  const stats = await fetchStats(options.username);
-  const streak = await streakAsync;
-
+  const [streak, topLangs, repos, stats] = await Promise.all([
+    fetchStreak(options.username),
+    fetchTopLanguages(options.username),
+    fetchRepos(options.username),
+    fetchStats(options.username),
+  ]);
   return {
     stats,
     streak,

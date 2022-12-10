@@ -15,19 +15,15 @@ interface ApiRequest extends VercelRequest {
     token: string;
     height: string;
   };
-  body: {
-    code: string;
-    username: string;
-  };
 }
 
 let cachedDb: Db | null = null;
 
 async function connectToDatabase(uri: string) {
   if (cachedDb) return cachedDb;
-
+  // console.time("DBCONNECT");
   const client = await MongoClient.connect(uri);
-
+  // console.timeEnd("DBCONNECT");
   const dbName = url.parse(uri).pathname?.substring(1);
   const db = client.db(dbName);
 
@@ -36,11 +32,13 @@ async function connectToDatabase(uri: string) {
   return db;
 }
 
-export default async function foo(req: ApiRequest, res: VercelResponse) {
+export default async function render(req: ApiRequest, res: VercelResponse) {
   try {
     const { token, height } = req.query;
-
+    // console.log();
+    // console.time("DB");
     const db = await connectToDatabase(process.env.MONGODB_URI as string);
+    // console.timeEnd("DB");
 
     const collection = db.collection<{
       _id: ObjectId;
@@ -58,24 +56,28 @@ export default async function foo(req: ApiRequest, res: VercelResponse) {
         cacheSeconds / 2
       },s-maxage=${cacheSeconds}, stale-while-revalidate=${CONSTANTS.ONE_DAY}`,
     );
-
+    // console.time("FIND_ONE");
     const item = await collection.findOne(new ObjectId(token));
+    // console.timeEnd("FIND_ONE");
     if (!item) throw new Error();
     const { githubUsername, code } = item;
     if (!githubUsername) throw new Error();
 
+    // console.time("GITHUBDATA");
     const githubData = await fetchGithubData({ username: githubUsername });
+    // console.timeEnd("GITHUBDATA");
 
-    const a = createNSDiv(code, githubData);
-    console.log(a.replace(/\n/gm, "").replace(/\s+/gim, " "));
+    // console.time("NSDIV");
+    const nsDiv = createNSDiv(code, githubData);
+    // console.timeEnd("NSDIV");
 
-    return res.status(201).send(`
+    return res.send(`
     <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="${height}">
         <foreignObject
           width="100%"
           height="100%"
         >
-        ${a.replace(/\n/gm, "")}
+        ${nsDiv.replace(/\n/gm, "")}
         </foreignObject>
     </svg>
     `);
@@ -91,32 +93,11 @@ export default async function foo(req: ApiRequest, res: VercelResponse) {
 }
 
 function createNSDiv(xhtml: string, githubData: GitHubData): string {
-  let preFormattedCode = "";
-  try {
-    preFormattedCode = htmlFormatter(xhtml);
-  } catch (e) {
-    const error = e as Error;
-    return `
-    <div xmlns="http://www.w3.org/1999/xhtml">
-      <style>
-        .error-view {
-          width: 100%;
-          height: 94vh;
-          overflow: hidden;
-          background: transparent;
-          resize: none;
-          outline: none;
-          caret-color: transparent;
-          padding: 4px;
-        }
-      </style>
-      <textarea class="error-view" readonly>${error.message}</textarea>
-    </div>`;
-  }
+  let preFormattedCode = htmlFormatter(xhtml);
   const parsedXhtml = githubStatsParser(preFormattedCode, githubData);
   const { scope, scopedXhtml } = styleTagScoper(parsedXhtml);
   return `
     <div xmlns="http://www.w3.org/1999/xhtml" class="${scope}">
-      ${htmlFormatter(scopedXhtml)}
+      ${scopedXhtml}
     </div>`;
 }
