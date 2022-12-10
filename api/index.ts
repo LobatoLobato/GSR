@@ -50,12 +50,8 @@ export default async function render(req: ApiRequest, res: VercelResponse) {
 
     const cacheSeconds = CONSTANTS.FOUR_HOURS;
 
-    res.setHeader(
-      "Cache-Control",
-      `max-age=${
-        cacheSeconds / 2
-      },s-maxage=${cacheSeconds}, stale-while-revalidate=${CONSTANTS.ONE_DAY}`,
-    );
+    res.setHeader("Cache-Control", `public, max-age=${cacheSeconds}`);
+
     console.time("FIND_ONE");
     const item = await collection.findOne(new ObjectId(token));
     console.timeEnd("FIND_ONE");
@@ -66,11 +62,14 @@ export default async function render(req: ApiRequest, res: VercelResponse) {
     console.time("GITHUBDATA");
     const githubData = await fetchGithubData({ username: githubUsername });
     console.timeEnd("GITHUBDATA");
-
-    console.time("NSDIV");
-    const nsDiv = await createNSDiv(code, githubData);
-    console.timeEnd("NSDIV");
-
+    let nsDiv = "";
+    try {
+      console.time("NSDIV");
+      nsDiv = await createNSDiv(code, githubData);
+      console.timeEnd("NSDIV");
+    } catch (err) {
+      console.log(err);
+    }
     return res.send(`
     <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="${height}">
         <foreignObject
