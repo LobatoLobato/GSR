@@ -22,9 +22,11 @@ let cachedDb: Db | null = null;
 
 async function connectToDatabase(uri: string) {
   if (cachedDb) return cachedDb;
-  // console.time("DBCONNECT");
-  const client = await MongoClient.connect(uri);
-  // console.timeEnd("DBCONNECT");
+
+  console.time("DBCONNECT");
+  const client = await new MongoClient(uri).connect();
+  console.timeEnd("DBCONNECT");
+
   const dbName = url.parse(uri).pathname?.substring(1);
   const db = client.db(dbName);
 
@@ -36,10 +38,10 @@ async function connectToDatabase(uri: string) {
 export default async function render(req: ApiRequest, res: VercelResponse) {
   try {
     const { token, height } = req.query;
-    // console.log();
-    // console.time("DB");
+    console.log();
+    console.time("DB");
     const db = await connectToDatabase(process.env.MONGODB_URI as string);
-    // console.timeEnd("DB");
+    console.timeEnd("DB");
 
     const collection = db.collection<{
       _id: ObjectId;
@@ -57,20 +59,20 @@ export default async function render(req: ApiRequest, res: VercelResponse) {
         cacheSeconds / 2
       },s-maxage=${cacheSeconds}, stale-while-revalidate=${CONSTANTS.ONE_DAY}`,
     );
-    // console.time("FIND_ONE");
+    console.time("FIND_ONE");
     const item = await collection.findOne(new ObjectId(token));
-    // console.timeEnd("FIND_ONE");
+    console.timeEnd("FIND_ONE");
     if (!item) throw new Error();
     const { githubUsername, code } = item;
     if (!githubUsername) throw new Error();
 
-    // console.time("GITHUBDATA");
+    console.time("GITHUBDATA");
     const githubData = await fetchGithubData({ username: githubUsername });
-    // console.timeEnd("GITHUBDATA");
+    console.timeEnd("GITHUBDATA");
 
-    // console.time("NSDIV");
+    console.time("NSDIV");
     const nsDiv = await createNSDiv(code, githubData);
-    // console.timeEnd("NSDIV");
+    console.timeEnd("NSDIV");
 
     return res.send(`
     <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="${height}">

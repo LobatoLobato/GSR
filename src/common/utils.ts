@@ -2,7 +2,7 @@ import prettier from "prettier";
 import HTMLParser from "prettier/parser-html";
 import CSSParser from "prettier/parser-postcss";
 import { GitHubData } from "../fetchers";
-import { imgFetcher } from "../fetchers/imgFetcher";
+import { fetchImage } from "../fetchers/imageFetcher";
 import {
   renderRepo,
   renderTopLanguages,
@@ -169,7 +169,7 @@ async function imageParser(xhtml: string) {
   if (!imgTags || !sourceattrs) return;
 
   for (const source of sourceattrs ?? []) {
-    imgs.push(imgFetcher(source));
+    imgs.push(fetchImage(source));
   }
   for (let i = 0; i < imgTags.length; i++) {
     const tag = imgTags[i];
