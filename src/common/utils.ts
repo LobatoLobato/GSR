@@ -156,7 +156,26 @@ function githubStatsParser(xhtml: string, githubData: GitHubData) {
 
   return parsedXhtml;
 }
+async function imageParser(xhtml: string) {
+  const imgTags = xhtml.match(/<img(\s|\n|.)*?\/>/gim);
 
+  for (const tag of imgTags ?? []) {
+    const source = tag.match(/(?<=(src=")).+(?=")/gim)?.at(0);
+    if (source) {
+      const response = await fetch(
+        "https://cors-anywhere.herokuapp.com/" + source,
+      );
+      const text = await response.text();
+      xhtml = xhtml.replace(tag, text);
+      console.log(tag);
+      // console.log(text);
+    }
+  }
+
+  // imgTags?.forEach(async (tag) => {});
+  console.log(xhtml);
+  return xhtml;
+}
 function indent(code: string) {
   const newLineRegexp = /(?<=\n)(?=.)|^/g;
   return code.replace(newLineRegexp, "  ");
@@ -171,6 +190,31 @@ function stringToHex(str: string) {
   );
   return hexStr;
 }
+
+// async function fetchImage(url) {
+//   try {
+//     const response = await axios.get(url, {
+//       responseType: "arraybuffer",
+//     });
+//     const data = String.fromCharCode(...new Uint8Array(response.data));
+
+//     const width = data.match(/((?<=width=")\d+)/gim);
+//     const height = data.match(/((?<=height=")\d+)/gim);
+
+//     let treatedSVG = data;
+//     if (width && height && !/viewBox="[\d\s\.]+"/gi.test(data)) {
+//       const svgNS = 'xmlns="http://www.w3.org/2000/svg"';
+//       treatedSVG = treatedSVG.replace(
+//         svgNS,
+//         `${svgNS} viewBox="0 0 ${width.toString()} ${height.toString()}"`,
+//       );
+//     }
+//     return treatedSVG;
+//   } catch (err) {
+//     console.log(err);
+//     return err;
+//   }
+// }
 
 const CONSTANTS = {
   THIRTY_MINUTES: 1800,
@@ -188,5 +232,6 @@ export {
   githubStatsParser,
   stringToHex,
   CONSTANTS,
+  imageParser,
 };
 export type { GitHubData };

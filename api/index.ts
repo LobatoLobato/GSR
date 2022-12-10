@@ -5,6 +5,7 @@ import {
   GitHubData,
   githubStatsParser,
   htmlFormatter,
+  imageParser,
   styleTagScoper,
 } from "../src/common/utils";
 import url from "url";
@@ -68,7 +69,7 @@ export default async function render(req: ApiRequest, res: VercelResponse) {
     // console.timeEnd("GITHUBDATA");
 
     // console.time("NSDIV");
-    const nsDiv = createNSDiv(code, githubData);
+    const nsDiv = await createNSDiv(code, githubData);
     // console.timeEnd("NSDIV");
 
     return res.send(`
@@ -86,18 +87,23 @@ export default async function render(req: ApiRequest, res: VercelResponse) {
     console.log(err);
     return res.send(`
     <svg>
-      ${err}
+      // ${(err as Error).message}
+      ${(err as Error).stack}
     </svg>
     `);
   }
 }
 
-function createNSDiv(xhtml: string, githubData: GitHubData): string {
+async function createNSDiv(
+  xhtml: string,
+  githubData: GitHubData,
+): Promise<string> {
   let preFormattedCode = htmlFormatter(xhtml);
   const parsedXhtml = githubStatsParser(preFormattedCode, githubData);
   const { scope, scopedXhtml } = styleTagScoper(parsedXhtml);
+  const final = await imageParser(scopedXhtml);
   return `
     <div xmlns="http://www.w3.org/1999/xhtml" class="${scope}">
-      ${scopedXhtml}
+      ${final}
     </div>`;
 }
