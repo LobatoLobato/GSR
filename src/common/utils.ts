@@ -164,7 +164,7 @@ function githubStatsParser(xhtml: string, githubData: GitHubData) {
 }
 async function imageParser(xhtml: string) {
   const imgTags = xhtml.match(/<img(\s|\n|.)*?\/>/gim);
-  const sourceattrs = xhtml.match(/(?<=(<img(\s|.)*?src=")).+(?=")/gim);
+  const sourceattrs = xhtml.match(/(?<=(<img(\s|.)*?src=")).+?(?=")/gim);
   const imgs: Promise<string>[] = [];
   if (!imgTags || !sourceattrs) return;
 

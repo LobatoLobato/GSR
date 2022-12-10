@@ -96,12 +96,21 @@ async function createNSDiv(
   xhtml: string,
   githubData: GitHubData,
 ): Promise<string> {
-  let preFormattedCode = htmlFormatter(xhtml);
-  const parsedXhtml = githubStatsParser(preFormattedCode, githubData);
+  console.time("Format code");
+  // let preFormattedCode = htmlFormatter(xhtml);
+  console.timeEnd("Format code");
+  console.time("Parse github stats");
+  const parsedXhtml = githubStatsParser(
+    xhtml.replace(/\s+/gim, " "),
+    githubData,
+  );
+  console.timeEnd("Parse github stats");
+  console.time("scoper");
   const { scope, scopedXhtml } = styleTagScoper(parsedXhtml);
-  // const final = await imageParser(scopedXhtml);
+  console.timeEnd("scoper");
+  const final = await imageParser(scopedXhtml);
   return `
     <div xmlns="http://www.w3.org/1999/xhtml" class="${scope}">
-      ${scopedXhtml}
+      ${final}
     </div>`;
 }
