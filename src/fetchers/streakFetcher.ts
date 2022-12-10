@@ -46,9 +46,13 @@ async function fetchStreak(username: string): Promise<StreakInfo> {
     startDate: "Null",
     endDate: "Null",
   };
+  const calendars: Promise<ContributionCalendar>[] = [];
+  console.time("ContributionCalendar");
 
   for (const year of years) {
-    const contributionCalendar = await getContributionCalendar(username, year);
+    calendars.push(getContributionCalendar(username, year));
+  }
+  for (const contributionCalendar of await Promise.all(calendars)) {
     const weeks = contributionCalendar.weeks;
     const contributionDays = weeks
       .reduce(
@@ -94,6 +98,7 @@ async function fetchStreak(username: string): Promise<StreakInfo> {
       currentStreak.ended = true; //Ends current streak
     }
   }
+  console.timeEnd("ContributionCalendar");
 
   return {
     currentStreak,
@@ -159,16 +164,17 @@ async function getContributionCalendar(
   username: string,
   year: number,
 ): Promise<ContributionCalendar> {
-  const isCurrentYear = new Date().getUTCFullYear() === year;
-  const currentDate = new Date();
-  currentDate.setUTCDate(currentDate.getUTCDate() - 1);
-  const currentDateStr = currentDate.toISOString();
+  return new Promise<ContributionCalendar>((resolve, reject) => {
+    const isCurrentYear = new Date().getUTCFullYear() === year;
+    const currentDate = new Date();
+    currentDate.setUTCDate(currentDate.getUTCDate() - 1);
+    const currentDateStr = currentDate.toISOString();
 
-  const startDate = `${year}-01-01T00:00:00Z`;
-  const endDate = isCurrentYear ? currentDateStr : `${year}-12-31T23:59:59Z`;
+    const startDate = `${year}-01-01T00:00:00Z`;
+    const endDate = isCurrentYear ? currentDateStr : `${year}-12-31T23:59:59Z`;
 
-  const request: StreakQueryResponse = await octokit.graphql({
-    query: `query ($username: String! $startDate:DateTime! $endDate:DateTime!) {
+    const request: Promise<StreakQueryResponse> = octokit.graphql({
+      query: `query ($username: String! $startDate:DateTime! $endDate:DateTime!) {
     user(login: $username) {
       contributionsCollection(from: $startDate to: $endDate) {
         contributionCalendar {
@@ -183,11 +189,14 @@ async function getContributionCalendar(
       }
     }
   }`,
-    username,
-    startDate,
-    endDate,
+      username,
+      startDate,
+      endDate,
+    });
+    request.then((req) =>
+      resolve(req.user.contributionsCollection.contributionCalendar),
+    );
   });
-  return request.user.contributionsCollection.contributionCalendar;
 }
 
 export { fetchStreak };
