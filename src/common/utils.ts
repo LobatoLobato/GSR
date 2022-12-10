@@ -164,13 +164,17 @@ function githubStatsParser(xhtml: string, githubData: GitHubData) {
 }
 async function imageParser(xhtml: string) {
   const imgTags = xhtml.match(/<img(\s|\n|.)*?\/>/gim);
+  const sourceattrs = xhtml.match(/(?<=(<img(\s|.)*?src=")).+(?=")/gim);
+  const imgs: Promise<string>[] = [];
+  if (!imgTags || !sourceattrs) return;
 
-  for (const tag of imgTags ?? []) {
-    const source = tag.match(/(?<=(src=")).+(?=")/gim)?.at(0);
-    if (source) {
-      const img = await imgFetcher(source);
-      xhtml = xhtml.replace(tag, img);
-    }
+  for (const source of sourceattrs ?? []) {
+    imgs.push(imgFetcher(source));
+  }
+  for (let i = 0; i < imgTags.length; i++) {
+    const tag = imgTags[i];
+    const img = await imgs[i];
+    xhtml = xhtml.replace(tag, img);
   }
 
   return xhtml;
