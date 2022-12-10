@@ -2,6 +2,7 @@ import prettier from "prettier";
 import HTMLParser from "prettier/parser-html";
 import CSSParser from "prettier/parser-postcss";
 import { GitHubData } from "../fetchers";
+import { imgFetcher } from "../fetchers/imgFetcher";
 import {
   renderRepo,
   renderTopLanguages,
@@ -107,6 +108,7 @@ function styleTagScoper(xhtml: string) {
   const styleTag = /<style>(\n|.)+?<\/style>/gim; // Matches style tags
   const atRule = /(?<=(@.+\s))\w+\s+(?={)/gim; // Matches css @rules
   const cssclass = /(?<=>|})\s*\.?[\w]+((?!%)(.|\n)?)+?(?=({|}))/gim; // Matches css classes
+  const imgSelector = /(?<!\w)img(?!\w)/gim;
   const selector = /(?<=\.)[a-z]+/gi; // Matches css selectors
   const classDeclaration = /(?<=class=").+?(?=")/gi; // Matches element class declarations
   const className = /[\w-]+/gi; // Matches class names inside class declarations
@@ -114,12 +116,16 @@ function styleTagScoper(xhtml: string) {
   const scopedXhtml = xhtml
     .replace(styleTag, (tag) => {
       const atRuleNames = tag.match(atRule);
+      // Adds scopes to the css selectors
       let scopedTag = tag.replace(cssclass, (cssclass) =>
         ` .${scope} ${cssclass.replace(
           selector,
           (selector) => `${scope}${selector}`,
         )}`.replace(/\s+/, " "),
       );
+      // Replaces img selectors with svg selectors
+      scopedTag = scopedTag.replace(imgSelector, "svg");
+      // Adds scopes to the @rules
       atRuleNames?.forEach((name) => {
         scopedTag = scopedTag.replace(new RegExp(name, "g"), `${scope}${name}`);
       });
@@ -162,18 +168,11 @@ async function imageParser(xhtml: string) {
   for (const tag of imgTags ?? []) {
     const source = tag.match(/(?<=(src=")).+(?=")/gim)?.at(0);
     if (source) {
-      const response = await fetch(
-        "https://cors-anywhere.herokuapp.com/" + source,
-      );
-      const text = await response.text();
-      xhtml = xhtml.replace(tag, text);
-      console.log(tag);
-      // console.log(text);
+      const img = await imgFetcher(source);
+      xhtml = xhtml.replace(tag, img);
     }
   }
 
-  // imgTags?.forEach(async (tag) => {});
-  console.log(xhtml);
   return xhtml;
 }
 function indent(code: string) {
