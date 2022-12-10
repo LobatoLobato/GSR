@@ -99,9 +99,9 @@ async function createNSDiv(
   let preFormattedCode = htmlFormatter(xhtml);
   const parsedXhtml = githubStatsParser(preFormattedCode, githubData);
   const { scope, scopedXhtml } = styleTagScoper(parsedXhtml);
-  const final = await imageParser(scopedXhtml);
+  // const final = await imageParser(scopedXhtml);
   return `
     <div xmlns="http://www.w3.org/1999/xhtml" class="${scope}">
-      ${final}
+      ${scopedXhtml}
     </div>`;
 }
