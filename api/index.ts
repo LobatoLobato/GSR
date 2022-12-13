@@ -35,10 +35,8 @@ async function connectToDatabase(uri: string) {
 export default async function render(req: ApiRequest, res: VercelResponse) {
   try {
     const { token, height } = req.query;
-    console.log("");
-    console.time("DB");
+
     const db = await connectToDatabase(process.env.MONGODB_URI as string);
-    console.timeEnd("DB");
 
     const collection = db.collection<{
       _id: ObjectId;
@@ -52,21 +50,18 @@ export default async function render(req: ApiRequest, res: VercelResponse) {
 
     res.setHeader("Cache-Control", `public, max-age=${cacheSeconds}`);
 
-    console.time("FIND_ONE");
     const item = await collection.findOne(new ObjectId(token));
-    console.timeEnd("FIND_ONE");
+
     if (!item) throw new Error();
+
     const { githubUsername, code } = item;
+
     if (!githubUsername) throw new Error();
 
-    console.time("GITHUBDATA");
     const githubData = await fetchGithubData({ username: githubUsername });
-    console.timeEnd("GITHUBDATA");
     let nsDiv = "";
     try {
-      console.time("NSDIV");
       nsDiv = await createNSDiv(code, githubData);
-      console.timeEnd("NSDIV");
     } catch (err) {
       console.log(err);
     }
@@ -85,7 +80,7 @@ export default async function render(req: ApiRequest, res: VercelResponse) {
     console.log(err);
     return res.send(`
     <svg>
-      // ${(err as Error).message}
+      ${(err as Error).message}
       ${(err as Error).stack}
     </svg>
     `);
