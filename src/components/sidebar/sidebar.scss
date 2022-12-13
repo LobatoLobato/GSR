@@ -51,12 +51,12 @@
     .login-github {
       @apply flex gap-2 items-center justify-center px-2 py-1
       rounded-sm text-sm bg-white bg-opacity-10
-      border-2 border-black text-black
-      hover:bg-white hover:bg-opacity-20 hover:text-black
+      border-2 border-black text-zinc-300
+      hover:bg-white hover:bg-opacity-20 hover:text-gray-200
       hover:rounded-md;
     }
     .themeSelector {
-      @apply flex flex-col items-center h-2/5 max-h-fit w-full;
+      @apply flex flex-col items-center h-1/5 max-h-fit w-full bg-[#222];
       .dark {
         @apply bg-[#222] text-white;
       }
@@ -78,7 +78,10 @@
     .githubStats {
       @apply flex flex-col bg-[#222] justify-center items-center p-2 text-center
      overflow-clip whitespace-nowrap gap-3;
-
+      h3 {
+        @apply text-base;
+        line-height: 1rem;
+      }
       .usernameInput {
         @apply flex flex-col justify-center items-center text-center
         overflow-clip gap-2;
@@ -93,7 +96,7 @@
       }
       .helpBtn {
         @apply rounded-full px-4 bg-slate-300 text-black opacity-80 
-        hover:opacity-100 select-none;
+        hover:opacity-100 select-none text-sm;
       }
       .helpBtn:active {
         animation: AnimateOpacity 0.2s;

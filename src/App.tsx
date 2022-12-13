@@ -3,6 +3,7 @@ import "./App.scss";
 
 import { Editor, Preview, SideBar } from "./components";
 import { GitHubData } from "./fetchers";
+import { LoadCodeFromDBResponse } from "./service/api";
 
 function App() {
   const [editorTxt, setEditorTxt] = useState("");
@@ -11,7 +12,7 @@ function App() {
   const [githubData, setGithubData] = useState<GitHubData>();
   const [editorClassName, setEditorClassName] = useState("lg:w-1/2 w-full");
   const [previewClassName, setPreviewClassName] = useState("lg:w-1/2 w-full");
-
+  const [loadedCode, setLoadedCode] = useState<LoadCodeFromDBResponse>();
   return (
     <div className="App">
       <SideBar
@@ -19,6 +20,7 @@ function App() {
         onUsernameChange={setUsername}
         repoList={githubData?.repos}
         code={editorTxt}
+        onLoadFromDB={setLoadedCode}
       />
       <div
         className={`mainContent ${
@@ -59,6 +61,7 @@ function App() {
           onInput={(code) => {
             setEditorTxt(code);
           }}
+          loadedCode={loadedCode}
         />
       </div>
     </div>

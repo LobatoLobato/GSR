@@ -1,50 +1,57 @@
 import axios from "axios";
+import { cssFormatter, htmlFormatter } from "../common/utils";
+interface LoadResponse {
+  ok: boolean;
+  registeredId: string;
+  code: string;
+  githubUsername: string;
+}
+export interface LoadCodeFromDBResponse {
+  githubUsername: string;
+  cssVariables: string;
+  cssUserCode: string;
+  htmlCode: string;
+}
+export async function loadCodeFromDB(requestBody: {}): Promise<LoadCodeFromDBResponse> {
+  if (!process.env.REACT_APP_LD_PATH) throw new Error("LOAD PATH IS NULL");
+  const response = await axios.post<LoadResponse>(
+    process.env.REACT_APP_LD_PATH,
+    requestBody,
+  );
+  const { code, githubUsername } = response.data;
 
+  const styleTags = code.match(/<style>.*?<\/style>/gim);
+
+  let cssVariables = styleTags ? styleTags[0] : "";
+
+  let cssUserCode = styleTags ? styleTags[1] : "";
+
+  let htmlCode = code.replace(cssVariables, "").replace(cssUserCode, "");
+
+  cssVariables = cssVariables.replace(/<\/?style>/gim, "");
+  cssVariables = cssFormatter(cssVariables);
+
+  cssUserCode = cssUserCode.replace(/<\/?style>/gim, "");
+  cssUserCode = cssFormatter(cssUserCode);
+
+  htmlCode = htmlFormatter(htmlCode);
+
+  return {
+    githubUsername,
+    cssVariables,
+    cssUserCode,
+    htmlCode,
+  };
+}
 interface UploadResponse {
   ok: boolean;
   registeredId: string;
 }
-export async function uploadCode(requestBody: {}) {
+export async function uploadCodeToDB(requestBody: {}) {
   if (!process.env.REACT_APP_UPD_PATH) throw new Error("UPLOAD PATH IS NULL");
   const response = await axios.post<UploadResponse>(
     process.env.REACT_APP_UPD_PATH,
     requestBody,
   );
-
   return response;
-}
-
-interface TokenResponse {
-  data: string;
-}
-export async function authenticateUser(code: string) {
-  const proxyUrl = process.env.REACT_APP_PROXY;
-  const tokenUrl = "https://github.com/login/oauth/access_token";
-  const response: TokenResponse = await axios.post(
-    `${proxyUrl}${tokenUrl}`,
-    null,
-    {
-      params: {
-        client_id: process.env.REACT_APP_OAUTH_CLIENT,
-        client_secret: process.env.REACT_APP_OAUTH_SECRET,
-        code: code,
-      },
-    },
-  );
-  const access_token = response.data.match(/(?<=access_token=).+?(?=&)/);
-  if (!access_token) throw new Error("Error getting access token");
-
-  const userUrl = "https://api.github.com/user";
-  const user_info = await axios.get(userUrl, {
-    headers: {
-      Authorization: `Bearer ${access_token.at(0)}`,
-    },
-  });
-
-  const dbToken = user_info.data.id + user_info.data.node_id;
-
-  return {
-    username: user_info.data.login,
-    dbToken,
-  };
 }

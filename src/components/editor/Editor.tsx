@@ -23,6 +23,7 @@ import {
   RegisterCustomTags,
   RegisterTagAutoClose,
 } from "./editor-config";
+import { LoadCodeFromDBResponse } from "../../service/api";
 
 loader.init().then((monaco) => {
   for (const key in MonacoThemes) {
@@ -43,6 +44,7 @@ interface Props {
   onInput(code: string): void;
   onMaximized: () => void;
   onMinimized: () => void;
+  loadedCode?: LoadCodeFromDBResponse;
   navbarClassName: string;
   theme?: string;
   className?: string;
@@ -58,6 +60,9 @@ export function Editor(props: Props) {
   const [HTMLCode, setHTMLCode] = useState(htmlExampleCode);
   const [CSSCode, setCSSCode] = useState(cssExampleCode);
 
+  const [HTMLEditorCode, setHTMLEditorCode] = useState(htmlExampleCode);
+  const [CSSEditorCode, setCSSEditorCode] = useState(cssExampleCode);
+
   const sendCode = (HTMLCode: string, CSSCode: string) => {
     window.clearTimeout(timeoutId);
     const newTimeoutId = window.setTimeout(() => {
@@ -72,7 +77,14 @@ export function Editor(props: Props) {
     sendCode(htmlExampleCode, cssExampleCode);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+  const { loadedCode } = props;
+  useEffect(() => {
+    if (!loadedCode) return;
+    const { cssUserCode, htmlCode } = loadedCode;
+    setHTMLEditorCode(htmlCode);
+    setCSSEditorCode(cssUserCode);
+    console.log("oi");
+  }, [loadedCode]);
   return (
     <div className={`editorContainer ${props.className}`}>
       <div className="navbar">
@@ -107,7 +119,7 @@ export function Editor(props: Props) {
       <HTMLEditor
         className={showHTMLEditor ? "" : "hidden"}
         theme={props.theme}
-        code={htmlExampleCode}
+        code={HTMLEditorCode}
         onChange={(HTMLCode) => {
           setHTMLCode(HTMLCode);
           sendCode(HTMLCode, CSSCode);
@@ -116,7 +128,7 @@ export function Editor(props: Props) {
       <CSSEditor
         className={showCSSEditor ? "" : "hidden"}
         theme={props.theme}
-        code={cssExampleCode}
+        code={CSSEditorCode}
         onChange={(CSSCode) => {
           setCSSCode(CSSCode);
           sendCode(HTMLCode, CSSCode);
@@ -145,7 +157,7 @@ function HTMLEditor(props: EditorProps) {
       <MonacoEditor
         height="100%"
         defaultLanguage="html"
-        defaultValue={props.code}
+        value={props.code}
         options={{
           lineNumbersMinChars: 3,
         }}
@@ -188,7 +200,7 @@ function CSSEditor(props: EditorProps) {
       <MonacoEditor
         height="100%"
         defaultLanguage="css"
-        defaultValue={props.code}
+        value={props.code}
         options={{ lineNumbersMinChars: 3 }}
         theme={props.theme}
         onChange={(value) => props.onChange(value || "")}
