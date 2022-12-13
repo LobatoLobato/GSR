@@ -7,12 +7,12 @@
       @apply absolute left-1/2 -translate-x-1/2 select-none;
     }
     .window-resize-icon {
-      @apply absolute left-[97%] -translate-x-full clickable text-white;
+      @apply clickable text-white;
     }
   }
   .viewBox {
     @apply w-full h-full border-4 border-solid
-    border-gray-900 bg-white bg-opacity-5;
+    border-gray-900 bg-opacity-5;
 
     .xhtmlContainer {
       @apply scrollbar-track-[#ffffff02] scrollbar-thumb-[#ffffff20] scrollbar;

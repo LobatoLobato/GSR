@@ -12,7 +12,11 @@ import { fetchGithubData, GitHubData, GitHubDataFetcher } from "../../fetchers";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWindowMaximize } from "@fortawesome/free-regular-svg-icons";
-import { faWindowMinimize } from "@fortawesome/free-solid-svg-icons";
+import {
+  faWindowMinimize,
+  faSun,
+  faMoon,
+} from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
   xhtml: string;
@@ -30,6 +34,7 @@ export function Preview(props: Props) {
     new GitHubDataFetcher().data,
   );
   const [maximized, setMaximized] = useState(false);
+  const [darkModeEnabled, setDarkModeEnabled] = useState(false);
   const username = props.username;
   const onFetch = props.onFetch;
   // useEffect(() => {
@@ -38,7 +43,9 @@ export function Preview(props: Props) {
   //       ?.clientHeight,
   //   );
   // });
-
+  const handleModeChange = () => {
+    setDarkModeEnabled((e) => !e);
+  };
   useEffect(() => {
     if (username) {
       fetchGithubData({ username: username }).then((data) => {
@@ -54,18 +61,35 @@ export function Preview(props: Props) {
     <div className={`preview ${props.className}`}>
       <div className="navbar">
         <h2 className={`title ${props.navbarClassName}`}> Preview </h2>
-        <FontAwesomeIcon
-          className={`window-resize-icon ${props.navbarClassName}`}
-          icon={maximized ? faWindowMinimize : faWindowMaximize}
-          onClick={() => {
-            maximized ? props.onMinimized() : props.onMaximized();
-            setMaximized(!maximized);
-          }}
-        ></FontAwesomeIcon>
+        <div className="absolute flex left-[87%] gap-4">
+          {darkModeEnabled ? (
+            <FontAwesomeIcon
+              className="text-yellow-100 clickable w-4"
+              icon={faMoon}
+              onClick={handleModeChange}
+            ></FontAwesomeIcon>
+          ) : (
+            <FontAwesomeIcon
+              className="text-yellow-200 clickable w-4"
+              icon={faSun}
+              onClick={handleModeChange}
+            ></FontAwesomeIcon>
+          )}
+          <FontAwesomeIcon
+            className={`window-resize-icon ${props.navbarClassName}`}
+            icon={maximized ? faWindowMinimize : faWindowMaximize}
+            onClick={() => {
+              maximized ? props.onMinimized() : props.onMaximized();
+              setMaximized(!maximized);
+            }}
+          ></FontAwesomeIcon>
+        </div>
       </div>
       <svg xmlns="http://www.w3.org/2000/svg" className="viewBox" ref={svg}>
         <foreignObject
-          className="xhtmlContainer"
+          className={`xhtmlContainer ${
+            darkModeEnabled ? "bg-[#292929]" : "bg-white"
+          }`}
           width="100%"
           height="100%"
           dangerouslySetInnerHTML={{
