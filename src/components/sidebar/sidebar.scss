@@ -56,7 +56,7 @@
       hover:rounded-md;
     }
     .themeSelector {
-      @apply flex flex-col items-center h-1/5 max-h-fit w-full bg-[#222];
+      @apply flex flex-col items-center h-1/5 max-h-fit w-full;
       .dark {
         @apply bg-[#222] text-white;
       }
