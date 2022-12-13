@@ -187,14 +187,14 @@ function indent(code: string) {
   return code.replace(newLineRegexp, "  ");
 }
 
-function stringToHex(str: string) {
+function stringToHex(str: string, int?: boolean) {
   const array = str.match(/./gi);
   if (!array) return null;
   const hexStr = array.reduce(
     (acc, curr) => acc + curr.charCodeAt(0).toString(16),
     "",
   );
-  return hexStr;
+  return int ? parseInt(hexStr) : hexStr;
 }
 
 const CONSTANTS = {

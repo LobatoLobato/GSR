@@ -1,12 +1,12 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
 import { MongoClient, Db, ObjectId } from "mongodb";
-import { stringToHex } from "../src/common/utils";
 import url from "url";
 
 interface ApiRequest extends VercelRequest {
   body: {
     code: string;
     githubUsername: string;
+    dbToken: string;
   };
 }
 
@@ -25,45 +25,32 @@ async function connectToDatabase(uri: string) {
   return db;
 }
 
-export default async function foo(req: ApiRequest, res: VercelResponse) {
-  const { code, githubUsername } = req.body;
-
-  const userId = stringToHex(githubUsername);
-  if (!userId) return res.status(404).json({ ok: false, registeredId: userId });
+export default async function uploadCode(req: ApiRequest, res: VercelResponse) {
+  const { code, githubUsername, dbToken } = req.body;
 
   const db = await connectToDatabase(process.env.MONGODB_URI as string);
 
   const collection = db.collection("users");
+
   try {
     const a = await collection.insertOne({
-      _id: new ObjectId(userId),
+      _id: new ObjectId(dbToken),
       githubUsername,
       code,
     });
-    console.log({
-      _id: new ObjectId(userId),
-      githubUsername,
-    });
+
     return res.status(201).json({ ok: true, registeredId: a.insertedId });
   } catch (err) {
     try {
       await collection.updateOne(
         {
-          _id: new ObjectId(userId),
+          _id: new ObjectId(dbToken),
         },
         { $set: { code, githubUsername } },
       );
-      return res.status(201).json({ ok: true, registeredId: userId });
+      return res.status(201).json({ ok: true, registeredId: dbToken });
     } catch (err) {
-      return res.status(401).json({ ok: false, registeredId: userId });
+      return res.status(401).json({ ok: false, registeredId: dbToken });
     }
   }
-  // res.setHeader("Content-Type", "application/json");
-  // res.setHeader("Cache-Control", `no-store`);
-
-  // try {
-  //   return res.send("something");
-  // } catch (err) {
-  //   return res.send(err.message);
-  // }
 }
