@@ -1,11 +1,11 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
 import { MongoClient, Db, ObjectId } from "mongodb";
+import { GitHubData } from "../src/fetchers";
+import { githubStatsParser, imageParser } from "../src/common/parsers";
 import {
   CONSTANTS,
   cssResetInjector,
-  GitHubData,
-  githubStatsParser,
-  imageParser,
+  scriptEscaper,
   styleTagScoper,
 } from "../src/common/utils";
 import url from "url";
@@ -99,6 +99,6 @@ async function createNSDiv(
   const final = await imageParser(scopedXhtml);
   return `
     <div xmlns="http://www.w3.org/1999/xhtml" class="${scope}">
-      ${cssResetInjector(final)}
+      ${cssResetInjector(scriptEscaper(final))}
     </div>`;
 }

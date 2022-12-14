@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import "./preview.scss";
-
+import { githubStatsParser } from "../../common/parsers";
+import { htmlFormatter } from "../../common/formatters";
 import {
   cssResetInjector,
-  githubStatsParser,
-  htmlFormatter,
-  imageParser,
+  scriptEscaper,
   styleTagScoper,
 } from "../../common/utils";
 import { fetchGithubData, GitHubData, GitHubDataFetcher } from "../../fetchers";
@@ -37,12 +36,6 @@ export function Preview(props: Props) {
   const [darkModeEnabled, setDarkModeEnabled] = useState(false);
   const username = props.username;
   const onFetch = props.onFetch;
-  // useEffect(() => {
-  //   console.log(
-  //     svg.current?.querySelector("foreignObject")?.querySelector("div")
-  //       ?.clientHeight,
-  //   );
-  // });
   const handleModeChange = () => {
     setDarkModeEnabled((e) => !e);
   };
@@ -128,6 +121,6 @@ function createNSDiv(xhtml: string, githubData: GitHubData): string {
   const { scope, scopedXhtml } = styleTagScoper(parsedXhtml);
   return `
     <div xmlns="http://www.w3.org/1999/xhtml" class="${scope}">
-      ${cssResetInjector(htmlFormatter(scopedXhtml))}
+      ${scriptEscaper(htmlFormatter(cssResetInjector(scopedXhtml)))}
     </div>`;
 }

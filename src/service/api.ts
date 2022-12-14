@@ -1,5 +1,5 @@
 import axios from "axios";
-import { cssFormatter, htmlFormatter } from "../common/utils";
+import { cssFormatter, htmlFormatter } from "../common/formatters";
 interface LoadResponse {
   ok: boolean;
   registeredId: string;

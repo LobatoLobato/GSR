@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
 import "./editor.scss";
-
-import {
-  cssFormatter,
-  CSSVariablesStr,
-  htmlFormatter,
-} from "../../common/utils";
+import { CSSVariablesStr } from "../../common/parsers";
+import { cssFormatter, htmlFormatter } from "../../common/formatters";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCss3, faHtml5 } from "@fortawesome/free-brands-svg-icons";

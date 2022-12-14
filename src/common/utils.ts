@@ -1,61 +1,4 @@
-import prettier from "prettier";
-import HTMLParser from "prettier/parser-html";
-import CSSParser from "prettier/parser-postcss";
-import { GitHubData } from "../fetchers";
-import { fetchImage } from "../fetchers/imageFetcher";
-import {
-  renderRepo,
-  renderTopLanguages,
-  renderStats,
-  renderStreaks,
-} from "../renderers";
-
-function htmlFormatter(html: string) {
-  const options: prettier.Options = {
-    parser: "html",
-    plugins: [HTMLParser],
-  };
-  return prettier.format(styleTagFormatter(html), options);
-}
-function htmlFormatWithCursor(html: string, cursorOffset: number) {
-  const options: prettier.CursorOptions = {
-    parser: "html",
-    plugins: [HTMLParser],
-    cursorOffset,
-  };
-  return prettier.formatWithCursor(styleTagFormatter(html), options);
-}
-
-function cssFormatter(css: string) {
-  const options: prettier.Options = {
-    parser: "css",
-    plugins: [CSSParser],
-  };
-  return prettier.format(css, options);
-}
-function cssFormatWithCursor(css: string, cursorOffset: number) {
-  const options: prettier.CursorOptions = {
-    parser: "css",
-    plugins: [CSSParser],
-    cursorOffset,
-  };
-  return prettier.formatWithCursor(css, options);
-}
-function styleTagFormatter(html: string) {
-  const styleTagRegexp = /<style>(\n|.)+?<\/style>/gim;
-
-  const formatContent = (tag: string) => {
-    const tagContent = tag.replace(/<\/?style>/gim, "");
-    return cssFormatter(tagContent);
-  };
-
-  return html.replace(
-    styleTagRegexp,
-    (tag) => "<style>\n" + indent(formatContent(tag)) + "</style>",
-  );
-}
-
-function styleTagScoper(xhtml: string, imgtosvg?: boolean) {
+export function styleTagScoper(xhtml: string, imgtosvg?: boolean) {
   const scope = "scopescopescopescope";
   const styleTag = /<style>(\n|.)+?<\/style>/gim; // Matches style tags
   const atRule = /(?<=(@.+\s))\w+\s+(?={)/gim; // Matches css @rules
@@ -89,32 +32,7 @@ function styleTagScoper(xhtml: string, imgtosvg?: boolean) {
 
   return { scopedXhtml, scope };
 }
-
-export let CSSVariables: { [key: string]: string } = {};
-export let CSSVariablesStr: string = "";
-function githubStatsParser(xhtml: string, githubData: GitHubData) {
-  const gitStats = /<gitstats(\s|.)*?>(\s|.)*?<\/gitstats>/gi;
-  const gitStreak = /<gitstreak(\s|.)*?>(\s|.)*?<\/gitstreak>/gi;
-  const gitTopLangs = /<gittoplangs(\s|.)*?>(\s|.)*?<\/gittoplangs>/gi;
-  const gitRepo = /<gitrepo(\s|.)*?>(\s|.)*?<\/gitrepo>/gi;
-
-  CSSVariables = {};
-
-  const parsedXhtml = xhtml
-    .replace(gitStats, (tag) => renderStats(tag, githubData.stats))
-    .replace(gitStreak, (tag) => renderStreaks(tag, githubData.streak))
-    .replace(gitTopLangs, (tag) => renderTopLanguages(tag, githubData.topLangs))
-    .replace(gitRepo, (tag) => {
-      return renderRepo(tag, githubData.repos);
-    });
-
-  CSSVariablesStr = Object.entries(CSSVariables).reduce((acc, [key, value]) => {
-    return acc + `${key}: ${value};\n`;
-  }, "");
-
-  return parsedXhtml;
-}
-function cssResetInjector(html: string): string {
+export function cssResetInjector(html: string): string {
   const reset = `<style>
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -163,31 +81,17 @@ table {
 `;
   return reset + html;
 }
-
-function scriptEscaper() {}
-async function imageParser(xhtml: string): Promise<string> {
-  const imgTags = xhtml.match(/<img(\s|\n|.)*?\/>/gim);
-  const sourceattrs = xhtml.match(/(?<=(<img(\s|.)*?src=")).+?(?=")/gim);
-  const imgs: Promise<string>[] = [];
-  if (!imgTags || !sourceattrs) return xhtml;
-
-  for (const source of sourceattrs ?? []) {
-    imgs.push(fetchImage(source));
-  }
-  for (let i = 0; i < imgTags.length; i++) {
-    const tag = imgTags[i];
-    const img = await imgs[i];
-    xhtml = xhtml.replace(tag, img);
-  }
-
-  return xhtml;
+export function commentRemover(xhtml: string) {
+  const htmlComment = /<--(.|\n)*?-->/gim;
+  const cssComment = /(\/\/.*?)|(\/\*.*?\*\/)/gim;
+  return xhtml.replace(htmlComment, "").replace(cssComment, "");
 }
-function indent(code: string) {
-  const newLineRegexp = /(?<=\n)(?=.)|^/g;
-  return code.replace(newLineRegexp, "  ");
+export function scriptEscaper(xhtml: string) {
+  const scriptTags = /<\/?script>/gim;
+  return xhtml.replace(scriptTags, "");
 }
 
-function stringToHex(str: string, int?: boolean) {
+export function stringToHex(str: string, int?: boolean) {
   const array = str.match(/./gi);
   if (!array) return null;
   const hexStr = array.reduce(
@@ -196,24 +100,44 @@ function stringToHex(str: string, int?: boolean) {
   );
   return int ? parseInt(hexStr) : hexStr;
 }
+export function proxyMsgRemover(str: string) {
+  return str.replace(
+    ` This API enables cross-origin requests to anywhere.
 
-const CONSTANTS = {
+  Usage:
+  
+  /               Shows help
+  /iscorsneeded   This is the only resource on this host which is served without CORS headers.
+  /<url>          Create a request to <url>, and includes CORS headers in the response.
+  
+  If the protocol is omitted, it defaults to http (https if port 443 is specified).
+  
+  Cookies are disabled and stripped from requests.
+  
+  Redirects are automatically followed. For debugging purposes, each followed redirect results
+  in the addition of a X-CORS-Redirect-n header, where n starts at 1. These headers are not
+  accessible by the XMLHttpRequest API.
+  After 5 redirects, redirects are not followed any more. The redirect response is sent back
+  to the browser, which can choose to follow the redirect (handled automatically by the browser).
+  
+  The requested URL is available in the X-Request-URL response header.
+  The final URL, after following all redirects, is available in the X-Final-URL response header.
+  
+  
+  To prevent the use of the proxy for casual browsing, the API requires either the Origin
+  or the X-Requested-With header to be set. To avoid unnecessary preflight (OPTIONS) requests,
+  it's recommended to not manually set these headers in your code.
+  
+  
+  Demo          :   https://robwu.nl/cors-anywhere.html
+  Source code   :   https://github.com/Rob--W/cors-anywhere/
+  Documentation :   https://github.com/Rob--W/cors-anywhere/#documentation`,
+    "",
+  );
+}
+export const CONSTANTS = {
   THIRTY_MINUTES: 1800,
   TWO_HOURS: 7200,
   FOUR_HOURS: 14400,
   ONE_DAY: 86400,
 };
-
-export {
-  htmlFormatter,
-  htmlFormatWithCursor,
-  cssFormatter,
-  cssFormatWithCursor,
-  styleTagScoper,
-  githubStatsParser,
-  stringToHex,
-  CONSTANTS,
-  imageParser,
-  cssResetInjector,
-};
-export type { GitHubData };
