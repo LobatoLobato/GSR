@@ -5,7 +5,6 @@ import {
   renderStats,
   renderStreaks,
 } from "../renderers";
-import { commentRemover } from "./utils";
 
 export let CSSVariables: { [key: string]: string } = {};
 
@@ -34,12 +33,9 @@ export function githubStatsParser(xhtml: string, githubData: GitHubData) {
 }
 
 export async function imageParser(xhtml: string): Promise<string> {
-  const uncommentedXhtml = commentRemover(xhtml);
-  const imgTags = uncommentedXhtml.match(/<img(\s|\n|.)*?\/>/gim);
-  const sourceAttrs = uncommentedXhtml.match(
-    /(?<=(<img(\s|.)*?src=")).+?(?=")/gim,
-  );
-  const xmlAttrs = /((xmlns:xlink)|(version)|(id))=".*?"/gim;
+  const imgTags = xhtml.match(/<img(\s|\n|.)*?\/>/gim);
+  const sourceAttrs = xhtml.match(/(?<=(<img(\s|.)*?src=")).+?(?=")/gim);
+  const xmlDecl = /(<!--.*?-->)|(<\?xml.*?>)/gim;
   const imgs: Promise<string>[] = [];
   if (!imgTags || !sourceAttrs) return xhtml;
 
@@ -48,9 +44,15 @@ export async function imageParser(xhtml: string): Promise<string> {
   }
   for (let i = 0; i < imgTags.length; i++) {
     const tag = imgTags[i];
-    const img = (await imgs[i]).replace(xmlAttrs, "");
+    const tagAttr = tag.replace(/(<img)|(src=".*?")|(\/>)/gim, "");
+    const img = (await imgs[i])
+      .replace(xmlDecl, "")
+      .replace(
+        'xmlns="http://www.w3.org/2000/svg"',
+        `xmlns="http://www.w3.org/2000/svg" ${tagAttr}`,
+      );
+
     xhtml = xhtml.replace(tag, img);
-    console.log(tag, img, imgs[i]);
   }
 
   return xhtml;
