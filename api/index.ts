@@ -46,7 +46,7 @@ export default async function render(req: ApiRequest, res: VercelResponse) {
 
     res.setHeader("Content-Type", "image/svg+xml");
 
-    const cacheSeconds = CONSTANTS.FOUR_HOURS;
+    const cacheSeconds = CONSTANTS.ONE_DAY;
 
     res.setHeader("Cache-Control", `public, max-age=${cacheSeconds}`);
 
