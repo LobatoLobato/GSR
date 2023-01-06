@@ -1,17 +1,26 @@
 import { useEffect, useRef, useState } from "react";
 import "./preview.scss";
-
+import { githubStatsParser } from "../../common/parsers";
+import { htmlFormatter } from "../../common/formatters";
 import {
   cssResetInjector,
+<<<<<<< HEAD
   githubStatsParser,
   htmlFormatter,
+=======
+  scriptEscaper,
+>>>>>>> 207a4f92d19c015de721215f7eeabf52c0a74fe4
   styleTagScoper,
 } from "../../common/utils";
 import { fetchGithubData, GitHubData, GitHubDataFetcher } from "../../fetchers";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWindowMaximize } from "@fortawesome/free-regular-svg-icons";
-import { faWindowMinimize } from "@fortawesome/free-solid-svg-icons";
+import {
+  faWindowMinimize,
+  faSun,
+  faMoon,
+} from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
   xhtml: string;
@@ -29,9 +38,16 @@ export function Preview(props: Props) {
     new GitHubDataFetcher().data,
   );
   const [maximized, setMaximized] = useState(false);
+  const [darkModeEnabled, setDarkModeEnabled] = useState(false);
   const username = props.username;
   const onFetch = props.onFetch;
+<<<<<<< HEAD
 
+=======
+  const handleModeChange = () => {
+    setDarkModeEnabled((e) => !e);
+  };
+>>>>>>> 207a4f92d19c015de721215f7eeabf52c0a74fe4
   useEffect(() => {
     if (username) {
       fetchGithubData({ username: username }).then((data) => {
@@ -47,18 +63,35 @@ export function Preview(props: Props) {
     <div className={`preview ${props.className}`}>
       <div className="navbar">
         <h2 className={`title ${props.navbarClassName}`}> Preview </h2>
-        <FontAwesomeIcon
-          className={`window-resize-icon ${props.navbarClassName}`}
-          icon={maximized ? faWindowMinimize : faWindowMaximize}
-          onClick={() => {
-            maximized ? props.onMinimized() : props.onMaximized();
-            setMaximized(!maximized);
-          }}
-        ></FontAwesomeIcon>
+        <div className="absolute flex left-[87%] gap-4">
+          {darkModeEnabled ? (
+            <FontAwesomeIcon
+              className="text-yellow-100 clickable w-4"
+              icon={faMoon}
+              onClick={handleModeChange}
+            ></FontAwesomeIcon>
+          ) : (
+            <FontAwesomeIcon
+              className="text-yellow-200 clickable w-4"
+              icon={faSun}
+              onClick={handleModeChange}
+            ></FontAwesomeIcon>
+          )}
+          <FontAwesomeIcon
+            className={`window-resize-icon ${props.navbarClassName}`}
+            icon={maximized ? faWindowMinimize : faWindowMaximize}
+            onClick={() => {
+              maximized ? props.onMinimized() : props.onMaximized();
+              setMaximized(!maximized);
+            }}
+          ></FontAwesomeIcon>
+        </div>
       </div>
       <svg xmlns="http://www.w3.org/2000/svg" className="viewBox" ref={svg}>
         <foreignObject
-          className="xhtmlContainer"
+          className={`xhtmlContainer ${
+            darkModeEnabled ? "bg-[#292929]" : "bg-white"
+          }`}
           width="100%"
           height="100%"
           dangerouslySetInnerHTML={{
@@ -97,6 +130,6 @@ function createNSDiv(xhtml: string, githubData: GitHubData): string {
   const { scope, scopedXhtml } = styleTagScoper(parsedXhtml);
   return `
     <div xmlns="http://www.w3.org/1999/xhtml" class="${scope}">
-      ${cssResetInjector(htmlFormatter(scopedXhtml))}
+      ${scriptEscaper(htmlFormatter(cssResetInjector(scopedXhtml)))}
     </div>`;
 }

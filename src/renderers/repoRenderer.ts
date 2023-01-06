@@ -1,4 +1,4 @@
-import { CSSVariables } from "../common/utils";
+import { CSSVariables } from "../common/parsers";
 import { Repository, RepositoryList } from "../fetchers";
 import {
   genericTemplate,

@@ -75,7 +75,9 @@ export function SideBar(props: Props) {
 
     setToken("Uploading...");
     uploadCodeToDB(newRequestBody).then((response) => {
-      setToken(response.data.registeredId);
+      window.setTimeout(() => {
+        setToken(response.data.registeredId);
+      }, 200);
     });
     setRequestBody(newRequestBody);
   };

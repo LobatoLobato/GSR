@@ -99,17 +99,34 @@
 }
 .repo {
   display: flex;
+  height: 100%;
   flex-direction: column;
   align-items: start;
+  justify-content: space-between;
   border-radius: 10px;
-  padding: 0 8px 0 8px;
+  padding: 8px 8px 8px 8px;
   border: 2px solid white;
+}
+.repo-top {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+.repo-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
 }
 .repo .description {
   font-size: 14px;
+  text-align: start;
 }
 .repo .count {
   font-size: 14px;
+  justify-self: end;
+}
+.repo .name {
+  font-size: 90%;
 }
 .repo.C-Cpp-CompilerRunner .name,
 .repo.C-Cpp-CompilerRunner .lang {
@@ -136,6 +153,7 @@
 }
 .skill-category .icons-container {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   animation: fadeIn 2.5s ease;
   align-items: center;
@@ -206,7 +224,7 @@
   text-align: center;
   height: fit-content;
   gap: 4px;
-  font-size: 12px;
+  font-size: 70%;
 }
 .toplangs-container .lang .lang-percentage,
 .lang-name {
@@ -238,6 +256,9 @@
 }
 .git-stats {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 8px;
   width: fit-content;
   margin: auto;

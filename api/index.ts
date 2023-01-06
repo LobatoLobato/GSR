@@ -1,11 +1,11 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
 import { MongoClient, Db, ObjectId } from "mongodb";
+import { GitHubData } from "../src/fetchers";
+import { githubStatsParser, imageParser } from "../src/common/parsers";
 import {
   CONSTANTS,
   cssResetInjector,
-  GitHubData,
-  githubStatsParser,
-  imageParser,
+  scriptEscaper,
   styleTagScoper,
 } from "../src/common/utils";
 import url from "url";
@@ -46,7 +46,7 @@ export default async function render(req: ApiRequest, res: VercelResponse) {
 
     res.setHeader("Content-Type", "image/svg+xml");
 
-    const cacheSeconds = CONSTANTS.FOUR_HOURS;
+    const cacheSeconds = CONSTANTS.ONE_DAY;
 
     res.setHeader("Cache-Control", `public, max-age=${cacheSeconds}`);
 
@@ -99,6 +99,6 @@ async function createNSDiv(
   const final = await imageParser(scopedXhtml);
   return `
     <div xmlns="http://www.w3.org/1999/xhtml" class="${scope}">
-      ${cssResetInjector(final)}
+      ${cssResetInjector(scriptEscaper(final))}
     </div>`;
 }

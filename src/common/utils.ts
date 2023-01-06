@@ -1,61 +1,4 @@
-import prettier from "prettier";
-import HTMLParser from "prettier/parser-html";
-import CSSParser from "prettier/parser-postcss";
-import { GitHubData } from "../fetchers";
-import { fetchImage } from "../fetchers/imageFetcher";
-import {
-  renderRepo,
-  renderTopLanguages,
-  renderStats,
-  renderStreaks,
-} from "../renderers";
-
-function htmlFormatter(html: string) {
-  const options: prettier.Options = {
-    parser: "html",
-    plugins: [HTMLParser],
-  };
-  return prettier.format(styleTagFormatter(html), options);
-}
-function htmlFormatWithCursor(html: string, cursorOffset: number) {
-  const options: prettier.CursorOptions = {
-    parser: "html",
-    plugins: [HTMLParser],
-    cursorOffset,
-  };
-  return prettier.formatWithCursor(styleTagFormatter(html), options);
-}
-
-function cssFormatter(css: string) {
-  const options: prettier.Options = {
-    parser: "css",
-    plugins: [CSSParser],
-  };
-  return prettier.format(css, options);
-}
-function cssFormatWithCursor(css: string, cursorOffset: number) {
-  const options: prettier.CursorOptions = {
-    parser: "css",
-    plugins: [CSSParser],
-    cursorOffset,
-  };
-  return prettier.formatWithCursor(css, options);
-}
-function styleTagFormatter(html: string) {
-  const styleTagRegexp = /<style>(\n|.)+?<\/style>/gim;
-
-  const formatContent = (tag: string) => {
-    const tagContent = tag.replace(/<\/?style>/gim, "");
-    return cssFormatter(tagContent);
-  };
-
-  return html.replace(
-    styleTagRegexp,
-    (tag) => "<style>\n" + indent(formatContent(tag)) + "</style>",
-  );
-}
-
-function styleTagScoper(xhtml: string, imgtosvg?: boolean) {
+export function styleTagScoper(xhtml: string, imgtosvg?: boolean) {
   const scope = "scopescopescopescope";
   const styleTag = /<style>(\n|.)+?<\/style>/gim; // Matches style tags
   const atRule = /(?<=(@.+\s))\w+\s+(?={)/gim; // Matches css @rules
@@ -89,32 +32,7 @@ function styleTagScoper(xhtml: string, imgtosvg?: boolean) {
 
   return { scopedXhtml, scope };
 }
-
-export let CSSVariables: { [key: string]: string } = {};
-export let CSSVariablesStr: string = "";
-function githubStatsParser(xhtml: string, githubData: GitHubData) {
-  const gitStats = /<gitstats(\s|.)*?>(\s|.)*?<\/gitstats>/gi;
-  const gitStreak = /<gitstreak(\s|.)*?>(\s|.)*?<\/gitstreak>/gi;
-  const gitTopLangs = /<gittoplangs(\s|.)*?>(\s|.)*?<\/gittoplangs>/gi;
-  const gitRepo = /<gitrepo(\s|.)*?>(\s|.)*?<\/gitrepo>/gi;
-
-  CSSVariables = {};
-
-  const parsedXhtml = xhtml
-    .replace(gitStats, (tag) => renderStats(tag, githubData.stats))
-    .replace(gitStreak, (tag) => renderStreaks(tag, githubData.streak))
-    .replace(gitTopLangs, (tag) => renderTopLanguages(tag, githubData.topLangs))
-    .replace(gitRepo, (tag) => {
-      return renderRepo(tag, githubData.repos);
-    });
-
-  CSSVariablesStr = Object.entries(CSSVariables).reduce((acc, [key, value]) => {
-    return acc + `${key}: ${value};\n`;
-  }, "");
-
-  return parsedXhtml;
-}
-function cssResetInjector(html: string): string {
+export function cssResetInjector(html: string): string {
   const reset = `<style>
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -164,30 +82,12 @@ table {
   return reset + html;
 }
 
-function scriptEscaper() {}
-async function imageParser(xhtml: string): Promise<string> {
-  const imgTags = xhtml.match(/<img(\s|\n|.)*?\/>/gim);
-  const sourceattrs = xhtml.match(/(?<=(<img(\s|.)*?src=")).+?(?=")/gim);
-  const imgs: Promise<string>[] = [];
-  if (!imgTags || !sourceattrs) return xhtml;
-
-  for (const source of sourceattrs ?? []) {
-    imgs.push(fetchImage(source));
-  }
-  for (let i = 0; i < imgTags.length; i++) {
-    const tag = imgTags[i];
-    const img = await imgs[i];
-    xhtml = xhtml.replace(tag, img);
-  }
-
-  return xhtml;
-}
-function indent(code: string) {
-  const newLineRegexp = /(?<=\n)(?=.)|^/g;
-  return code.replace(newLineRegexp, "  ");
+export function scriptEscaper(xhtml: string) {
+  const scriptTags = /<\/?script>/gim;
+  return xhtml.replace(scriptTags, "");
 }
 
-function stringToHex(str: string, int?: boolean) {
+export function stringToHex(str: string, int?: boolean) {
   const array = str.match(/./gi);
   if (!array) return null;
   const hexStr = array.reduce(
@@ -197,23 +97,9 @@ function stringToHex(str: string, int?: boolean) {
   return int ? parseInt(hexStr) : hexStr;
 }
 
-const CONSTANTS = {
+export const CONSTANTS = {
   THIRTY_MINUTES: 1800,
   TWO_HOURS: 7200,
   FOUR_HOURS: 14400,
   ONE_DAY: 86400,
 };
-
-export {
-  htmlFormatter,
-  htmlFormatWithCursor,
-  cssFormatter,
-  cssFormatWithCursor,
-  styleTagScoper,
-  githubStatsParser,
-  stringToHex,
-  CONSTANTS,
-  imageParser,
-  cssResetInjector,
-};
-export type { GitHubData };
