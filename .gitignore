@@ -21,7 +21,7 @@ teste.html
 *.lock
 .idea/
 vercel_token
-
+/src/teste.css
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
