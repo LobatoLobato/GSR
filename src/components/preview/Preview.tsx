@@ -4,12 +4,7 @@ import { githubStatsParser } from "../../common/parsers";
 import { htmlFormatter } from "../../common/formatters";
 import {
   cssResetInjector,
-<<<<<<< HEAD
-  githubStatsParser,
-  htmlFormatter,
-=======
   scriptEscaper,
->>>>>>> 207a4f92d19c015de721215f7eeabf52c0a74fe4
   styleTagScoper,
 } from "../../common/utils";
 import { fetchGithubData, GitHubData, GitHubDataFetcher } from "../../fetchers";
@@ -41,13 +36,9 @@ export function Preview(props: Props) {
   const [darkModeEnabled, setDarkModeEnabled] = useState(false);
   const username = props.username;
   const onFetch = props.onFetch;
-<<<<<<< HEAD
-
-=======
   const handleModeChange = () => {
     setDarkModeEnabled((e) => !e);
   };
->>>>>>> 207a4f92d19c015de721215f7eeabf52c0a74fe4
   useEffect(() => {
     if (username) {
       fetchGithubData({ username: username }).then((data) => {
