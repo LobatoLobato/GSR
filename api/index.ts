@@ -58,7 +58,10 @@ export default async function render(req: ApiRequest, res: VercelResponse) {
 
     if (!githubUsername) throw new Error();
 
+    console.time("git-fetch");
     const githubData = await fetchGithubData({ username: githubUsername });
+    console.timeEnd("git-fetch");
+    
     let nsDiv = "";
     try {
       nsDiv = await createNSDiv(code, githubData);
