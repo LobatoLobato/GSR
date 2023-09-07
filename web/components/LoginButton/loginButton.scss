@@ -1,0 +1,8 @@
+.btn {
+  @apply flex items-center gap-2 w-fit px-2
+  border-black rounded-sm text-sm text-white bg-gray-600 
+  hover:bg-green-400;
+}
+.profile-picture {
+  @apply w-20 rounded-lg;
+}

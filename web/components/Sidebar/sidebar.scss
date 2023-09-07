@@ -1,0 +1,173 @@
+.sidebar {
+  @apply flex flex-col items-center justify-between gap-1
+   rounded-bl-sm mb-1 overflow-x-clip
+   bg-[#2e2e2e] text-white text-center text-lg;
+
+  .helpPopup {
+    @apply fixed top-0 left-0 w-screen h-screen bg-black 
+    bg-opacity-10 backdrop-blur-md z-50 overflow-auto;
+    .navbar {
+      @apply relative flex px-8 text-2xl h-[5%] items-center justify-between;
+      .topics {
+        @apply flex justify-between overflow-clip p-4 gap-2 w-full;
+        h2 {
+          @apply bg-black bg-opacity-20 rounded-full px-4 clickable
+        select-none hover:bg-opacity-10 hover:bg-white text-lg;
+        }
+      }
+      .icon {
+        @apply text-red-600 hover:text-red-500;
+      }
+    }
+    .topic {
+      @apply flex flex-col px-2 overflow-clip w-full h-[95%]
+      border-2 border-gray-300 border-opacity-5 rounded-lg;
+      p {
+        @apply text-base;
+      }
+    }
+  }
+  .showSidebarBtn {
+    @apply flex items-center justify-center h-8 w-full text-center 
+     hover:bg-green-500 clickable select-none;
+    .icon {
+      @apply text-2xl text-gray-300;
+    }
+  }
+  .showSidebarBtn.show {
+    @apply absolute z-10;
+  }
+  .showSidebarBtn.hide {
+    @apply relative rounded-br-sm px-2;
+  }
+  .content {
+    @apply items-center justify-between gap-1
+    overflow-x-clip h-full mt-10 bg-[#222] py-2 rounded-sm w-full;
+
+    .title {
+      @apply bg-white bg-opacity-5 text-sm py-1 px-1 rounded-md
+      border-2 border-black;
+    }
+
+    .api-btn {
+      @apply flex items-center justify-center px-2 py-1
+      rounded-sm text-sm bg-white bg-opacity-10
+      border-2 border-black border-solid text-zinc-300;
+      @apply hover:bg-white hover:bg-opacity-20 hover:text-gray-200 hover:rounded-md;
+    }
+
+    .githubStats {
+      @apply flex flex-col bg-[#222] justify-center items-center p-2 text-center
+     overflow-clip whitespace-nowrap gap-3 w-full;
+      .repoList {
+        @apply h-40 overflow-auto text-base bg-white bg-opacity-5 whitespace-normal w-full;
+        @apply scrollbar-thin scrollbar-track-gray-400 scrollbar-thumb-black;
+        @apply overflow-y-auto overflow-x-clip;
+      }
+      .helpBtn {
+        @apply rounded-full px-4 bg-slate-300 text-black opacity-80 
+        hover:opacity-100 select-none text-sm;
+      }
+      .helpBtn:active {
+        animation: AnimateOpacity 0.2s;
+      }
+      @keyframes AnimateOpacity {
+        0% {
+          opacity: 0.8;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+    }
+  }
+  .content.show {
+    @apply animate-fadeIn flex flex-col;
+  }
+  .content.hide {
+    @apply hidden;
+  }
+}
+.sidebar.init {
+  @apply relative lg:fixed left-0 z-10 w-full lg:w-fit lg:min-w-fit lg:max-w-fit h-fit 
+  hover:bg-green-500;
+}
+.sidebar.show {
+  @apply fixed z-10 left-0 lg:min-w-[16.6666667%] lg:max-w-[16.6666667%] lg:w-2/12 
+  w-full h-full
+  pb-2 px-2;
+  animation: show-sidebar 1s ease;
+}
+.sidebar.hide {
+  @apply relative lg:fixed left-0 z-10 w-full lg:w-fit lg:min-w-fit lg:max-w-fit h-fit 
+ hover:bg-green-500;
+  animation: hide-sidebar 1s ease;
+}
+@media (min-width: 1024px) {
+  .sidebar.show {
+    @apply relative;
+    animation: show-sidebar-lg 1s ease;
+  }
+  .sidebar.hide {
+    // @apply animate-shrinkSideBar-lg;
+    animation: hide-sidebar-lg 1s ease;
+  }
+}
+@keyframes show-sidebar-lg {
+  0% {
+    padding-left: 0px;
+    padding-right: 0px;
+    max-width: 0px;
+    min-width: 0px;
+    width: 0px;
+  }
+}
+@keyframes hide-sidebar-lg {
+  0% {
+    // padding-left: 0px;
+    // padding-right: 0px;
+    max-width: 16.666667%;
+    min-width: 16.666667%;
+    width: 16.666667%;
+    position: relative;
+  }
+  100% {
+    max-width: 0px;
+    min-width: 0px;
+    width: 0px;
+  }
+  60% {
+    position: relative;
+    max-width: 0px;
+    min-width: 0px;
+    width: 0;
+  }
+  70% {
+    position: absolute;
+    max-width: 0px;
+    min-width: 0px;
+    width: 0;
+  }
+  100% {
+    max-width: 40px;
+    min-width: 40px;
+    width: 40px;
+    position: absolute;
+  }
+}
+@keyframes show-sidebar {
+  0% {
+    height: 32px;
+  }
+  100% {
+    height: 100%;
+  }
+}
+@keyframes hide-sidebar {
+  0% {
+    height: 100%;
+  }
+  100% {
+    height: 32px;
+  }
+}

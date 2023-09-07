@@ -1,0 +1,8 @@
+.loader-container {
+  @apply flex justify-center items-center;
+}
+.loader {
+  @apply w-3 h-3 rounded-full 
+  border-4 border-solid border-t-[#3498db] 
+  animate-spin;
+}
