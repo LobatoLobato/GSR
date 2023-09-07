@@ -12,7 +12,7 @@
   }
   .viewBox {
     @apply w-full h-full border-4 border-solid
-    border-gray-900 bg-opacity-5;
+    border-gray-900 bg-opacity-5 text-base;
 
     .xhtmlContainer {
       @apply scrollbar-track-[#ffffff02] scrollbar-thumb-[#ffffff20] scrollbar;

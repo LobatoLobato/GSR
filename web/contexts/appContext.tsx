@@ -1,6 +1,6 @@
 import React from "react";
-import HTMLExample from "@web/assets/example.html";
-import CSSExample from "../assets/example.css?inline";
+import HTMLExample from "@web/assets/example.html?raw";
+import CSSExample from "../assets/example.css?raw";
 import axios from "axios";
 import { GitHubData } from "@web/types/github";
 import { randomHexColor } from "@web/utils";
@@ -29,6 +29,8 @@ interface AppContext {
   githubData: GitHubData;
   previewCode: string;
   cssVariables: string;
+  generateMarkdown(): string;
+  setRenderHeights(heights: [number, number, boolean][]): void;
 }
 interface AppProviderProps {
   children?: React.ReactNode;
@@ -182,9 +184,27 @@ export function AppProvider({ children }: AppProviderProps) {
       setIsLoadingCode(false);
     }, 2000);
   }, []);
+
+  const [renderHeights, setRenderHeights] = React.useState<[number, number, boolean][]>([]);
+
+  function generateMarkdown(): string {
+    const url = "https://gsr.frll.cloud/api/render";
+
+    const tags = renderHeights.map(([k, v, isBase]) => {
+      const params = `username=${userData.username.toLowerCase()}&height=${v}`;
+      if (isBase) {
+        return `  <img src="${url}?${params}" width="100%" alt=":(" />`;
+      }
+      return `  <source media="(min-width:${k}px)" srcset="${url}?${params}" width="100%" />`;
+    });
+
+    return `<picture>\n${tags.join("\n")}\n</picture>`;
+  }
   return (
     <AppContext.Provider
       value={{
+        generateMarkdown,
+        setRenderHeights,
         isLoadingCode,
         forceShowSidebar,
         setForceShowSidebar,

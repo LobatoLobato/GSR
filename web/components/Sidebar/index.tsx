@@ -94,6 +94,15 @@ export function SideBar() {
               </div>
             </div>
           )}
+          <div className="flex flex-col items-center justify-center">
+            <p
+              className="flex gap-2 items-center justify-center clickable"
+              onClick={() => navigator.clipboard.writeText(appContext.generateMarkdown())}
+            >
+              Generate Markdown and Copy to clipboard
+              <Icon icon={Icon.Solid.faCopy} />
+            </p>
+          </div>
           <div className="githubStats">
             {state.isLoggedIn && <RepoList list={appContext.githubData.repos}></RepoList>}
             <button className="helpBtn" onClick={() => setShowHelp(true)}>

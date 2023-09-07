@@ -39,6 +39,7 @@ async function authenticate(oAuthCode: string) {
 }
 
 async function load(github_username: string) {
+  github_username = github_username.toLowerCase();
   try {
     const user = await prisma.user.findFirst({ where: { github_username } });
     if (!user) throw new Error("User not found");
@@ -63,6 +64,7 @@ async function load(github_username: string) {
 }
 
 async function upload(code: string, github_username: string) {
+  github_username = github_username.toLowerCase();
   code = code.replace(/((?<=>)\s+)|(\n\s+)/g, " ");
 
   try {

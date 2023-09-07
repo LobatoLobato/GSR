@@ -6,8 +6,8 @@ import Icon from "@web/components/Icon";
 import MonacoEditor from "@monaco-editor/react";
 import "@web/config/MonacoConfig";
 
-import HTMLExample from "@web/assets/example.html";
-import CSSExample from "@web/assets/example.css?inline";
+import HTMLExample from "@web/assets/example.html?raw";
+import CSSExample from "@web/assets/example.css?raw";
 import { useAppContext } from "@web/hooks/useAppContext";
 
 // import { CSSVariablesStr } from "@web/utils/parsers";
