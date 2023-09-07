@@ -16,9 +16,6 @@ export default defineConfig({
       "@shared": path.join(cwd, "shared"),
     },
   },
-  // define: {
-  //   'process.env': process.env
-  // },
   root: cwd,
   build: { outDir: path.join(cwd, "dist", "web"), emptyOutDir: true },
 });

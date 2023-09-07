@@ -6,7 +6,6 @@ import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import html from "rollup-plugin-html-string";
 import alias from "@rollup/plugin-alias";
-import assets from "./plugins/rollup/assets.rollup.plugin.js";
 
 import process from "node:process";
 import path from "node:path";
@@ -24,10 +23,7 @@ export default defineConfig(() => {
     };
   }
 
-  const aliases = buildAliases({
-    "@api": path.join(cwd, "dist/api"),
-    "@shared": path.join(cwd, "shared"),
-  });
+  const aliases = buildAliases({ "@api": path.join(cwd, "dist/api") });
 
   if (fs.existsSync(outDir)) {
     fs.rmSync(outDir, { force: true, recursive: true });
@@ -40,15 +36,7 @@ export default defineConfig(() => {
       file: path.join(outDir, "bundle.cjs"),
       inlineDynamicImports: true,
     },
-    plugins: [
-      assets({ assets: ["api/assets"], verbose: true }),
-      typescript(),
-      commonjs(),
-      alias(aliases),
-      json(),
-      html(),
-      terser(),
-    ],
+    plugins: [typescript(), commonjs(), alias(aliases), json(), html(), terser()],
     logLevel: "silent",
   };
 });

@@ -4,8 +4,8 @@
   "version": "3.0.0",
   "type": "module",
   "scripts": {
-    "start": "node dist/api/index.js",
-    "build": "rollup --config && vite build",
+    "start": "node dist/api/bundle.cjs",
+    "build": "prisma generate && rollup --config && vite build",
     "deploy": "npm run build && npm run start",
     "preview": "vite preview",
     "dev": "vite --host -l info -d",
