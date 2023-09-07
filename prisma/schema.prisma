@@ -14,5 +14,4 @@ model user {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   github_username String @unique
   code String
-  streak Json
 }
