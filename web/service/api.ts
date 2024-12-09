@@ -15,7 +15,7 @@ export interface LoadCodeFromDBResponse {
 }
 export async function loadCodeFromDB(requestBody: object): Promise<LoadCodeFromDBResponse> {
   if (!process.env.REACT_APP_LD_PATH) throw new Error("LOAD PATH IS NULL");
-  const response = await axios.post<LoadResponse>("/api/user/load", requestBody);
+  const response = await axios.post<LoadResponse>(process.env.REACT_APP_LD_PATH, requestBody);
   const { code, githubUsername } = response.data;
 
   const styleTags = code.match(/<style>.*?<\/style>/gim);

@@ -67,24 +67,15 @@ export function Preview(props: Props) {
           ></Icon>
         </div>
       </div>
-      <svg xmlns="http://www.w3.org/2000/svg" width={800} height={0}>
-        <foreignObject
-          ref={foreignObject}
-          style={{ lineHeight: "normal" }}
-          width="100%"
-          height="100%"
-          dangerouslySetInnerHTML={{ __html: innerHTML }}
-        />
-      </svg>
       {appContext.isLoadingCode ? (
         <Loader className="viewBox items-center justify-center flex" />
       ) : (
-        <svg xmlns="http://www.w3.org/2000/svg" className="viewBox">
+        <svg xmlns="http://www.w3.org/2000/svg" className="viewBox" width={800} height={0}>
           <foreignObject
             className={`xhtmlContainer ${foreignObjectBg}`}
             width="100%"
             height="100%"
-            dangerouslySetInnerHTML={{ __html: innerHTML }}
+            dangerouslySetInnerHTML={{ __html: innerHTML}}
           />
         </svg>
       )}
