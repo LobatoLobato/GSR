@@ -34,8 +34,7 @@ export class GSRSVGRenderer {
     props.scope = props.scope ?? "scopescopescopescope";
     props.xhtml = await codeFormatter(props.xhtml, "html");
 
-    const renderer = new GSRSVGRenderer(props.xhtml, props.githubData);
-    renderer
+    const { xhtml, cssVariables } = new GSRSVGRenderer(props.xhtml, props.githubData)
       .renderStats()
       .renderStreaks()
       .renderRepos()
@@ -45,18 +44,16 @@ export class GSRSVGRenderer {
       .injectCSSReset()
       .renderImages(props.imageRecord);
 
-    const { xhtml, cssVariables } = renderer;
-
     const cssVariablesString = Object.entries(cssVariables).reduce((acc, [key, value]) => {
       return acc + `${key}: ${value};`;
     }, "");
     const renderedXhtml = props.preview
       ? `<div xmlns="http://www.w3.org/1999/xhtml" class="${props.scope}"><style>:root{${cssVariablesString}}</style>${xhtml}</div>`
       : `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="${props.height}">` +
-      `<foreignObject width="100%" height="100%">` +
-      `<div xmlns="http://www.w3.org/1999/xhtml" class="${props.scope}"><style>:root{${cssVariablesString}}</style>${xhtml}</div>` +
-      `</foreignObject>` +
-      `</svg>`;
+        `<foreignObject width="100%" height="100%">` +
+        `<div xmlns="http://www.w3.org/1999/xhtml" class="${props.scope}"><style>:root{${cssVariablesString}}</style>${xhtml}</div>` +
+        `</foreignObject>` +
+        `</svg>`;
 
     return { renderedXhtml, cssVariables };
   }

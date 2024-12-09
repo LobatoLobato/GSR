@@ -21,6 +21,7 @@
     "@monaco-editor/react": "^4.5.2",
     "@octokit/core": "^5.0.0",
     "@prisma/client": "^5.2.0",
+    "@tanishiking/aho-corasick": "^0.0.1",
     "@types/html-minifier-terser": "^7.0.0",
     "axios": "^1.5.0",
     "curl": "^0.1.4",

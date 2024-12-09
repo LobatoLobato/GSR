@@ -12,7 +12,6 @@ import {
   ContributionDay,
   ContributionCalendar,
   LanguageMap,
-  LanguageEdge,
   GitHubData,
 } from "@api/types/github";
 import {
@@ -24,36 +23,55 @@ import {
 } from "@api/types/query";
 
 async function fetchImages(xhtml: string): Promise<Record<string, string> | undefined> {
-  const sourceAttrs = xhtml.match(/(?<=(<img(\s|.)*?src=")).+?(?=")/gim);
+  const sourceAttributes = xhtml.match(/(?<=(<img(\s|.)*?src=")).+?(?=")/gim);
+  async function fetchImage(source: string): Promise<[string, string]> {
+    const image = (await asyncWrap(axios.get(source)))[0]?.data;
+    return [source, image ?? ""];
+  }
 
-  if (!sourceAttrs) return;
+  if (!sourceAttributes) return;
 
-  const sourceSet = new Set(sourceAttrs);
-  const imageTuples: [string, string][] = await Promise.all(
-    [...sourceSet].map(async (source) => {
-      const [image] = await asyncWrap(axios.get(source));
-      return [source, image ? image.data : ""];
-    }),
-  );
+  const sourceSet = new Set(sourceAttributes);
+  const imageTuples: [string, string][] = await Promise.all([...sourceSet].map(fetchImage));
 
   return Object.fromEntries(imageTuples);
 }
-
+const query_build = (username: string, after: string) => {
+  return `{
+      user(login: ${username}) {
+        repositories(ownerAffiliations: OWNER, first: 100, after: ${after}) {
+          nodes {
+            nameWithOwner
+            name
+            primaryLanguage { color name }
+            description
+            stargazerCount
+            forkCount
+            url
+          }
+          pageInfo {
+            startCursor
+            endCursor
+            hasNextPage
+            hasPreviousPage
+          }
+        }
+      }
+  }`;
+};
 async function fetchRepos(username: string): Promise<RepositoryList> {
   const request: RepositoriesQueryResponse = await new GraphQL().query(
     `{
       user(login: "${username}") {
-        repositories(ownerAffiliations: OWNER, isFork: false, first: 100) {
+        repositories(ownerAffiliations: OWNER, first: 100) {
           nodes {
             nameWithOwner
             name
-            primaryLanguage {
-              color
-              name
-            }
+            primaryLanguage { color name }
             description
             stargazerCount
             forkCount
+            url
           }
         }
       }
@@ -249,17 +267,12 @@ async function fetchTopLanguages(username: string): Promise<LanguageMap> {
   const request: TopLangsQueryResponse = await new GraphQL().query(
     `{
       user(login: "${username}") {
-        # fetch only owner repos & not forks
-        repositories(ownerAffiliations: OWNER, isFork: false, first: 100) {
+        repositories(ownerAffiliations: OWNER, first: 100) {
           nodes {
-            name
-            languages(first: 10, orderBy: {field: SIZE, direction: DESC}) {
+            languages(first: 100, orderBy: {field: SIZE, direction: DESC}) {
               edges {
                 size
-                node {
-                  color
-                  name
-                }
+                node { color name }
               }
             }
           }
@@ -270,14 +283,17 @@ async function fetchTopLanguages(username: string): Promise<LanguageMap> {
   const repoNodes = request.user.repositories.nodes;
 
   // Creates the language map with language sizes
-  const map = repoNodes
-    .filter(({ languages }) => languages.edges.length > 0)
-    .reduce((acc, { languages }) => languages.edges.concat(acc), [] as LanguageEdge[])
-    .reduce((acc, language: LanguageEdge) => {
+  const map = repoNodes.reduce((acc, { languages }) => {
+    if (languages.edges.length === 0) return acc;
+    const map = languages.edges.reduce((acc2, language) => {
       const { name, color } = language.node;
       const size = language.size + (acc[name]?.size ?? 0);
-      return { ...acc, [name]: { name, color, size } };
+
+      return { ...acc2, [name]: { name, color, size } };
     }, {} as LanguageMap);
+
+    return { ...acc, ...map };
+  }, {} as LanguageMap);
 
   // Sorts languages by size
   const sortedMap = Object.keys(map)
